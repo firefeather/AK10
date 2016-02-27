@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText,ButtonStyle,UselessParent" >
+
+    
+    <LinearLayout 
+        android:layout_alignParentRight="true"
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/custom_bg"
+        android:orientation="vertical"
+        >
+    <Button
+        android:id="@+id/btn_show_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+         android:paddingLeft="0dp"
+          android:layout_gravity="left"
+        android:text="@string/leddisplay_cabinetadd_showtoolbar" />
+    <Button
+        android:id="@+id/btn_hide_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+         android:paddingLeft="0dp"
+          android:layout_gravity="left"
+        android:text="@string/leddisplay_cabinetadd_hidetoolbar" />
+
+     </LinearLayout>
+</RelativeLayout>

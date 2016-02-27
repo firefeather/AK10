@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="InefficientWeight,UselessParent" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="680dp"
+                android:layout_height="73dp"
+                android:layout_weight="1"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:text="@string/windowparm"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textViewTTest"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@string/windowparm_x"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size25" />
+
+            <EditText
+                android:id="@+id/EditTextltx"
+                android:layout_width="88dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:maxLength="4"
+                android:textSize="@dimen/size25" />
+
+            <TextView
+                android:id="@+id/width"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@string/windowparm_Width"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size25" />
+
+            <EditText
+                android:id="@+id/EditTextwidth"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                 android:maxLength="4"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textViewUpdateItemSel"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@string/windowparm_Y"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size25" />
+
+            <EditText
+                android:id="@+id/EditTextlty"
+                android:layout_width="88dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:maxLength="4"
+                android:textSize="@dimen/size25" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@string/windowparm_Height"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size25" />
+
+            <EditText
+                android:id="@+id/EditTextheight"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal"
+                android:maxLength="4"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

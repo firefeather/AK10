@@ -1,0 +1,194 @@
+package com.szaoto.ak10.datacomm;
+
+import com.szaoto.ak10.Ak10Application;
+import com.szaoto.ak10.common.Display.ColourRGB;
+import com.szaoto.ak10.commsdk.FrameDataField;
+import com.szaoto.ak10.commsdk.Packager;
+import com.szaoto.ak10.commsdk.SpiControl;
+import com.szaoto.ak10.sqlitedata.ChannelDB;
+
+
+/**
+ * 
+ * @author huh
+ *
+ */
+public class LEDParamComm {
+
+	public LEDParamComm() {
+		
+	}
+
+	//对发送卡设置
+	public static int SetBright(int nBright,byte[] macaddress,int Rj45Num)
+	{
+		byte[] ucSendData = new byte[FrameDataField.ETH_DATA_MAX_SIZE + 18];
+		byte[] ucAddress = new byte[2];
+	
+		
+		//地址
+		ucAddress[0] = 0x11;
+		ucAddress[1] = (byte) (0x00 + (Rj45Num-1) *0x10);
+	
+		int nBrightness = (int)(2.56 * nBright + 0.5);
+		int nResult = -1;	
+		int nSendLength = 28 + 22 + 14;
+		ucSendData = Packager.PackSetBright(macaddress, ucAddress, nBrightness);
+		
+	
+		try 
+		{
+			nResult = SpiControl.WriteSpi(ucSendData, nSendLength);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	
+		
+		
+		
+
+		return nResult;	
+	}
+	
+	public static int SetContrast(int nContrast,int Chid)
+	{
+		byte[] ucSendData = new byte[FrameDataField.ETH_DATA_MAX_SIZE + 18];
+		byte[] ucAddress = new byte[4];
+		byte[] macaddress = new byte[6];
+		
+		int nResult = -1;
+		
+		//地址
+		int portNum = Chid%1000;
+	
+		ucAddress[0] = (byte) 0x01;
+		ucAddress[1] =  (byte) (0x03+(portNum-1)*0x20);
+		
+		int nLength = 2;
+		byte[] ucData = new byte[2];
+		
+		short tContrast = 0;
+		if (nContrast < 50)
+		{
+			tContrast = (short) (256 - (50 - nContrast) * 5);
+		}
+		else
+		{
+			tContrast = (short) (256 + (nContrast - 50 ) * 2);
+		}
+		
+		ucData[1] = (byte) ((tContrast&0xff00)>>8);
+		ucData[0] = (byte) ((tContrast&0x00ff));
+		
+		
+		//mac
+		macaddress=ChannelDB.GetMacByChId(Chid,Ak10Application.GetLedId());
+		
+		int nSequenceNumber = 0x00;
+		
+		int nSendLength = ((42 < nLength) ? nLength : 42) + 22;
+		ucSendData = Packager.EthernetPackDataWrite(macaddress, ucAddress, nSequenceNumber, 2, ucData);
+
+		try 
+		{
+			nResult = SpiControl.WriteSpi(ucSendData, nSendLength);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+
+		
+		
+
+	    return nResult;
+		
+	}
+	
+	public static int SetSaturation(int nSaturation,int Chid)
+	{
+		byte[] ucSendData = new byte[FrameDataField.ETH_DATA_MAX_SIZE + 18];
+		byte[] ucAddress = new byte[4];
+		byte[] macaddress = new byte[6];
+	
+		//地址
+		int portNum = Chid%1000;
+		
+		ucAddress[0] = (byte) 0x01;
+		ucAddress[1] =  (byte) (0x01+(portNum-1)*0x20);
+
+		//mac
+		macaddress=ChannelDB.GetMacByChId(Chid,Ak10Application.GetLedId());	
+		int nLength = 2;
+		byte[] ucData = new byte[2];
+		
+		short nSaturation_ = 0;
+		
+		if (nSaturation < 50)
+		{
+			nSaturation_ = (short) (256 - (50 - nSaturation) * 5);
+		}
+		else
+		{
+			nSaturation_ = (short) (256 + (nSaturation - 50 ) * 20);
+		}	
+		
+		
+		
+		ucData[1] = (byte) ((nSaturation_&0xff00)>>8);
+		ucData[0] = (byte) ((nSaturation_&0x00ff));
+		
+		int nSequenceNumber = 0x00;		
+		int nSendLength = ((42 < nLength) ? nLength : 42) + 22;
+		
+		ucSendData = Packager.EthernetPackDataWrite(macaddress, ucAddress, nSequenceNumber, nLength, ucData);	
+		
+		int nResult = -1;
+
+		try 
+		{
+			nResult = SpiControl.WriteSpi(ucSendData, nSendLength);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+
+		
+	
+		return nResult;
+		
+	}
+	
+	public static int SetColorTemp(byte[] macaddress,int Rj45Num,ColourRGB sColorRGB,short nHighLowGap,short nGrayEnhanceMode)
+	{
+		byte[] ucSendData = new byte[FrameDataField.ETH_DATA_MAX_SIZE + 18];
+		byte[] ucAddress = new byte[2];
+	
+		int nResult = -1;		
+		//地址
+		ucAddress[0] = 0x11;
+		ucAddress[1] = (byte) (0x00 + (Rj45Num-1) *0x10);
+		
+	
+		int nSendLength = 28 + 22 + 14;
+		
+		ucSendData = Packager.PackSetColorTemperature(macaddress, ucAddress, sColorRGB, nHighLowGap, nGrayEnhanceMode);	
+		
+
+		try 
+		{
+			nResult = SpiControl.WriteSpi(ucSendData, nSendLength);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+
+	
+		return nResult;
+	}
+	
+}

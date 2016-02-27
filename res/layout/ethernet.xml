@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ethrentsetting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.09" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="132dp"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_back_list"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/textViewPathTitile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="8dp"
+            android:text="@string/system_network"
+            android:textSize="@dimen/size25" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="0.10" >
+
+        <TextView
+            android:id="@+id/TextView08"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:text="@string/system_network_mac_add"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/macadress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size25" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.11" >
+
+        <TextView
+            android:id="@+id/systemupdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@string/system_network_ip_add"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/ipaddress1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/TextView04"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@string/system_network_ip_port"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/portnum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textSize="@dimen/size25" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_marginLeft="8dp"
+        >
+
+        <TextView
+            android:id="@+id/TextView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@string/system_network_connectstate"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/connectstate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_weight="0.10"
+            android:text="@string/system_network_connectnormal"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/TextView07"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@string/system_network_connectcounts"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/connectnum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.35"
+            android:textSize="@dimen/size25" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="0.07" >
+
+       <RadioGroup
+            android:id="@+id/radioGroup1"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RadioButton
+                android:id="@+id/dhcp_radio"
+                android:layout_width="456dp"
+                android:layout_height="66dp"
+                android:checked="true"
+                android:text="@string/text_DHCP"
+                android:textSize="@dimen/size25" />
+
+            <RadioButton
+                android:id="@+id/manual_radio"
+                android:layout_width="494dp"
+                android:layout_height="match_parent"
+                android:text="@string/system_network_static"
+                android:textSize="@dimen/size25" />
+       
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="0.13" >
+
+        <TextView
+            android:id="@+id/TextView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:gravity="right"
+            android:text="@string/system_network_ip_add"
+            android:textSize="@dimen/size25" />
+
+        <EditText
+            android:id="@+id/ipaddressmannul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionGo"
+           
+            android:ems="10" />
+			<requestFocus />
+        <TextView
+            android:id="@+id/gatewayss"
+            android:layout_width="137dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@string/system_network_gateway"
+            android:textSize="@dimen/size25" />
+
+        <EditText
+            android:id="@+id/gatewaymannul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+       
+            android:ems="10" >
+
+            
+        </EditText>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="0.10" >
+
+        <TextView
+            android:id="@+id/netmasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:gravity="right"
+            android:text="@string/system_network_subnetmask"
+            android:textSize="@dimen/size25" />
+
+        <EditText
+            android:id="@+id/netmaskmannul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            
+            android:ems="10" />
+
+        <TextView
+            android:id="@+id/dnsaddresses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/system_network_dns_address"
+            android:textSize="@dimen/size25" />
+
+        <EditText
+            android:id="@+id/dnsaddressmannul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+        
+            android:ems="10" />
+
+    </LinearLayout>
+
+</LinearLayout>

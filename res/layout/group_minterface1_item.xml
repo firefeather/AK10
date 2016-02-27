@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    tools:ignore="HardcodedText,InefficientWeight" >
+
+    <TextView
+        android:id="@+id/interface_id"
+        android:layout_width="295dp"
+        android:layout_height="match_parent"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:textColor="@color/white"
+        android:text="Interface"
+        android:textSize="25sp"/>
+
+    <Spinner
+        android:id="@+id/interface1_ch"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:textColor="@color/white"
+          android:layout_gravity="center"
+        android:textSize="@dimen/size25" 
+      />
+
+</LinearLayout>

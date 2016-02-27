@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp" >
+
+    <Button
+        android:id="@+id/btn_Debug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="55dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="85dp"
+         android:visibility="visible"
+        android:gravity="center"
+        android:text="@string/Debug_Entrance"
+        android:textColor="@color/black"
+      
+        android:textSize="@dimen/size25" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="87dp"
+        android:orientation="vertical" >
+
+        <Spinner
+            android:id="@+id/spinnerlanguage"
+            android:layout_width="312dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_weight="3"
+            tools:ignore="InefficientWeight" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_Reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_Debug"
+        android:layout_alignLeft="@+id/btn_Debug"
+        android:layout_alignRight="@+id/btn_Debug"
+        android:gravity="center"
+        android:text="@string/resetdata"
+        android:textColor="@color/black"
+
+        android:textSize="@dimen/size25"
+        android:visibility="gone"
+         />
+
+
+</RelativeLayout>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Layout_monitor_environment_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/common_bg"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText,InefficientWeight,NestedWeights,UselessParent" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="309dp"
+        android:layout_marginLeft="30dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="117dp" >
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="719dp"
+                android:layout_height="84dp"
+                android:layout_marginTop="18dp"
+                android:gravity="left"
+                android:text="@string/monitor_environment_setting"
+                android:textSize="@dimen/size40" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <CheckBox
+                android:id="@+id/chk_editAutotime"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="@string/monitorconfig_autocircle"
+                android:textSize="@dimen/size25" />
+
+            <EditText
+                android:id="@+id/editautotime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:imeOptions="actionGo"
+                android:inputType="numberDecimal"
+                android:text="10"
+                android:textSize="@dimen/size25" >
+                <requestFocus />
+            </EditText>
+
+            <TextView
+                android:id="@+id/textViewUpdateItemSel"
+                android:layout_width="33dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.06"
+                android:text="  ms"
+                android:textSize="30sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textViewTTest"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.00"
+                android:gravity="left"
+                android:text="@string/monitorconfig_tempalarm"
+                android:textSize="@dimen/size25" />
+
+            <EditText
+                android:id="@+id/edittemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="21dp"
+                android:ems="10"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:text="10"
+                android:textSize="@dimen/size25" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="39dp"
+                android:layout_height="40dp"
+                android:layout_weight="0.04"
+                android:text="C"
+                android:textSize="30sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/Textvaluebrightness"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="@string/monitorconfig_humialarm"
+                android:textSize="@dimen/size25" />
+
+            <EditText
+                android:id="@+id/editHuiSet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="22dp"
+                android:ems="10"
+                android:imeOptions="actionNext"
+                android:inputType="numberDecimal"
+                android:text="10"
+                android:textSize="@dimen/size25" />
+
+            <TextView
+                android:id="@+id/TextView09"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/humi_unit"
+                android:textSize="30sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="@string/monitorconfig_badlightnum"
+                android:textSize="@dimen/size25" />
+
+            <EditText
+                android:id="@+id/editbadlightnum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:ems="10"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal"
+                android:text="10"
+                android:textSize="@dimen/size25" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="0.03"
+                android:text="@string/numberunit"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

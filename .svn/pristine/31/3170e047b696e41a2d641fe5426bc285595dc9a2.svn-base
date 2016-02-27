@@ -1,0 +1,148 @@
+/*
+   * 文件名 SendCardActivity.java
+   * 包含类名列表com.szaoto.ak10.configuration
+   * 版本信息，版本号
+   * 创建日期2014年1月8日下午2:13:32
+   * 版权声明 liangdb-szaoto
+*/
+package com.szaoto.ak10.configuration;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.szaoto.ak10.Ak10Application;
+import com.szaoto.ak10.R;
+import com.szaoto.ak10.commsdk.SerialPortControlBroadCast;
+import com.szaoto.ak10.datacomm.InterfaceComm;
+import com.szaoto.ak10.sqlitedata.InterfaceDB;
+import com.szaoto.ak10.sqlitedata.IntfData;
+
+/*
+ * 类名        SendCardActivity
+ * 主要功能 发送卡配置界面
+ * 修改者，修改日期，修改内容
+ */
+public class SendCardSetupActivity extends Activity implements OnClickListener{
+
+	
+
+	
+	 TextView tvCutOffsetX;          //裁剪偏移量x
+	 TextView tvCutOffsetY;          //裁剪偏移量y
+	 EditText tv_cut_OffsetxValue;   //裁剪偏移量x值
+	 EditText tv_cut_OffsetyValue;   //裁剪偏移量y值
+	 TextView tv_Send_Cardwidth;     //发送卡分辨率宽度
+	 TextView tv_Send_Cardheight;    //发送卡分辨率宽度
+	 EditText et_Sendcard_width;
+	 EditText et_Sendcard_height;
+	 Button btn_ensure;
+	 Button btn_Cancel;
+	 Button btn_ReadVersion;
+	 TextView txt_version;
+
+	 TextView activityNameTextView;
+	 
+	 int m_id;
+	 int g_ledid;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+	//	DataAccessSendCardsData;
+		
+		SerialPortControlBroadCast.mCurrentContext = this;
+		setContentView(R.layout.leddisplay_send_cardset);
+		initView();
+		Bundle bundle = this.getIntent().getExtras(); 
+
+		m_id = bundle.getInt("id");
+		g_ledid =  Ak10Application.gLedid;
+		
+		LoadDataFromDb(m_id);
+		
+		IntfData tInterfData = InterfaceDB.GetRecordById(m_id, g_ledid);	
+		String strVersion = InterfaceComm.GetSndCardSoftwareVersion(tInterfData.macaddress);
+		if (strVersion!=null) {
+			txt_version.setText(strVersion);
+		}
+
+		activityNameTextView.setText(getString(R.string.tv_send_card)+ m_id/1000 + "_"+m_id%1000);
+	}
+
+
+
+	private void initView() {
+		tv_cut_OffsetxValue = (EditText) findViewById(R.id.tv_cut_Offsetx);
+		tv_cut_OffsetyValue = (EditText) findViewById(R.id.tv_cut_Offsety);
+
+		et_Sendcard_width = (EditText) findViewById(R.id.Sp_sendcard_w);
+		et_Sendcard_height = (EditText) findViewById(R.id.Sp_sendcard_h);
+		activityNameTextView = (TextView)findViewById(R.id.tv_sendcard_set);
+		txt_version = (TextView) findViewById(R.id.txtReadVersion);
+		
+
+		btn_ensure = (Button) findViewById(R.id.btn_ensure); 
+		btn_Cancel = (Button) findViewById(R.id.btn_Cancel); 
+
+		btn_ensure.setOnClickListener(this);
+		btn_Cancel.setOnClickListener(this);	
+	}
+
+
+	private void LoadDataFromDb(int id)
+	{
+		
+		IntfData tInterfData = InterfaceDB.GetRecordById(id, g_ledid);
+		
+		tv_cut_OffsetxValue.setText(String.valueOf(tInterfData.offsetX));
+		tv_cut_OffsetyValue.setText(String.valueOf(tInterfData.offsetY));
+		et_Sendcard_width.setText(String.valueOf(tInterfData.width));
+		et_Sendcard_height.setText(String.valueOf(tInterfData.height));
+		
+		
+	}
+
+
+	@Override
+	public void onClick(View v) {
+       switch (v.getId()) {
+	case R.id.btn_ensure:
+	   
+		String strX = tv_cut_OffsetxValue.getText().toString();
+		String strY = tv_cut_OffsetyValue.getText().toString();
+		String strW = et_Sendcard_width.getText().toString();
+		String strH = et_Sendcard_height.getText().toString();
+		
+		if(strX.equals("")||strX.equals("")||strW.equals("")||strH.equals(""))
+		{
+			 Toast.makeText(this,getString(R.string.offsetnull), Toast.LENGTH_SHORT).show();
+			 return;
+		}
+		
+		
+		InterfaceDB.UpdateInterfacePosParam(m_id, Integer.valueOf(strX), 
+				Integer.valueOf(strY),Integer.valueOf(strW), Integer.valueOf(strH), g_ledid);
+		
+	    finish();
+	    break;
+	case R.id.btn_Cancel:
+		finish();
+		break;
+		
+
+
+	default:
+		break;
+	}
+		
+		
+	}
+
+}

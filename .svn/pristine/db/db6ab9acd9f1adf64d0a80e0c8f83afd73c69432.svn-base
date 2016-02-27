@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="HardcodedText,ButtonStyle,UselessParent" >
+
+    
+    <LinearLayout 
+        android:layout_alignParentRight="true"
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/custom_bg"
+        android:orientation="vertical"
+        >
+        
+    <Button
+        android:id="@+id/btn_send_cabinet"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="0dp"
+         android:layout_gravity="left"
+        android:text="@string/leddisplay_send_cabinetparameter" />
+
+    <Button
+        android:id="@+id/btn_save_cabinet_parameter"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="left"
+        android:text="@string/leddisplay_save_cabinetparameter" />
+
+    
+    <Button
+        android:id="@+id/btn_show_line"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="0dp"
+        android:layout_gravity="left"
+        android:text="@string/leddisplay_hide_connection" />
+
+     </LinearLayout>
+</RelativeLayout>

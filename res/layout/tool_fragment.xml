@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:ignore="HardcodedText,ButtonStyle,UselessParent,UseCompoundDrawables,DisableBaselineAlignment,NestedWeights,ContentDescription,UselessLeaf,DuplicateIds" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/custom_bg" >
+
+        <LinearLayout
+            android:id="@+id/layout_tool1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                    android:id="@+id/textZoomin"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/text_zoomin"
+                    android:drawableTop="@drawable/selector_zoomin"
+                    android:textSize="@dimen/size15" />
+ 
+             <TextView
+                    android:id="@+id/textZoomnormal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/text_zoomnormal"
+                    android:drawableTop="@drawable/selector_zoom1"
+                    android:textSize="@dimen/size15" />
+
+              <TextView
+                    android:id="@+id/textZoomout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/text_zoomout"
+                    android:drawableTop="@drawable/selector_zoomout"
+                    android:textSize="@dimen/size15" />
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_tool2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:visibility="gone"
+             >
+
+            <LinearLayout
+                android:id="@+id/channel_toolsave"
+                style="@style/main_tab_but_linear"
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                 >
+
+                <Button
+                    android:id="@+id/btn_tool_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                  android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_tool_save" />
+
+                <TextView
+                    android:id="@+id/texttoolsave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                     android:layout_gravity="center_horizontal"
+                    android:text="@string/cabinet_save_text"
+                    android:textSize="@dimen/size15" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_tool_del"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+             <TextView
+                 android:id="@+id/texttooldelete"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center"
+                 android:gravity="center_horizontal"
+                 android:layout_weight="0.99"
+                 android:drawableTop="@drawable/selector_tool_delete"
+                 android:text="@string/cabinet_del_text"
+                 android:textSize="@dimen/size15" />
+      
+             <TextView
+                    android:id="@+id/texttoolsetting"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                     android:gravity="center"
+                     android:layout_gravity="center"
+                    android:text="@string/tool_setting_text"
+                    android:drawableTop="@drawable/selector_settings"
+                    android:textSize="@dimen/size15" />
+             
+             <TextView
+                    android:id="@+id/texttoolvideoscale"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:text="@string/scaleset"
+                    android:drawableTop="@drawable/selector_settings"
+                    android:textSize="@dimen/size15" />
+   
+              <TextView
+                    android:id="@+id/texttoolconnect"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/tool_goto_connect"
+                    android:drawableTop="@drawable/selector_turn_into_con"
+                    android:textSize="@dimen/size15" />
+           
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_tool3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/texttool_show"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.35"
+                android:drawableTop="@drawable/selector_lable_show"
+                android:gravity="center"
+                android:text="@string/tool_Edit"
+                android:textSize="@dimen/size15" />
+  
+             <TextView
+                 android:id="@+id/texttool_lock"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1"
+                 android:layout_gravity="center_horizontal"
+                 android:gravity="center"
+                 android:drawableTop="@drawable/unlock"
+                 android:text="@string/tool_lock"
+                 android:textSize="@dimen/size15" />
+
+               <TextView
+                   android:id="@+id/showall"
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                     android:gravity="center"
+                    android:drawableTop="@drawable/selector_fit_screen"
+                   android:text="@string/text_showall"
+                   android:textSize="@dimen/size15" />
+
+                <TextView
+                    android:id="@+id/texttool_full"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                     android:layout_gravity="center_horizontal"
+                      android:gravity="center"
+                     android:drawableTop="@drawable/selector_fullscreen"
+                    android:text="@string/text_fullscreen"
+                    android:textSize="@dimen/size15" />
+        
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

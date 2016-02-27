@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@color/common_bg"
+	>
+
+    <RelativeLayout
+        android:id="@+id/Layout_PlayerListTool"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"
+       android:background="@drawable/button_bg" 
+         >
+
+        <Button
+            android:id="@+id/btn_AddProgram"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:text="@string/log_player_add"
+            android:background="@drawable/button_selector"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/btn_EditProgram"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:text="@string/log_player_edit"
+             android:background="@drawable/button_selector"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+         android:background="#576572" 
+        android:layout_below="@+id/Layout_PlayerListTool" >
+
+        <com.szaoto.ak10.custom1.DragListView2
+            android:id="@+id/del_win_show_all"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:listSelector="@drawable/listview_item_bk" >
+        </com.szaoto.ak10.custom1.DragListView2>
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+                     >
+
+        </ListView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

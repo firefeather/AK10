@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText,SpUsage,UselessLeaf" >
+
+    <RelativeLayout
+        android:id="@+id/layout_sys_top"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/common_bg"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/system_set"
+            style="@style/main_tab_but_linear"
+            android:layout_width="150dp" >
+
+            <TextView
+                android:id="@+id/sytemt_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="@string/syst_config"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size30" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_syt_back"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_toLeftOf="@+id/text_systemtback"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/selector_tool_back" />
+         <TextView
+                android:id="@+id/text_systemtback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/cabinet_back_text"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="8dp"
+                android:textSize="@dimen/size25" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/layout_sys_top"
+        android:layout_marginTop="0dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+             >
+
+            <TextView
+                android:id="@+id/uicontroltextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@anim/shape"
+                android:padding="5dp"
+                android:gravity="center"
+                android:text="@string/sytem_ui_control"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+           android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            
+            >
+
+            <TextView
+                android:id="@+id/systempassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@anim/shape"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/sytem_password"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            
+             >
+
+            <TextView
+                android:id="@+id/systemsecurity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@anim/shape"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/sytem_security"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            
+             >
+
+            <TextView
+                android:id="@+id/systemdignose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@anim/shape"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/system_diagnosis"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            
+             >
+
+            <TextView
+                android:id="@+id/ethrenetsetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@anim/shape"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/system_network_config"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            
+            >
+
+            <TextView
+                android:id="@+id/systemreset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@anim/shape"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/system_reset"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+             >
+
+            <TextView
+                android:id="@+id/systemupdate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@anim/shape"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/system_update"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+             >
+
+            <TextView
+                android:id="@+id/languagesetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@anim/shape"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/system_language"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_marginRight="54dp"
+        android:layout_marginTop="42dp"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_below="@+id/layout_sys_top"
+        android:layout_toRightOf="@+id/linearLayout1" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="10dp"
+            android:background="@anim/shape"
+            >
+
+        </android.support.v4.view.ViewPager>
+    </RelativeLayout>
+
+</RelativeLayout>

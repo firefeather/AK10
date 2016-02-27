@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginRight="0dp"
+        android:background="#3E3D43"
+        tools:ignore="UselessParent" >
+
+        <ImageButton
+            android:id="@+id/btn_Stop"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="20dp"
+            android:background="#00000000"
+            
+            android:src="@drawable/stop"
+            tools:ignore="ContentDescription" />
+        <ImageButton
+            android:id="@+id/btn_Play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/btn_Stop"
+            android:background="#00000000"
+            android:src="@drawable/play"
+            tools:ignore="ContentDescription" />
+        <ImageButton
+            android:id="@+id/btn_pause"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/btn_Play"
+            android:background="#00000000"
+            android:src="@drawable/pause"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_Elapsed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:layout_centerVertical="true"
+             android:layout_toRightOf="@+id/btn_pause"
+             android:layout_marginLeft="12dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="30sp"
+            tools:ignore="HardcodedText" />
+
+        <ImageButton
+            android:id="@+id/btn_PlayerList"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="#00000000"
+            android:src="@drawable/list"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_Total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/btn_PlayerList"
+            android:text="30:00"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="30sp"
+            tools:ignore="HardcodedText" />
+
+        <SeekBar
+            android:id="@+id/seekBar_Progress"
+            android:layout_width="500dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_Elapsed"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@id/tv_Total" />
+
+    </RelativeLayout>
+
+</LinearLayout>

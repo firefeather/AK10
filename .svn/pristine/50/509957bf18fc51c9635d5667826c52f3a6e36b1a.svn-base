@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.szaoto.ak10"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name="com.szaoto.ak10.Ak10Application"
+        android:allowBackup="true"
+        android:icon="@drawable/ak10_lancher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" >
+
+        <!-- android:name="com.szaoto.ak10.HomePageActivity" -->
+        <activity
+            android:name=".HomePageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="com.szaoto.ak10.leddisplay.MyAdmin" >
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/my_admin" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.szaoto.ak10.ExternalStorageService" >
+        </service>
+        <service android:name="com.szaoto.ak10.PannelButtonDownService" >
+        </service>
+        <service android:name="com.szaoto.ak10.SocketCommService" >
+        </service>
+
+        <activity android:name="com.szaoto.ak10.configuration.Acquisition2SendCardActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.configuration.AcquisitionCardActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.configuration.SendCardActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.configuration.SystemCardActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.configuration.SetVideoScaleActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.configuration.AcqCardSetupActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.configuration.SendCardSetupActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.configuration.SystemCardSetupActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.systemconfig.SystemConfigActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.systemconfig.SysConfigActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.systemconfig.LanguageSetFragment" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.configuration.SystemActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.colortemp.ColorTempSetActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.gamma.GammaSetActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.control.ControlActivity" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.leddisplay.CabinetAddActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.leddisplay.CabinetInfomationActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.leddisplay.CabinetLibraryActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.leddisplay.ConnChartActivity" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.common.GroupChannel.GroupChannelActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.common.GroupChannel.GroupManageActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.leddisplay.LedDisplayActivity_old" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.leddisplay.LedSelActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.leddisplay.LedConstructActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.leddisplay.LedDisplayFullScreenActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.leddisplay.LedDisplayScreenResolutionSet" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.monitor.MonitorActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.monitor.MonitorConfigActivity" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.player.PlayerActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.player.AddPlayList"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.player.EditActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.player.EditPlaylist" >
+        </activity>
+        <activity
+            android:name="com.szaoto.ak10.player.PlayerConfigActivity"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.test.TestActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.test.TestConfigActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.util.CommunicateDebugActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.ModelActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.ScanCardInfoActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.MonitorCardActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.systemconfig.SysUpdateSelActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.leddisplay.CabinetSelectActivity" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.leddisplay.CabinetLibraryManage" >
+        </activity>
+        <activity android:name="com.szaoto.ak10.leddisplay.CabinetManageActivity" >
+        </activity>
+
+    </application>
+
+</manifest>

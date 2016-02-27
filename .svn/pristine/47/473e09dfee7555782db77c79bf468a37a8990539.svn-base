@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/custom_bg"
+    tools:ignore="UselessParent,HardcodedText,ButtonStyle,SpUsage,UnknownIdInLayout,UnknownId" >
+
+<RelativeLayout
+        android:id="@+id/layout_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+         >
+
+        <TextView
+            android:id="@+id/text_led_groupchannel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:textColor="@color/white"
+            android:layout_alignParentLeft="true"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/textView_ch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:text="@string/btn_group_channel"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size25" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/group_channel_top"
+        android:layout_width="fill_parent"
+        android:layout_height="70dp" 
+        android:layout_below="@+id/layout_text"
+        android:background="@drawable/title_tool_bg"
+        > 
+        <TextView
+            android:id="@+id/tvGroupName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/white"
+            android:text="@string/btn_channel_group"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textSize="@dimen/size20"
+            />
+        
+        <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="match_parent"
+	        android:gravity="right|center" 
+        > 
+        
+        <TextView
+            android:id="@+id/txt_groupmanage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:drawableLeft="@drawable/selector_gpmanage"
+            android:text="@string/group_channel_manage"
+            android:layout_marginRight="15dp"
+            android:textSize="@dimen/size20" />
+        
+        <TextView
+                android:id="@+id/text_cabinettback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cabinet_back_text"
+                android:drawableLeft="@drawable/selector_tool_back"
+                android:layout_marginRight="5dp"
+                android:gravity="center"
+                android:textSize="@dimen/size20" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/switchChannel"
+        android:layout_width="220dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/group_channel_top"
+         android:background="@anim/shape"
+        android:orientation="vertical" >
+
+        <ListView
+            android:id="@+id/list_group_left"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/groupAdd"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/group_channel_top"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/switchChannel"
+        android:background="@anim/shape"
+        android:orientation="vertical"
+        tools:ignore="UnknownId" >
+
+        <ListView
+            android:id="@+id/list_group_channel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+        
+
+    </LinearLayout>
+
+
+</RelativeLayout>

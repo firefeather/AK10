@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+     android:background="@drawable/common_bg"
+    tools:context=".player.EditActivity" >
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp" >
+
+        <TextView
+            android:id="@+id/tvMessageAuto"
+             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/Edit_Play_list"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size" />
+
+        <Button
+            android:id="@+id/btnOK"
+                  android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/button_selector"
+            android:text="@string/btn_ok"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btn_DeleAll"
+              android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+             android:background="@drawable/button_selector"
+                    
+            android:text="@string/btn_Delete_All"
+            android:textColor="@color/white"
+             />
+
+        <TextView
+            android:id="@+id/tv_SeptalLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignBottom="@+id/btn_DeleAll"
+            android:background="#F0FFF0" />
+    </RelativeLayout>
+
+    <com.szaoto.ak10.custom1.DragListView2
+        android:id="@+id/DragListView2_edit"
+        android:layout_width="fill_parent"
+        android:layout_height="650dp"
+        android:cacheColorHint="#00000000"
+        android:listSelector="#00000000"
+        android:textColor="@color/white" >
+
+    </com.szaoto.ak10.custom1.DragListView2>
+
+</LinearLayout>

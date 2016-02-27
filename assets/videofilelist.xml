@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VideoFileList>
+	<VideoFile id="7dd8dbf7-14e3-4f31-813c-6fe02ee919be">
+		<id>1</id>
+		<fileName>Picture_A_SleepSoundly.jpg</fileName>
+		<filePath>/mnt/sdcard/Pictures/Picture_A_SleepSoundly.jpg</filePath>
+		<imagePath>/mnt/sdcard/Pictures/Picture_A_SleepSoundly.jpg</imagePath>
+		<duration>10</duration>
+		<specialEffect>0</specialEffect>
+	</VideoFile>
+	<VideoFile id="b272d375-4442-4c96-9d6d-c9d2a78a08b2">
+		<id>2</id>
+		<fileName>Picture_B_BeautifullBird.jpg</fileName>
+		<filePath>/mnt/sdcard/Pictures/Picture_B_BeautifullBird.jpg</filePath>
+		<imagePath>/mnt/sdcard/Pictures/Picture_B_BeautifullBird.jpg
+		</imagePath>
+		<duration>10</duration>
+		<specialEffect>3</specialEffect>
+	</VideoFile>
+	<VideoFile id="e086633c-8778-4ecc-9d82-9ae1a0ade637">
+		<id>3</id>
+		<fileName>Picture_C_Shanghai.jpg</fileName>
+		<filePath>/mnt/sdcard/Pictures/Picture_C_Shanghai.jpg</filePath>
+		<imagePath>/mnt/sdcard/Pictures/Picture_C_Shanghai.jpg</imagePath>
+		<duration>10</duration>
+		<specialEffect>2</specialEffect>
+	</VideoFile>
+	
+</VideoFileList>

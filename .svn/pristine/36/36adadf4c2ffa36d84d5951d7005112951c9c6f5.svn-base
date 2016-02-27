@@ -1,0 +1,363 @@
+package com.szaoto.ak10.leddisplay;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.xmlpull.v1.XmlPullParser;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Xml;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.szaoto.ak10.R;
+import com.szaoto.ak10.common.GroupChannel.GroupManageActivity;
+import com.szaoto.ak10.common.GroupChannel.GroupManageActivity.GroupListAdapter;
+import com.szaoto.ak10.common.GroupChannel.GroupManageActivity.GroupListAdapter.ListGroupView;
+import com.szaoto.ak10.dataaccess.DataAccessCabinetLibrary;
+import com.szaoto.ak10.entity.CabinetSeries;
+import com.szaoto.ak10.entity.CabinetXml;
+import com.szaoto.ak10.sqlitedata.ChanGroupDb;
+import com.szaoto.ak10.treeview.TreeElement;
+import com.szaoto.ak10.treeview.TreeElementParser;
+import com.szaoto.ak10.treeview.TreeView;
+import com.szaoto.ak10.treeview.TreeViewAdapter;
+import com.szaoto.ak10.treeview.TreeView.LastLevelItemClickListener;
+/**
+ * 类名CabinetLibraryManage
+ * 
+ * 主要功能:箱体库管理,箱体系列文件增删改
+ * 创建日期2015年5月28日
+ * 修改日期，修改内容
+ * 作者 :zhangsj
+ */
+public class CabinetLibraryManage extends Activity {
+
+	TextView btn_Ensure;
+	private ListView listview_CabinetLib;
+	public static String CONFIG_PATH;
+	List<CabinetSeries> CabinetSeriesList;
+	List<CabinetXml> CabinetList;
+	
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_cabinet_library_manage);
+		initView();
+		try {
+			TreeViewLoadData();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	// 加载树视图数据
+		private void TreeViewLoadData() throws Exception {
+			 ReadXmlFileData();
+			 UpdateTreeViewData();
+			}
+		
+		public void ReadXmlFileData() throws FileNotFoundException, Exception {
+			InputStream inSeries;   //箱体系列
+			InputStream inCabinet; //箱体文件
+			CONFIG_PATH = this.getFilesDir() + "//config//";
+			// File xmlSeries= new File("/mnt/usb/","CabinetSeries.cbs");
+			// inSeries = new FileInputStream(xmlSeries);
+			// File xmlCabinet= new File("/mnt/usb/","Cabinet.cbt");
+			File xmlSeries = new File(CONFIG_PATH, "CabinetSeries.cbs");
+			inSeries = new FileInputStream(xmlSeries); //箱体系列文件
+			File xmlCabinet = new File(CONFIG_PATH, "Cabinet.cbt");
+			inCabinet = new FileInputStream(xmlCabinet); //箱体文件
+			if (!xmlSeries.exists()||!xmlCabinet.exists()) {
+				Toast.makeText(getApplication(), R.string.btn_cbsdata_sync, 200).show();
+			}
+			CabinetList = pullXmlToCabinetList(inCabinet);  //解析箱体箱体文件
+			CabinetSeriesList = pullXmlToCabinetSeriesList(inSeries); //解析箱体系列
+		}
+		
+	private void initView() {
+		btn_Ensure=(TextView) findViewById(R.id.btncabinetlibOK);
+		listview_CabinetLib=(ListView) findViewById(R.id.listview_cabinetserieslib);
+		btn_Ensure.setOnClickListener(ClickHandler);
+		
+	}
+	View.OnClickListener ClickHandler= new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btncabinetlibOK:
+			startActivity(new Intent(CabinetLibraryManage.this, CabinetLibraryActivity.class));
+			finish();
+			break;
+
+		default:
+			break;
+		}
+			
+		}
+	};
+	private CabinetListAdapter mCabinetLibData;
+	// 解析箱体系列xml文件
+	private List<CabinetSeries> pullXmlToCabinetSeriesList(InputStream in)
+			throws Exception {
+		List<CabinetSeries> list = null; // 定义要显示的箱体系列集合
+		CabinetSeries cabinetSeries = null; // 初始化箱体系列
+		// 穿件解析实例
+		XmlPullParser parser = Xml.newPullParser();
+		// 设置输入流并指明编码
+		parser.setInput(in, "UTF-8");
+		int eventType = parser.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			switch (eventType) {
+			case XmlPullParser.START_DOCUMENT:
+				System.out.println("开始从头文件解析");
+				list = new ArrayList<CabinetSeries>();
+				break;
+			// 判断是否为标签开始元素
+			case XmlPullParser.START_TAG:
+				if (parser.getName().equals("CabinetSeries")) {
+					cabinetSeries = new CabinetSeries();
+				} else if (parser.getName().equals("ID")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					// cabinetSeries.setcID(Integer.parseInt(parser.getText()));
+					cabinetSeries.setID(Integer.parseInt(parser.getText()));
+				} else if (parser.getName().equals("ParentID")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					// cabinet.setSeriesID(Integer.parseInt(parser.getText()));
+					cabinetSeries.setParentID(Integer.parseInt(parser.getText()));
+				} else if (parser.getName().equals("name")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					// cabinet.setcName(parser.getText());
+					cabinetSeries.setName(parser.getText());
+				}
+				break;
+			case XmlPullParser.END_TAG:
+				if (parser.getName().equals("CabinetSeries")) { // 判断结束标签元素是否是CabinetSeries
+					list.add(cabinetSeries); // 将cabinetSeries添加到CabinetSeries集合
+					cabinetSeries = null;
+				}
+				break;
+			}
+			// 进入下一个元素并触发相应事件
+			eventType = parser.next();
+		}
+		return list;
+	}
+	// 解析箱体文件
+	private List<CabinetXml> pullXmlToCabinetList(InputStream in) throws Exception {
+		List<CabinetXml> list = null; // 定义要显示的箱体集合
+		CabinetXml cabinet = null; // 初始化箱体
+		// 创建解析实例
+		XmlPullParser parser = Xml.newPullParser();
+		// 设置输入流并指明编码
+		parser.setInput(in, "UTF-8");
+		int eventType = parser.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			switch (eventType) {
+			// 判断是否为文档开始
+			case XmlPullParser.START_DOCUMENT:
+				System.out.println("开始从头文件解析");
+				list = new ArrayList<CabinetXml>();
+				break;
+			// 判断是否为标签开始元素
+			case XmlPullParser.START_TAG:
+				if (parser.getName().equals("Cabinet")) {
+					cabinet = new CabinetXml();
+				} else if (parser.getName().equals("ID")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					cabinet.setnID(Integer.parseInt(parser.getText()));
+				} else if (parser.getName().equals("SeriesID")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					cabinet.setnSeriesID(Integer.parseInt(parser.getText()));
+				} else if (parser.getName().equals("Name")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					cabinet.setsName(parser.getText());
+				}
+				break;
+			case XmlPullParser.END_TAG:
+				if (parser.getName().equals("Cabinet")) { // 判断结束标签元素是否是Cabinet
+					list.add(cabinet); // 将cabinet添加到Cabinet集合
+					cabinet = null;
+				}
+				break;
+			}
+			// 进入下一个元素并触发相应事件
+			eventType = parser.next();
+		}
+		return list;
+	}
+	public void UpdateTreeViewData() {
+//		treeView = (TreeView) findViewById(R.id.tree_view);
+		// 填充的数据源,分别是箱体系列所对应的箱体文件
+		ArrayList<String> treeElementsString =(ArrayList<String>) DataAccessCabinetLibrary.getCabinetSeriseNames(0);
+		// 解析读出的文件内容
+		mCabinetLibData = new CabinetListAdapter(this, treeElementsString);
+		listview_CabinetLib.setAdapter(mCabinetLibData);
+		mCabinetLibData.notifyDataSetChanged();
+		
+	}
+
+	//箱体库管理adapter
+		public class CabinetListAdapter extends BaseAdapter {
+			private Context context;
+			private ArrayList<String> listItems;
+			private LayoutInflater listContainer;
+			private ListCbsView listItemView;
+
+			public CabinetListAdapter(CabinetLibraryManage groupactivity,ArrayList<String> tGroupsData) {
+				super();
+				this.context = groupactivity;
+				listContainer = LayoutInflater.from(context);
+				this.listItems = tGroupsData;
+			}
+
+			public CabinetListAdapter(Context application,	ArrayList<String> tGroupsData) {
+				this.context = application;
+				listContainer = LayoutInflater.from(context); // 创建视图容器并设置上下文
+				this.listItems = tGroupsData;
+			}
+
+			@Override
+			public int getCount() {
+				// TODO Auto-generated method stub
+				return listItems.size();
+			}
+
+			@Override
+			public Object getItem(int position) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public long getItemId(int position) {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			@Override
+			public View getView(final int position, View convertView, ViewGroup parent) {
+				// 自定义视图
+				listItemView = null;
+				if (convertView == null) {
+					listItemView = new ListCbsView();
+					// 获取list_item布局文件的视图
+					convertView = listContainer.inflate(R.layout.cabinetseries_list, null);
+					// 群组名称控件
+					listItemView.tCbseriesName = (TextView) convertView.findViewById(R.id.cbs_list_item_text1);
+					listItemView.btnDeleteCbs = (Button) convertView.findViewById(R.id.btnDelCbsFile);	
+					// 设置控件集到convertView
+					convertView.setTag(listItemView);
+				} else {
+					listItemView = (ListCbsView) convertView.getTag();
+				}
+				// 设置文字
+				listItemView.tCbseriesName.setText((String) listItems.get(position));
+				
+				listItemView.btnDeleteCbs.setOnClickListener(new OnClickListener() {
+						
+							@Override
+							public void onClick(View v) {
+								
+								new AlertDialog.Builder(CabinetLibraryManage.this)
+								/* 弹出窗口的最上头文字 */
+								.setTitle(R.string.btn_cbsdata_del)
+								/* 设置弹出窗口的图式 */
+								.setIcon(android.R.drawable.ic_dialog_info)
+								/* 设置弹出窗口的信息 */
+								.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+									List<String> nSeriesId;
+
+									public void onClick(DialogInterface dialoginterface, int i) {
+										
+//										String strCabsNameString = (String) listItemView.tCbseriesName.getText();
+										String strCabinetseries=listItems.get(position);
+//										CabinetXml strCabinetName=CabinetList.get(position);
+										// 从xml文件根据箱体系列名称删除箱体系列	
+										nSeriesId=DataAccessCabinetLibrary.getCabinetSeriseID(0);
+										int serid = Integer.parseInt(nSeriesId.get(position)); 
+										DataAccessCabinetLibrary.RemoveCabinetSerise(strCabinetseries);
+										DataAccessCabinetLibrary.RemoveCabinetBySeriesId(serid);
+										/*
+										 * 出现问题，系列和箱体分别是2个不同的xml文件，
+										 * 删除系列时，并没有删除系列下的箱体
+										 */
+										UpdateTreeViewData();
+									}
+								})
+								.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() { /* 设置跳出窗口的返回事件 */
+									public void onClick(DialogInterface dialoginterface, int i) {
+										
+									}
+								}).show();
+							}
+						});
+				
+				    convertView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						String CBseries=(String)listItems.get(position);
+							
+						ModifyDialogShow(CBseries);
+					}
+				});
+				return convertView;
+			}
+			public class ListCbsView {
+				public TextView tCbseriesName;
+				public Button   btnDeleteCbs;
+			}
+		}
+		//修改箱体系列名称
+		protected void ModifyDialogShow(final String strCbtSeriesName) {
+
+			LayoutInflater inflater = (LayoutInflater) CabinetLibraryManage.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.input_edit, null);
+			final EditText  EditCabinetSeriesName= (EditText) layout.findViewById(R.id.input_edit_string);
+			EditCabinetSeriesName.setText(strCbtSeriesName);
+		
+			// 弹出的对话框
+			new AlertDialog.Builder(CabinetLibraryManage.this)
+					/* 弹出窗口的最上头文字 */
+					.setTitle(R.string.text_group_item_modify)
+					/* 设置弹出窗口的图式 */
+					.setIcon(android.R.drawable.ic_dialog_info)
+					/* 设置弹出窗口的信息 */
+					.setMessage(R.string.text_group_item_modify_content)
+					.setView(layout)
+					.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+				        @Override
+						public void onClick(DialogInterface dialog, int which) {					
+				        	EditCabinetSeriesName.setFocusable(true);
+				          	String seriesName=EditCabinetSeriesName.getText().toString();
+				        	DataAccessCabinetLibrary.ModifyCabinetSeriesName(strCbtSeriesName,seriesName);
+				        	UpdateTreeViewData();
+						}
+					})
+					.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() { /* 设置跳出窗口的返回事件 */
+						public void onClick(DialogInterface dialoginterface, int i) {
+
+						}
+					}).show();
+			
+		}
+}

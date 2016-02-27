@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/common_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@drawable/button_bg" >
+
+        <Button
+            android:id="@+id/btn_save_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_selector"
+            android:text="@string/btn_save_list" />
+
+        <Button
+            android:id="@+id/btn_back_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/button_back_selector"
+            android:text="@string/btn_back_list"
+            android:textColor="@color/white"
+            
+             />
+          <TextView
+            android:id="@+id/usbstates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/btn_back_list"
+            android:background="@drawable/button_bg" 
+            android:textSize="@dimen/size20"
+             android:textColor="@color/white"
+            />
+          <ImageView 
+            android:id="@+id/usbmounted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/usb_mounted"
+            android:layout_toRightOf="@id/usbstates"
+            android:visibility="invisible"
+            android:contentDescription="@string/app_name"
+              />
+
+        <TextView
+            android:id="@+id/tvMessageAuto"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/btn_back_list"
+            android:background="#C0C0C0" />
+
+        <Button
+            android:id="@+id/btn_SelectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:background="@drawable/button_selector"
+            android:text="@string/btn_SelectAll" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ListView
+            android:id="@+id/lv_add_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+             >
+        </ListView>
+    </RelativeLayout>
+
+</LinearLayout>

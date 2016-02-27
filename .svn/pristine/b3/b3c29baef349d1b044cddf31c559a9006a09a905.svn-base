@@ -1,0 +1,293 @@
+package com.szaoto.ak10.systemconfig;
+
+
+import com.szaoto.ak10.R;
+import com.szaoto.ak10.common.SystemConfig;
+import com.szaoto.ak10.commsdk.SerialPortControlBroadCast;
+import com.szaoto.ak10.dataaccess.DataAccessSystemConfig;
+
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+
+public class SysConfigActivity extends FragmentActivity{
+	//定义Fragment
+	NetWorkSettingFragment ethFragment = null;
+	LanguageSetFragment langsetFragment = null;
+//	SystemDiagnoseFragment sysdiagFragment = null;
+//	SystemPwdFragment syspwdFragment =null;
+//	SystemResetFragment sysrstFragment =null;
+//	SystemSecurityFragment systemSecurityFragment =null;
+	SystemUpgrateFragment  systemUpgrateFragment =null;
+	SysCfg3dFragment syscfg3DFragment = null;
+	UIControlFragment uictrlFragment = null;
+	
+	TextView txtTitle;
+	
+	public static  SystemConfig systemconfig = null;
+	
+	private RadioGroup mFunSelGroup;
+	
+	TextView btnBack;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.sysconfig);
+		SerialPortControlBroadCast.SetCurrentContext(this);
+		systemconfig = DataAccessSystemConfig.LoadSystemConfig();
+		txtTitle = (TextView) findViewById(R.id.systitle);
+		txtTitle.setText(R.string.sysupdate);
+		
+		initView();
+	}
+	
+	public void initView()
+	{
+		
+		btnBack = (TextView) findViewById(R.id.text_systemtback);
+		
+		btnBack.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+			     finish();	
+			}
+		});
+		
+		mFunSelGroup = (RadioGroup) findViewById(R.id.radio_funcsel);
+		
+		mFunSelGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup arg0, int checkedId) {
+				
+				switch (checkedId) {
+				
+		           case R.id.uicontrol:
+		       		if (uictrlFragment == null) {
+		       			uictrlFragment = new UIControlFragment();
+						// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+						addFragment(uictrlFragment);
+						showFragment(uictrlFragment);
+					} else {
+						if (uictrlFragment.isHidden()) {
+							showFragment(uictrlFragment);
+						}
+					}
+		       		txtTitle.setText(R.string.uicontrol);
+		       		
+		        	break;
+//		           case R.id.syspwd:
+//		        	   
+//			       		if (syspwdFragment == null) {
+//			       			syspwdFragment = new SystemPwdFragment();
+//							// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+//							addFragment(syspwdFragment);
+//							showFragment(syspwdFragment);
+//						} else {
+//							if (syspwdFragment.isHidden()) {
+//								showFragment(syspwdFragment);
+//							}
+//						}  
+//			       		txtTitle.setText(R.string.syspwd);
+//		        	   break;
+//		           case R.id.syssecurity:
+//		        	   
+//			       		if (systemSecurityFragment == null) {
+//			       			systemSecurityFragment = new SystemSecurityFragment();
+//							// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+//							addFragment(systemSecurityFragment);
+//							showFragment(systemSecurityFragment);
+//						} else {
+//							if (systemSecurityFragment.isHidden()) {
+//								showFragment(systemSecurityFragment);
+//							}
+//						}  
+//			       		txtTitle.setText(R.string.syssecurity);
+//			       		
+//		        	   break;
+//		           case R.id.sysdiag:
+//		        	   
+//			       		if (sysdiagFragment == null) {
+//			       			sysdiagFragment = new SystemDiagnoseFragment();
+//							// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+//							addFragment(sysdiagFragment);
+//							showFragment(sysdiagFragment);
+//						} else {
+//							if (sysdiagFragment.isHidden()) {
+//								showFragment(sysdiagFragment);
+//							}
+//						}  
+//			       		
+//			       		txtTitle.setText(R.string.sysdiag);
+//		        	   
+//		        	   break;
+//		           case R.id.network:
+//		        	   
+//			       		if (ethFragment == null) {
+//			       			ethFragment = new EthrenetSetFragment();
+//							// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+//							addFragment(ethFragment);
+//							showFragment(ethFragment);
+//						} else {
+//							if (ethFragment.isHidden()) {
+//								showFragment(ethFragment);
+//							}
+//						} 
+//		        	   
+//			       		txtTitle.setText(R.string.networksetting);
+//			       		
+//		        	   break;
+//		           case R.id.sysreset:
+//		        	   
+//			       		if (sysrstFragment == null) {
+//			       			sysrstFragment = new SystemResetFragment();
+//							// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+//							addFragment(sysrstFragment);
+//							showFragment(sysrstFragment);
+//						} else {
+//							if (sysrstFragment.isHidden()) {
+//								showFragment(sysrstFragment);
+//							}
+//						}
+//			       	  txtTitle.setText(R.string.sysreset);
+//		        	   break;
+		           case R.id.sysupdate:
+		        	   
+			       		if (systemUpgrateFragment == null) {
+			       			systemUpgrateFragment = new SystemUpgrateFragment();
+							// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+							addFragment(systemUpgrateFragment);
+							showFragment(systemUpgrateFragment);
+						} else {
+							if (systemUpgrateFragment.isHidden()) {
+								showFragment(systemUpgrateFragment);
+							}
+						}
+		        	   
+			       	 txtTitle.setText(R.string.sysupdate);
+		        	   
+		        	   break;
+		           case R.id.langsetting:
+		        	   
+			       		if (langsetFragment == null) {
+			       			langsetFragment = new LanguageSetFragment();
+							// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+							addFragment(langsetFragment);
+							showFragment(langsetFragment);
+						} else {
+							if (langsetFragment.isHidden()) {
+								showFragment(langsetFragment);
+							}
+						}
+			       	 txtTitle.setText(R.string.langsetting);
+		        	   break;
+		        	   
+		           case R.id.netsetting:
+		        	   
+		        	   if (ethFragment == null) {
+		        		   ethFragment = new NetWorkSettingFragment();
+		        		   // 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+		        		   addFragment(ethFragment);
+		        		   showFragment(ethFragment);
+		        	   } else {
+		        		   if (ethFragment.isHidden()) {
+		        			   showFragment(ethFragment);
+		        		   }
+		        	   }
+		        	   txtTitle.setText(R.string.networksetting);
+		        	   break;
+
+					case R.id.othersetting:
+			       		if (syscfg3DFragment == null) {
+			       			syscfg3DFragment = new SysCfg3dFragment();
+							// 判断当前界面是否隐藏，如果隐藏就进行添加显示，false表示显示，true表示当前界面隐藏
+							addFragment(syscfg3DFragment);
+							showFragment(syscfg3DFragment);
+						} else {
+							if (syscfg3DFragment.isHidden()) {
+								showFragment(syscfg3DFragment);
+							}
+						}   
+			       	 	txtTitle.setText(R.string.Tridsetting);
+			       	 	break;		   
+				}				
+			}
+		});	
+		
+		
+		if (systemUpgrateFragment == null) {
+			systemUpgrateFragment = new SystemUpgrateFragment();
+			addFragment(systemUpgrateFragment);
+			showFragment(systemUpgrateFragment);
+		} else {
+			showFragment(systemUpgrateFragment);
+		}
+
+	}
+	
+	/** 添加Fragment **/
+	public void addFragment(Fragment fragment) {
+		FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+		ft.add(R.id.show_layout, fragment);
+		ft.commit();
+	}
+
+	/** 删除Fragment **/
+	public void removeFragment(Fragment fragment) {
+		FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+		ft.remove(fragment);
+		ft.commit();
+	}
+
+	/** 显示Fragment **/
+	public void showFragment(Fragment fragment) {
+		FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+		// 设置Fragment的切换动画
+		ft.setCustomAnimations(R.anim.cu_push_right_in, R.anim.cu_push_left_out);
+
+		// 判断页面是否已经创建，如果已经创建，那么就隐藏掉
+		if (ethFragment != null) {
+			ft.hide(ethFragment);
+		}
+		if (langsetFragment != null) {
+			ft.hide(langsetFragment);
+		}
+//		if (sysdiagFragment != null) {
+//			ft.hide(sysdiagFragment);
+//		}
+//		if (syspwdFragment != null) {
+//			ft.hide(syspwdFragment);
+//		}
+//		if (sysrstFragment != null) {
+//			ft.hide(sysrstFragment);
+//		}
+//
+//		if (systemSecurityFragment != null) {
+//			ft.hide(systemSecurityFragment);
+//		}
+		if (systemUpgrateFragment != null) {
+			ft.hide(systemUpgrateFragment);
+		}
+		if (syscfg3DFragment != null) {
+			ft.hide(syscfg3DFragment);
+		}
+		if (uictrlFragment != null) {
+			ft.hide(uictrlFragment);
+		}
+
+		ft.show(fragment);
+		ft.commitAllowingStateLoss();
+	}
+	
+}

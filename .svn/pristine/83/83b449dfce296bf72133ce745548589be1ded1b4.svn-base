@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLFile class="com.szaoto.ak10.common.Display.ColTempModules">
+ <default>
+	<ListColTempModule>
+		<listmember1 DisplayID="1" >
+		     <ListColTemp>
+		         <listmember2 id="0" m_nColorTemperature="2800K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="1" m_nColorTemperature="3200K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="2" m_nColorTemperature="4500K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="3" m_nColorTemperature="5000K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="4" m_nColorTemperature="5600K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="5" m_nColorTemperature="6500K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="6" m_nColorTemperature="8000K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="7" m_nColorTemperature="9300K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		      </ListColTemp>
+		 </listmember1> 
+		 <listmember1 DisplayID="2" >
+		       <ListColTemp>
+		          <listmember2 id="0" m_nColorTemperature="2800K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="1" m_nColorTemperature="3200K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="2" m_nColorTemperature="4500K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="3" m_nColorTemperature="5000K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="4" m_nColorTemperature="5600K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="5" m_nColorTemperature="6500K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="6" m_nColorTemperature="8000K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="7" m_nColorTemperature="9300K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		       </ListColTemp>
+		 </listmember1>
+		 <listmember1 DisplayID="3" >
+		     <ListColTemp>
+		         <listmember2 id="0" m_nColorTemperature="2800K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="1" m_nColorTemperature="3200K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="2" m_nColorTemperature="4500K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="3" m_nColorTemperature="5000K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="4" m_nColorTemperature="5600K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="5" m_nColorTemperature="6500K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="6" m_nColorTemperature="8000K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		         <listmember2 id="7" m_nColorTemperature="9300K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		      </ListColTemp>
+		 </listmember1> 
+		 <listmember1 DisplayID="4" >
+		       <ListColTemp>
+		          <listmember2 id="0" m_nColorTemperature="2800K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="1" m_nColorTemperature="3200K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="2" m_nColorTemperature="4500K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="3" m_nColorTemperature="5000K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="4" m_nColorTemperature="5600K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="5" m_nColorTemperature="6500K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="6" m_nColorTemperature="8000K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		          <listmember2 id="7" m_nColorTemperature="9300K" m_bEnable="1" nRed="256" nGreen="256" nBlue="256" nICRed="171" nICGreen="171" nICBlue="171" nRedLow="256" nGreenLow="256" nBlueLow="256" nICRedLow="171" nICGreenLow="171" nICBlueLow="171" />
+		       </ListColTemp>
+		 </listmember1>
+	</ListColTempModule>
+  </default>
+</XMLFile>

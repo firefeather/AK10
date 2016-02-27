@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <FrameLayout
+            android:id="@+id/control"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <com.szaoto.ak10.custom.Win8ImageView
+                android:id="@+id/homecontrol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/module_control" />
+
+            <TextView
+                android:id="@+id/controltext"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:paddingLeft="180dp"
+                android:paddingTop="30dp"
+                android:text="@string/text_control"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size30" 
+                android:textStyle="bold"
+                />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <com.szaoto.ak10.custom.Win8ImageView
+                android:id="@+id/hometest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/module_test" />
+
+            <TextView
+                android:id="@+id/testtext"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:paddingLeft="220dp"
+                android:paddingTop="30dp"
+                android:text="@string/text_test"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size30" 
+                android:textStyle="bold"
+                />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/monitor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <com.szaoto.ak10.custom.Win8ImageView
+                android:id="@+id/homemonitor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/module_monitor_gray" />
+
+            <TextView
+                android:id="@+id/monitortext"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:paddingLeft="180dp"
+                android:paddingTop="30dp"
+                android:text="@string/text_monitor"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size30" 
+                android:textStyle="bold"
+                />
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <FrameLayout
+            android:id="@+id/led_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <com.szaoto.ak10.custom.Win8ImageView
+                android:id="@+id/homeleddisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/module_leddisplay" />
+
+            <TextView
+                android:id="@+id/leddisplaytext"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:paddingLeft="120dp"
+                android:paddingTop="30dp"
+                android:text="@string/text_leddisplay"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size30" 
+                android:textStyle="bold"
+                />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/ledplayer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <com.szaoto.ak10.custom.Win8ImageView
+                android:id="@+id/homeplayer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/module_player" />
+
+            <TextView
+                android:id="@+id/playertext"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:paddingLeft="200dp"
+                android:paddingTop="30dp"
+                android:text="@string/text_player"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size30"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/ledsystem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <com.szaoto.ak10.custom.Win8ImageView
+                android:id="@+id/homesystem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/module_system" />
+
+            <TextView
+                android:id="@+id/systemtext"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:paddingLeft="190dp"
+                android:paddingTop="28dp"
+                android:text="@string/text_system"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size30"
+                android:textStyle="bold"
+                 />
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>

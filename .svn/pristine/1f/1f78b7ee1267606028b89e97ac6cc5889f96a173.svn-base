@@ -1,0 +1,212 @@
+/*
+   * 文件名 MonitorConfigActivity.java
+   * 包含类名列表com.szaoto.ak10.monitor
+   * 版本信息，版本号
+   * 创建日期2013年11月8日上午11:55:27
+   * 版权声明 liangdb-szaoto
+*/
+package com.szaoto.ak10.monitor;
+
+
+import android.app.TabActivity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabWidget;
+import android.widget.TextView;
+
+import com.szaoto.ak10.HomePageActivity;
+import com.szaoto.ak10.R;
+
+/*
+ * 类名MonitorConfigActivity
+ * 作者 liangdb
+ * 主要功能
+ * 创建日期2013年11月8日
+ * 修改者，修改日期，修改内容
+ */
+@SuppressWarnings("deprecation")
+public class MonitorConfigActivity extends TabActivity {
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
+	EditText EvirEditAutotime;
+	EditText EvirEdittemp;
+	EditText EvirEditHuiSet;
+	EditText EvirEditbadlightnum;
+	EditText editcabT;
+	EditText editcabH;
+	EditText editcabBadnum;
+	Intent intent;
+	CheckBox checkBox;
+	TabHost mTabHost ;
+	private SharedPreferences preferences; 
+	private SharedPreferences.Editor editor;
+	private Button btnMonitorConf;
+	private ImageView btnMonitorConfHome;
+//	private NavigationBar navigationBar;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.monitor_config);
+		preferences = getSharedPreferences("11",MODE_PRIVATE); 
+        //获得修改器 
+        editor = preferences.edit();
+        onCreateTab();
+		 EvirEditAutotime = new EditText(this);
+		
+		 EvirEdittemp = new EditText(this);
+		 EvirEditHuiSet = new EditText(this);
+		 EvirEditbadlightnum = new EditText(this);
+		 editcabT = new EditText(this);
+		 editcabH = new EditText(this);
+		 editcabBadnum = new EditText(this);
+		 checkBox = (CheckBox)findViewById(R.id.chk_editAutotime);
+		 EvirEdittemp = (EditText)findViewById(R.id.edittemp);
+		 EvirEditAutotime = (EditText)findViewById(R.id.editautotime);
+		 EvirEditHuiSet = (EditText)findViewById(R.id.editHuiSet);
+		 EvirEditbadlightnum = (EditText)findViewById(R.id.editbadlightnum);
+		 editcabT = (EditText)findViewById(R.id.editcabT);
+		 editcabH = (EditText)findViewById(R.id.editcabH);
+		 editcabBadnum = (EditText)findViewById(R.id.editcabBadnum);
+//		 navigationBar   = new NavigationBar("monitor_MonitorConfigActivity",this);
+//		 navigationBar.setbSettingVisible(false);
+		 btnMonitorConf = (Button)findViewById(R.id.btn_MonitorConfigBack);
+		 btnMonitorConfHome = (ImageView)findViewById(R.id.MonitorConfigHome);
+		 btnMonitorConf.setOnClickListener(ClickHandler);
+		 btnMonitorConfHome.setOnClickListener(ClickHandler);
+		 
+		 
+		 
+		 
+		 LoadMonitorConfigparm();
+		
+	
+		 EvirEditHuiSet.addTextChangedListener(new TextWatcher() {
+			   @Override
+			   public void onTextChanged(CharSequence s, int start, int before, int count) {
+			   }
+			    // TODO Auto-generated method stub
+			   @Override
+			   public void beforeTextChanged(CharSequence s, int start, int count,
+			     int after){}
+			    // TODO Auto-generated method stub
+			   @Override
+			   public void afterTextChanged(Editable s) { }
+			    // TODO Auto-generated method stu  
+		});
+		
+		mTabHost.setOnTabChangedListener(new OnTabChangeListener() {//响应测试 
+			@Override
+			public void onTabChanged(String tabId) {
+				// TODO Auto-genrated method stub
+				if(tabId.equals("EnvirSetting")){
+
+				}
+				else if(tabId.equals("CabinetSetting")){
+
+				}
+			}
+		});
+		Button btn = (Button)findViewById(R.id.btnmonitorsave);
+        btn.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			
+				editor.putInt("Autotime", Integer.valueOf(EvirEditAutotime.getText().toString()));
+				editor.putFloat("temalarm", Float.valueOf(EvirEdittemp.getText().toString()));
+				editor.putFloat("humialarm", Float.valueOf(EvirEditHuiSet.getText().toString()));
+				editor.putInt("badlightnum", Integer.valueOf(EvirEditbadlightnum.getText().toString()));
+				editor.putBoolean("Autotimecheck", checkBox.isChecked());
+				// intent.putExtra("Autotimecheck", checkBox.isChecked());
+				editor.putFloat("cabtempalarm", Float.valueOf(editcabT.getText().toString()));
+				editor.putFloat("cabhumialarm", Float.valueOf(editcabH.getText().toString()));
+				editor.putInt("cabbadlightnum", Integer.valueOf(editcabBadnum.getText().toString()));
+				editor.commit(); 
+				 
+			   intent = new Intent();//数据是使用Intent返回
+	    	   intent.putExtra("Autotime", EvirEditAutotime.getText().toString());
+	    	   intent.putExtra("Autotimecheck", checkBox.isChecked());
+	    	   
+	    	   intent.putExtra("temalarm", EvirEdittemp.getText().toString());
+	           intent.putExtra("humialarm",EvirEditHuiSet.getText().toString());
+	           intent.putExtra("badlightnum", EvirEditbadlightnum.getText().toString());
+	           intent.putExtra("cabtempalarm", editcabT.getText().toString());
+	           intent.putExtra("cabhumialarm", editcabH.getText().toString());
+	           intent.putExtra("cabbadlightnum", editcabBadnum.getText().toString());
+	           MonitorConfigActivity.this.setResult(RESULT_OK, intent);//设置返回数据 
+	           MonitorConfigActivity.this.finish();//关闭Activity 
+			}
+        });	
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+	}
+	
+	View.OnClickListener ClickHandler = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+
+                      switch (v.getId()) {
+					case R.id.btn_MonitorConfigBack:
+						finish();
+						break;
+					case R.id.MonitorConfigHome:
+						startActivity(new Intent(MonitorConfigActivity.this,HomePageActivity.class));
+						break;
+			
+					}
+			
+		}
+	};
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		intent = null;
+	}
+	private void onCreateTab() {   
+		mTabHost = getTabHost();
+		//mTabHost = (TabHost) findViewById(R.id.tabhost);
+        LayoutInflater inflater_tab1 = LayoutInflater.from(this);   
+        inflater_tab1.inflate(R.layout.monitor_cabinet_setting, mTabHost.getTabContentView());
+        inflater_tab1.inflate(R.layout.monitor_enviroment_setting,mTabHost.getTabContentView());
+        mTabHost.addTab(mTabHost.newTabSpec("CabinetSetting").setIndicator(getString(R.string.monitor_cabinet_setting)).setContent(R.id.Layout_monitor_cabinet_setting));
+        mTabHost.addTab(mTabHost.newTabSpec("EnvirSetting").setIndicator(getString(R.string.monitor_environment_setting)).setContent(R.id.Layout_monitor_environment_setting));
+        
+        TabWidget tabWidget = (TabWidget)findViewById(android.R.id.tabs);
+		int count = tabWidget.getChildCount();
+		  for (int i = 0; i < count; i++) {
+		   View view = tabWidget.getChildTabViewAt(i);   
+		   final TextView tv = (TextView) view.findViewById(android.R.id.title);
+		   tv.setTextSize(20);
+		   tv.setTextColor(this.getResources().getColorStateList(
+		     android.R.color.white));
+		  }	
+	}
+	void LoadMonitorConfigparm()//加载设置参数 ，默认值为0
+	{
+		 EvirEditAutotime.setText(String.valueOf(preferences.getInt("Autotime", 0)));
+		 EvirEdittemp.setText(String.valueOf(preferences.getFloat("temalarm", 0))) ;
+		 EvirEditHuiSet.setText(String.valueOf(preferences.getFloat("humialarm", 0))) ;
+		 EvirEditbadlightnum.setText(String.valueOf(preferences.getInt("badlightnum", 0)));
+		 checkBox.setChecked(preferences.getBoolean("Autotimecheck", false));
+		 
+		 editcabT.setText(String.valueOf(preferences.getFloat("cabtempalarm", 0))) ;
+		 editcabH.setText(String.valueOf(preferences.getFloat("cabhumialarm", 0))) ;
+		 editcabBadnum.setText(String.valueOf(preferences.getInt("cabbadlightnum", 0)));
+	}
+}

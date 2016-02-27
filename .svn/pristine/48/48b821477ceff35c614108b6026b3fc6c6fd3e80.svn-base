@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/systitleline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/title_tool_bg"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/systitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="@string/syst_config"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right|center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/text_systemtback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:drawableTop="@drawable/selector_tool_back"
+                android:gravity="center"
+                android:text="@string/cabinet_back_text"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:id="@+id/show_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/radio_funcsel"
+            android:layout_alignParentTop="true"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/radio_funcsel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true" 
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/uicontrol"
+                style="@style/home_tab_bottom"
+                android:drawableTop="@drawable/interfaceset"
+                android:text="@string/uicontrol" />
+            <!--
+           <RadioButton
+               android:id="@+id/syspwd"
+               style="@style/home_tab_bottom"
+               android:text="@string/syspwd"
+               android:drawableTop="@drawable/music" />
+           
+           <RadioButton
+               android:id="@+id/syssecurity"
+               style="@style/home_tab_bottom"
+               android:text="@string/syssecurity"
+               android:drawableTop="@drawable/music" />
+
+           <RadioButton
+               android:id="@+id/sysdiag"
+               style="@style/home_tab_bottom"
+               android:text="@string/sysdiag"               
+               android:drawableTop="@drawable/music" />
+           
+           <RadioButton
+               android:id="@+id/network"
+               style="@style/home_tab_bottom"
+               android:text="@string/networksetting"               
+               android:drawableTop="@drawable/music" />
+           
+           <RadioButton
+               android:id="@+id/sysreset"
+               style="@style/home_tab_bottom"
+               android:text="@string/sysreset"               
+               android:drawableTop="@drawable/music" />
+            -->
+            <RadioButton
+                android:id="@+id/sysupdate"
+                style="@style/home_tab_bottom"
+                android:checked="true"
+                android:drawableTop="@drawable/sysupdate"
+                android:text="@string/sysupdate" />
+
+            <RadioButton
+                android:id="@+id/langsetting"
+                style="@style/home_tab_bottom"
+                android:drawableTop="@drawable/lang"
+                android:text="@string/langsetting" />
+
+            <RadioButton
+                android:id="@+id/netsetting"
+                style="@style/home_tab_bottom"
+                android:drawableTop="@drawable/sysupdate"
+                android:text="@string/networksetting" />
+            
+            <RadioButton
+                android:id="@+id/othersetting"
+                style="@style/home_tab_bottom"
+                android:drawableTop="@drawable/syscfg3d"
+                android:text="@string/Tridsetting" />
+                        
+        </RadioGroup>
+    </RelativeLayout>
+
+</LinearLayout>

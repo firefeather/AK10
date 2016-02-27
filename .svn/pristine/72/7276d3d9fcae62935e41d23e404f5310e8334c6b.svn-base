@@ -1,0 +1,651 @@
+#ifndef LEDCTRL_DEF
+#define LEDCTRL_DEF
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "28ByteFrame/StructSingleScanCard.h"
+#include <jni.h>
+
+typedef unsigned char	Uint8;
+typedef unsigned short	Uint16;
+typedef unsigned int	Uint32;
+typedef unsigned long	Uint64;
+
+
+#pragma region //瀹忓畾涔�
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////瀹忓畾涔�/////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+	
+#define RESOLUTION_NUMBER						13//鍒嗚鲸鐜囦釜鏁�
+#define SCAN_CARD_WIDTH_MULTIPLE				16//鎵弿鍗″搴︾殑鏁存暟鍊�
+#define SCAN_CARD_WIDTH_HIGH_MIN				1//鎵弿鍗″搴﹀拰楂樺害鐨勬渶灏忓�
+#define MODULE_WIDTH_HIGH_MIN					1//妯＄粍瀹藉害鍜岄珮搴︾殑鏈�皬鍊�
+#define MODULE_HOR_VER_NUM_MIN					1//妯＄粍姘村钩鍨傜洿涓暟鏈�皬鍊�
+#define MODULE_HOR_VER_NUM_MAX					16//妯＄粍姘村钩鍨傜洿涓暟鏈�ぇ鍊�
+#define MODULE_PER_CARD_MIN						1//涓�紶鍗℃墍甯︾殑妯＄粍涓暟鏈�皬鍊�
+#define MODULE_PER_CARD_MAX						64//涓�紶鍗℃墍甯︾殑妯＄粍涓暟鏈�ぇ鍊�
+#define SCAN_CARD_SECTION_ROW_NUM_MAX			32//鎵弿鍗℃瘡鍖鸿鏁版渶澶у�
+#define SCAN_CARD_SECTION_ROW_NUM_MIN			1//鎵弿鍗℃瘡鍖鸿鏁版渶灏忓�
+#define SCAN_CARD_SECTION_NUM_MAX				16//鎵弿鍗″尯鏁版渶澶у�
+#define SCAN_CARD_SECTION_NUM_MIN				1//鎵弿鍗″尯鏁版渶灏忓�
+#define START_X_Y_MIN							0//璧峰XY鏈�皬鍊�
+#define START_X_Y_MAX							32767//璧峰XY鏈�ぇ鍊�
+#define COLOR_TEMP_NUM                          8//鑹叉俯涓暟
+#define COM_DALEY_TIME							100//涓插彛寤舵椂鏃堕棿锛孶SB杞覆鍙ｆ椂骞挎挱鏃犲簲绛旈渶寤舵椂锛屽惁鍒欐敹涓嶈搴旂瓟
+#define LED_NUM_CONTROLED_BY_EACH_CHIP			16//涓�釜鑺墖鎺у埗鐨凩ED鐏殑涓暟
+#define POWER_VOL_NUM							5//鐩戞帶鐢垫簮鐢靛帇绾胯矾涓暟
+#define FAN_NUM									2//椋庢墖涓暟
+#define SCAN_LINE_STATE_NUM							16//鎵弿绾跨姸鎬佺洃鎺т釜鏁�
+#define REFRESH_RATE_MIN						60//鍒锋柊鐜囨渶灏忓�
+#define RELAY_NUMBER_MAX						4//缁х數鍣ㄦ渶澶т釜鏁�
+#define COM_ANSWER_DELAY						300//涓插彛搴旂瓟瓒呮椂榛樿鍊�
+#define SCANCARD_MHZ							150//鎵弿鍗Hz
+#define SCANCARD_MODULE_WIDTH_HIGH_MAX					 128      //妯＄粍瀹藉害鍜岄珮搴︾殑鏈�ぇ鍊�
+#define SCANCARD_ADRESS_MAX								248		//鎵弿鍗″湴鍧�渶澶у�
+#define SCANCARD_WIDTH_HIGH_MAX							512      //鎵弿鍗″搴﹀拰楂樺害鐨勬渶澶у�
+#define SCANCARD_LEDSIZE_CONTROLED_BY_EACH_CHIP			16//涓�釜鑺墖鎺у埗鐨凩ED鐏殑涓暟
+#define SCANCARD_IN_CABINET_COUNT_MAX					4//绠变綋涓壂鎻忓崱鐨勬渶澶т釜鏁�
+#define SCANCARD_CONFIG_IC_TIME_MAX						 2047//鑺墖闂撮殧鏃堕棿鏈�ぇ鍊�
+#define SCANCARD_REFRESH_RATE_MIN						60//鍒锋柊鐜囨渶灏忓�
+#define SCANCARD_MHZ									150//鎵弿鍗�50MHz
+#define SCANCARD_MODULE_HOR_VER_NUM_MAX					16 //妯＄粍姘村钩鍨傜洿涓暟鏈�ぇ鍊�
+#define SCANCARD_MODULE_PER_CARD_MAX					64  //涓�紶鍗℃墍甯︾殑妯＄粍涓暟鏈�ぇ鍊�
+#define GAMMA_CALIBRATION_COLOR_DEPTH					16//鏍℃銆佷冀椹鑹茬伆搴︾骇鏁�
+#define SCANCARD_SECTION_PER_CARD_MAX					64  //涓�紶鍗℃墍甯︾殑鍖轰釜鏁版渶澶у�
+#define SCANCARD_SAVE_INIT_SIZE							9  //鎵弿鍗″弬鏁颁繚瀛樺拰鍒濆鍖栧懡浠や釜鏁�
+#define MONITOR_TEMPATURE_MAX							123//娓╁害鏈�ぇ鍊�
+#define MONITOR_TEMPATURE_MIN							-40//娓╁害鏈�皬鍊�
+
+
+#define CALIBRATION_CHROMINANCE_PARA_SIZE					9//鑹插害鏍℃鍙傛暟涓暟
+#define CALIBRATION_BRIGHTNESS_PARA_SIZE					3//浜害鏍℃鍙傛暟涓暟
+#define FAN_ROTATION_NUM_MAX								8//椋庢墖杞�鐩戞祴鏈�ぇ涓暟
+#define DEAD_LEAD_NUM_MAX									65535//閫愮偣妫�祴鍧忕伅鐨勬渶澶т釜鏁�
+
+#define CL_SEND_EFFECT_DATA_SIZE				16//鍙戦�鍖呮暟鎹煙闀垮害
+#define CL_SEND_PACK_SIZE						28//鍙戦�/鎺ユ敹鍖呭寘闀垮害
+#define CL_MAX_BUF_NUMBER						65535	//鍙戦�銆佹帴鏀剁紦鍐插尯鏈�ぇ鍊�
+
+#pragma endregion
+
+#pragma region //
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+///////////////////////////閿欒浠ｇ爜锛堜俊鎭級///////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////閫氱敤//////////////////////////////////////
+#define BLL_SUCCESS							1	//鎿嶄綔鎴愬姛
+#define BLL_INTERRUPT						2	//鎿嶄綔涓柇
+#define BLL_NO_ERROR						0	//娌℃湁閿欒
+#define BLL_CONNECT_ERROR					-1	//閫氳淇￠亾鍏抽棴鎴栨墦寮�敊璇�
+#define BLL_INIT_NO							-2  //娌℃湁鍒濆鍖�
+#define BLL_SEND_FAIL						-3	//鍙戦�澶辫触
+#define BLL_RECEIVE_FAIL					-4	//搴旂瓟澶辫触
+#define BLL_QUEUE_FULL						-5	//闃熷垪婊�
+#define BLL_SUCTIONPARAMETER_ERROR			-6	//鍏ュ弬閿欒
+#define BLL_COM_NOT_EXIT					-7	//涓插彛涓嶅瓨鍦�
+#define BLL_COM_OCCUPY						-8	//涓插彛鍗犵敤
+#define BLL_NO_CHANNEL						-9	//鏈叧鑱斾俊閬�
+
+#define BLL_READ_ERROR						-10	//璇诲彇鏂囦欢閿欒
+#define BLL_FILEFORMAT_ERROR				-11	//鏂囦欢鏍煎紡閿欒
+#define BLL_CREATEFILE_ERROR				-12	//鍒涘缓鏂囦欢閿欒
+#define BLL_MODIFYFILE_ERROR				-13	//鏇存柊鏂囦欢閿欒
+#define BLL_DELETEFILE_ERROR				-14	//鍒犻櫎鏂囦欢閿欒
+#define BLL_FILE_NOT_EXIT_ERROR				-15 //鏂囦欢涓嶅瓨鍦�
+#define BLL_FILE_OPEN_ERROR					-16 //鏂囦欢鎵撳紑澶辫触
+
+
+#define CL_ANSWER_ERROE_PACK_HEAD_1					-500		//搴旂瓟鍖呭寘澶�閿欒
+#define CL_ANSWER_ERROE_PACK_HEAD_2					-501		//搴旂瓟鍖呭寘澶�閿欒
+#define CL_ANSWER_ERROE_DEST_ADDRESS				-502		//搴旂瓟鍖呯洰鐨勫湴鍧�敊璇�
+#define CL_ANSWER_ERROE_SOUR_ADDRESS				-503		//搴旂瓟鍖呮簮鍦板潃閿欒
+#define CL_ANSWER_ERROE_CHECKSUM					-504		//搴旂瓟鍖呮牎楠岀爜閿欒
+#define CL_ANSWER_ERROE_PACK_TYPE					-505		//搴旂瓟鍖呭寘绫诲瀷閿欒
+#define CL_ANSWER_ERROE_CONNECT						-506		//搴旂瓟鍖呭唴瀹归敊璇�
+#define CL_ANSWER_ERROR_NO_DATA						-507		//鏃犳暟鎹繑鍥烇紝璇锋鏌ョ‖浠堕�淇�
+//////////////////////////////////////////////////////////////////////////
+////////////////////////////// 浠ュお缃戝崗璁� ///////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+#define ETH_DATA_MAX_SIZE						1500//浠ュお缃戞暟鎹渶澶ч暱搴�
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
+
+#define ANSWER_ERROR_DEST_ADDRESS			-600	//鐩殑鍦板潃閿欒
+#define ANSWER_ERROR_SOUR_ADDRESS			-601	//婧�   鍦板潃閿欒
+#define ANSWER_ERROR_DATA_LENGTH			-602	//鏁版嵁闀垮害閿欒
+#define ANSWER_ERROR_CRC					-603	//CRC鏍￠獙閿欒
+
+#define MONITORTYPE_COUSTOM 0                 //鐜鐩戞帶
+#define MONITORTYPE_POWER 1						//鍔熺巼鐩戞帶
+#define MONITORTYPE_POINTDETECT 2				//閫愮偣妫�祴
+#define MONITORTYPE_VOTAGE 3					//鐢靛帇妫�祴
+#define MONITORTYPE_WEBERROR 4					//缃戠粶閿欐姤妫�祴
+
+#define MONITORACTIONTYPE_FF 1            //骞挎挱绫诲瀷
+#define MONITORACTIONTYPE_NORMAL 0		//鐐规挱绫诲瀷
+typedef struct FrameDataField 
+{
+	bool bMulticast;	//骞挎挱	0
+	int nMulticastNum;	//缁勬挱鍙�0
+	bool bNoMulticast;	//闈炵粍鎾�0
+	bool bAnswer;		//搴旂瓟
+	bool bRead;			//璇�鍐�true:璇�false:鍐�
+	bool bFIFO;			//FIFO/REG true:FIFO flase:REG
+	unsigned char  ucAddress[2];	//鍦板潃
+
+	int nSerialNumber;	//搴忓垪鍙�
+	int nLength;		//闀垮害
+	unsigned char ucData[ETH_DATA_MAX_SIZE - 5];	//鏁版嵁
+
+	void reset()
+	{
+		memset(this, 0, sizeof(FrameDataField));
+	}
+}FRAMEDATAFIELD;
+
+//////////////////////////////////////////////////////////////////////////
+
+#pragma endregion
+
+#pragma region //
+
+//鍏ョ嚎鏂瑰紡
+enum INLINEMODE
+{
+	_1CARD,
+	_2CARD_RIGHTLEFT,		//浠庡彸鍒板乏锛�,2
+	_2CARD_DOWNUP,			//浠庝笅鍒颁笂锛�,2
+	_2CARD_LEFTRIGHT,       //浠庡乏鍒板彸锛�,2
+	_3CARD_RIGHTLEFT,		//浠庡彸鍒板乏锛�,2,3
+	_3CARD_DOWNUP,			//浠庝笅鍒颁笂锛�,2,3
+	_4CARD_RIGHTLEFT,		//浠庡彸鍒板乏锛�,2,3,4
+	_4CARD_DOWNUP,			//浠庝笅鍒颁笂锛�,2,3,4
+	_4CARD_TIAN_RIGHTBUTTON_RVS,	//鐢板瓧锛屽彸涓嬭繘锛屽瀭鐩碨璧扮嚎
+	_4CARD_TIAN_RIGHTBUTTON_RVZ,	//鐢板瓧锛屽彸涓嬭繘锛屽瀭鐩碯璧扮嚎
+	_4CARD_TIAN_RIGHTBUTTON_LVS,	//鐢板瓧锛屽乏涓嬭繘锛屽瀭鐩碨璧扮嚎
+	_4CARD_TIAN_RIGHTBUTTON_LVZ,	//鐢板瓧锛屽乏涓嬭繘锛屽瀭鐩碯璧扮嚎
+};
+
+enum CABINETPOS
+{
+	_CABI_ALL,		//鏁寸浣�
+	_CABI_LEFT,		//宸﹂儴鍒�
+	_CABI_RIGHT,		//鍙抽儴鍒�
+	_CABI_UPPER,		//涓婇儴鍒�
+	_CABI_UNDER,		//涓嬮儴鍒�
+	_CABI_CENTRAL,			//涓儴鐨�
+	_CABI_UPPERLEFT,		//宸︿笂
+	_CABI_UPPERRIGHT,			//鍙充笂
+	_CABI_LOWERLEFT,	//宸︿笅
+	_CABI_LOWERRIGHT,	//鍙充笅
+	_CABI_UPPER_CENTRAL,			//涓婁腑閮ㄧ殑
+	_CABI_LOWER_CENTRAL,			//涓嬩腑閮ㄧ殑
+	_CABI_LEFT_CENTRAL,			//宸︿腑閮ㄧ殑
+	_CABI_RIGHT_CENTRAL			//鍙充腑閮ㄧ殑
+};
+
+
+enum SCANCARDPROC
+{
+	SAVE_DEFAUL_PARA,				//淇濆瓨鍑哄巶缂虹渷鍙傛暟
+	SAVE_SCAN_CARD_PARA,			//淇濆瓨鎵弿鍗″弬鏁�
+	SAVE_CONNECTION_PARA,				//淇濆瓨杩炵嚎鍥惧弬鏁�
+	SAVE_BRIGHTNESS_PARA,				//淇濆瓨浜害鍙傛暟
+	SAVE_COLOR_TEMP_PARA,				//淇濆瓨鑹叉俯鍙傛暟
+	SAVE_GAMMA_PARA,					//淇濆瓨浼介┈鍙傛暟
+	SAVE_LINE_COEFF,					//淇濆瓨浜殫绾挎牎姝ｅ弬鏁�	INIT_SCAN_CARD_PARA,				//鍒濆鍖栨壂鎻忓崱鍙傛暟
+	ININT_GAMMA_PARA,					//鍒濆鍖栦冀椹弬鏁�
+	QUERY_SCANCARD_VERSION,				//鏌ヨ鎵弿鍗＄殑鐗堟湰
+	QUERY_HUB_VERSION,					//鏌ヨHUB鐨勭増鏈�
+
+	SET_RELAY_AATTRIBUTE,				//璁剧疆缁х數鍣ㄧ殑鑷姩鎺у埗灞炴�
+	SET_RELAY_THRESHOLD,				//璁剧疆缁х數鍣ㄧ殑闂ㄩ檺
+	SET_CABINET_PARA,					//鍙戦�绠变綋鍙傛暟
+	READ_MODULE_TO_SPI,					//璇绘ā缁�
+};
+
+//鍗囩骇绫诲瀷
+enum UPDATE_HARDWARE_TYPE
+{
+	UPDATA_SCAN_CARD,			//鍗囩骇鎵弿鍗�
+	UPDATA_SEND_CARD_1,				//鍗囩骇ATLVC鐨勭涓�紶閲囬泦鍗�
+	UPDATA_SEND_CARD_2,				//鍗囩骇ATLVC鐨勭浜屽紶閲囬泦鍗�
+	UPDATA_ATIEC_AM100,				//鍗囩骇ATIEC鐨勭洃鎺у崱
+	UPDATA_CABINET_AM100,				//鍗囩骇绠变綋鐨勭洃鎺у崱
+	UPDATA_ATIEC_SCANCARD,			//鍗囩骇ATIEC鐨勬壂鎻忓崱
+	UPDATA_HUB,					//鍗囩骇HUB
+	UPDATA_SEND_CARD_3          //鍗囩骇ATLVC(ak6-1000)
+};
+
+//鐩戞帶绫诲瀷
+enum MONIOTR_TYPE
+{
+	MONITOR_TYPE_SCREEN,	//鐜鐩戞帶
+	MONITOR_TYPR_COMMON,	//绠变綋甯歌鐩戞帶锛孴,H,S,Fan,Version
+	MONITOR_TYPE_POWER_VOL,	//绠变綋鐢垫簮鐢靛帇
+	MONITOR_TYPE_CAPACITY_FACTOR,	//绠变綋鍔熺巼
+	MONITOR_TYPE_DOT_DECTION,		//绠变綋閫愮偣妫�祴
+	MONITOR_TYPE_WEB_ERROR,			//绠变綋缃戠粶鍧忓寘鏁�
+	MONITOR_TYPR_FF,		//绠变綋鎵�湁鐩戞帶锛屽箍鎾�
+};
+
+
+//鐗堟湰缁撴瀯
+typedef struct Version
+{
+	double dVersion;//鐗堟湰鍙�
+	unsigned char ucTper;//鐗堟湰绫诲瀷(0x01:鏍囧噯APP鐗�0x11:鏍囧噯BOOT鐗�0x02:PWM-APP鐗�0x12:PWM-BOOT鐗�
+	bool bBackup;//澶囦唤鐘舵�,瑙嗛閫氶亾銆�1锛歅1鍙ｃ�0锛歅0鍙�
+	bool bLockScreen;//閿佸睆
+	bool bInit;//鍒濆鍖�
+	short nP0LinkState;//P0杩炴帴鐘舵�锛�锛屾湁杩炴帴锛�锛屾棤杩炴帴
+	short nP1LinkState;//P1杩炴帴鐘舵�锛�锛屾湁杩炴帴锛�锛屾棤杩炴帴
+
+	int nYear;
+	int nMon;
+	int nDay;
+	int nSection;
+	int nCorrectType;
+	int nScanOut;
+	int nScanOutSection;
+	int nModuleEx;
+	int nTestVersion;	//娴嬭瘯鐗堟湰鍙凤紝鍦ㄦ棩鏈熺殑鏃堕棿涓殑灏忔椂鏄剧ず鍑烘潵
+}VERSION,*LPVERSION;
+
+
+//GAMMA
+typedef struct GammaData
+{
+	short nVideowid;			//b00-8bit瑙嗛 b01-10bit瑙嗛 b10-12bit瑙嗛
+	bool bSendThreeColor;		//涓夎壊鍚屾椂鍙戦�
+	short nGrayLevel;			//鐏板害绾у埆
+	float fGamma[3];			//GAMMA鍊�
+	short sGammaTable[3][256];	//GAMMA琛�
+	float fGammaRGB;			//Gamma鍊硷紝鐢ㄤ簬10,12浣�
+	short sGammaTableRGB[4096];	//GAMMA琛紝鐢ㄤ簬10,12浣�
+	GammaData()
+	{
+		memset(this, 0, sizeof(GammaData));
+	}
+}GAMMADATA;
+
+//绾㈢豢钃濅笁鑹茬櫧骞宠　鍊�
+typedef struct ColourRGB
+{
+	//楂樹寒鍦�
+	int nRed;					//鐏板害绾㈣壊浜害鍊�0-255)
+	int nGreen;					//鐏板害缁胯壊浜害鍊�0-255)
+	int nBlue;					//鐏板害钃濊壊浜害鍊�0-255)
+	int nICRed;					//椹卞姩鑺墖绾㈣壊浜害鍊�0-255)
+	int nICGreen;				//椹卞姩鑺墖缁胯壊浜害鍊�0-255)
+	int nICBlue;				//椹卞姩鑺墖钃濊壊浜害鍊�0-255)
+	//浣庝寒鍦�
+	int nRedLow;//鐏板害绾㈣壊浜害鍊�0-256)
+	int nGreenLow;//鐏板害缁胯壊浜害鍊�0-256)
+	int nBlueLow;//鐏板害钃濊壊浜害鍊�0-256)
+	int nICRedLow;//椹卞姩鑺墖绾㈣壊浜害鍊�0-255)
+	int nICGreenLow;//椹卞姩鑺墖缁胯壊浜害鍊�0-255)
+	int nICBlueLow;//椹卞姩鑺墖钃濊壊浜害鍊�0-255)
+}COLOURRGB,*LPCOLOURRGB;
+
+//璧扮嚎琛�
+typedef struct LinkTable
+{
+	long nLen;					//闀垮害
+	signed char ucLinkTable[65535];	//鏁版嵁
+	void Init()
+	{
+		memset(this, 0, sizeof(LinkTable));
+	}
+}LINKTABLE,*LPLINKTABLE;
+
+//缁х數鍣�
+typedef struct RelayPar 
+{
+	short nID;					//缁х數鍣ㄧ‖浠剁紪鍙�	//string sRelayName;			//缁х數鍣ㄥ悕绉帮紙鐢ㄤ簬绠变綋锛氶鎵�锝�銆佺敤浜嶢TIEC锛欰TECC1锝�,灞忎綋鏁ｇ儹璁惧1锝�锛�
+	bool bEnable;				//缁х數鍣ㄤ娇鑳�(  0 - 涓嶄娇鑳� 1 - 浣胯兘)
+	bool bWorkState;			//缁х數鍣ㄥ伐浣滅姸鎬侊紙0 - 缁х數鍣ㄦ柇寮�1 - 缁х數鍣ㄩ棴鍚�  锛�
+	float fTemperatureMin;		//娓╁害涓嬮檺鍊�绮剧‘鍒�.1
+	float fTemperatureMax;		//娓╁害涓婇檺鍊�绮剧‘鍒�.1
+	float fHumidityMin;			//婀垮害涓嬮檺鍊�绮剧‘鍒�.1
+	float fHumidityMax;			//婀垮害涓婇檺鍊�绮剧‘鍒�.1
+	bool bOverHeatOff;			//瓒呮俯鏂數
+	bool bOverHumidityOff;		//娼箍鏂數
+	bool bSmogOff;				//鐑熼浘鏂數
+	RelayPar()
+	{
+		memset(this, 0, sizeof(RelayPar));
+	}
+}RELAYPAR;
+//鐩戞帶椤逛娇鑳芥爣璇嗭紙鏄惁鐩戞帶锛�
+typedef struct MonitorItem
+{
+	bool bHumidityFlag;			//婀垮害
+	bool bTemperatureFlag;		//娓╁害
+	bool bSmogFlag;				//鐑熼浘
+	bool bBrightFlag;			//浜害
+	bool bLEDPointDetect;		//閫愮偣鐩戞祴
+	bool bPowerVolFlag[POWER_VOL_NUM];		//鐢垫簮鐢靛帇
+	bool bFanStateFlag[FAN_NUM];		//椋庢墖 0-宸�1-鍙�
+	bool bCapacityFactorFlag;	//鍔熺巼
+	bool bVersionFlag;			//鐗堟湰
+
+	bool bFanRotationFlag;         //2013-03-25 椋庢墖杞�
+
+	bool bNetWebErrorFlag ;        //2013-04-26
+
+	bool bEightFanRotationFlag[FAN_ROTATION_NUM_MAX];
+	MonitorItem()
+	{
+		memset(this, 0, sizeof(MonitorItem));
+	}
+	void Init()
+	{
+	  memset(this, 0, sizeof(MonitorItem));
+	}
+}MONITORITEM;
+
+
+//鑹叉俯
+typedef struct ColourTemFlag
+{
+	ColourRGB colourrgb[COLOR_TEMP_NUM];			//鑹叉俯鍊�3500,4500,5500...10500)
+	//string m_nColorTemperature[COLOR_TEMP_NUM];		//鑹叉俯(3500,4500,5500...10500)
+	bool m_bEnable[COLOR_TEMP_NUM];					//鑹叉俯浣嶄娇鑳�
+	short m_nAnswerID;					//搴旂瓟鏂瑰紡 0 - 骞挎挱鏃犲簲绛旓紝  1 - 鐐规挱鏃犲簲绛�
+	short m_nMode;						//鑹叉俯璋冭妭鏂瑰紡 0 - 鐏板害璋冭妭锛�1 - 鐢垫祦璋冭妭
+	/*string GetColorTemTem(short nTemID)
+	{
+		string sTemTem;
+		switch (nTemID)
+		{
+		case 0:
+			sTemTem = "2800K";
+			break;
+		case 1:
+			sTemTem = "3200K";
+			break;
+		case 2:
+			sTemTem = "4500K";
+			break;
+		case 3:
+			sTemTem = "5000K";
+			break;
+		case 4:
+			sTemTem = "5600K";
+			break;
+		case 5:
+			sTemTem = "6500K";
+			break;
+		case 6:
+			sTemTem = "8000K";
+			break;
+		case 7:
+			sTemTem = "9300K";
+			break;
+		}
+		return sTemTem;
+	}
+	*/
+}COLOURTEMFLAG;
+
+//鎵弿鍗″乏涓婅鍙婂ぇ灏�
+typedef struct ScanCardpRect
+{
+	short nAddress;				//鎵弿鍗″湴鍧�紙缂栧潃锛�
+	//RECT prect;				//鎵弿鍗″乏涓婅鍙婂ぇ灏�
+}SCANCARDPRECT;
+
+//鍧忕伅缁撴瀯
+typedef struct ErrorPoint
+{
+	short nX;					//鍑洪敊LED鐏湪绠变綋鍐匵鍧愭爣
+	short nY;					//鍑洪敊LED鐏湪绠变綋鍐匶鍧愭爣
+	bool bRedFlag;				//绾㈢伅鏍囪瘑 0- 姝ｅ父	1-鍧�
+	bool bGreenFlag;			//缁跨伅鏍囪瘑
+	bool bBlueFlag;				//钃濈伅鏍囪瘑
+	/*
+	struct ErrorPoint()
+	{
+		nX = 0;
+		nY = 0;
+		bRedFlag = false;
+		bGreenFlag = false;
+		bBlueFlag = false;
+	}
+	*/
+}ERRORPOINT;
+
+// 鐩戞帶鎶ヨ鍙傛暟
+typedef struct MonitorAlarmParam
+{
+	float fATIECTemperatureMax;   //2012-10-18 by sunj ATIEC娓╁害涓婇檺
+	float fATIECHumidityMax;     // 2012-10-18 by sunj ATIEC婀垮害涓婇檺
+
+	float fTemperatureMax;  // 娓╁害涓婇檺
+	float fHumidityMax;     // 婀垮害涓婇檺
+	float fPSMin[5];        // 浜旇矾鐢靛帇涓嬮檺
+	float fPSMax[5];        // 浜旇矾鐢靛帇涓婇檺
+	int nBadLedMax;         // 鍧忕伅鏁颁笂闄�绠变綋)
+	bool bSmoke;            // 鏄惁鐑熼浘鎶ヨ
+	bool bFan;              // 鏄惁椋庢墖鎶ヨ
+	int nBadLedMaxOfDisplay ;//灞忓箷鍧忕伅涓暟
+
+	int nTemperatureUnit ; //2013-02-18 by sunj 娓╁害鍗曚綅 0-鎽勬皬搴�1-鍗庢皬搴�
+
+}MONITORALARMPARAM;
+
+//鏈�悗涓�鐩戞帶鎶ヨ鐘舵�锛堝彂閫侀偖浠跺垽鏂娇鐢級
+struct LastMonitorAlarm
+{
+	bool bLastTemperatureAlarm;
+	bool bLastHumidityAlarm;
+	bool bLastSmogAlarm;
+	bool bLastFanAlarm[2];
+	bool bLastPowerVolAlarm[5];
+	bool bLastCapacityFactorAlarm;
+	bool bLastPointDetectAlarm;
+
+	bool bConnectStatusAlarm;
+	bool bBackUpStatusAlarm;
+};
+//鐩戞帶鏁版嵁 鍖呮嫭
+//甯歌鐩戞帶锛氾紙浜害銆佹俯搴︺�婀垮害銆佹槸鍚︾儫闆炬姤璀︺�宸﹀彸椋庢墖鐘舵�銆�璺户鐢靛櫒鐘舵�銆佺洃鎺у崱鐗堟湰锛�
+//绠变綋鐢靛帇鐩戞帶锛氱浣擄紙鎵弿鍗★級5璺數鍘嬪�
+//绠变綋鍔熺巼鐩戞帶锛氱浣擄紙鎵弿鍗★級鍔熺巼鍊�
+//绠变綋閫愮偣妫�祴锛氱浣擄紙鎵弿鍗★級鍑洪敊鐏釜鏁板強鎯呭喌
+typedef struct Monitordata
+{
+	//MonitorItem smonitoritem;	//鐩戞帶椤逛娇鑳芥爣璇�	//鎵�湁椤圭洰鍊�-1浠ｈ〃搴旂瓟澶辫触锛�
+	long tttttttt;
+	short nBrightness;			//浜害鍊�
+	short nBrightness2;			//浜害鍊�
+	float fTemperature;			//娓╁害鍊�
+	float fHumidity;			//婀垮害鍊�
+	bool bSmog;					//鏄惁鐑熼浘鎶ヨ
+	short nFanState[FAN_NUM];			//椋庢墖FAN_L鐘舵�	1	0x00	鏈娴�	0x01	姝ｅ父寮�惎	0x03	寮傚父鍏抽棴	0x04	姝ｅ父鍏抽棴	0x05	寮傚父寮�惎
+	short nPowerState[2];       //鐢垫簮鐘舵�
+	bool bWorkState[RELAY_NUMBER_MAX];			//4璺户鐢靛櫒宸ヤ綔鐘舵�锛� - 缁х數鍣ㄦ柇寮�1 - 缁х數鍣ㄩ棴鍚堬級
+	Version version;			//鐩戞帶鍗＄増鏈�
+	//////////////////////////////////////////////////////////////////////////
+	float fPowerVol[POWER_VOL_NUM];			//绠变綋锛堟壂鎻忓崱锛�璺數鍘嬪�
+
+	int nCapacityFactor;		//绠变綋锛堟壂鎻忓崱锛夊姛鐜�
+
+	short nErrorPointNum;		//鍧忕伅涓暟
+	ErrorPoint sErrorPoint[DEAD_LEAD_NUM_MAX];//鍧忕伅鏁扮粍
+	short nDClkState[SCAN_LINE_STATE_NUM];		//DCLK鍑洪敊鐘舵�锛岀浉搴攂it浣嶄负1鏍囩ず瀵瑰簲DCLK鍑洪敊
+	short nScanLineState[SCAN_LINE_STATE_NUM];	//鎵弿绾垮嚭閿欑姸鎬侊紝鐩稿簲bit浣嶄负1鏍囩ず瀵瑰簲鎵弿绾垮嚭閿�
+	//////////////////////////////////////////////////////////////////////////
+	bool bConnectStatus;		//LED鏄剧ず灞忚繛鎺ョ姸鎬侊紙鏌ヨLED鏄剧ず灞忎富ATLVC鐗堟湰锛�
+								//绠变綋锛堟壂鎻忓崱锛夎繛鎺ョ姸鎬侊紙鏌ヨ绠变綋锛堟壂鎻忓崱锛夌増鏈級
+	bool bBackUpStatus;			//LED鏄剧ず灞忓浠界姸鎬侊紙鏌ヨLED鏄剧ず灞忓ATLVC鐗堟湰锛�
+
+	short bDotDetectErrorFlag;//閫愮偣妫�祴閿欒鏍囪瘑锛�1 --鎴愬姛 0 -- 鍒濆鍖� 1 -- 澶辫触  2 -- 寮傚父锛岃秴鍑�2鍧忕偣 2012-10-26 sunj
+ 
+	short nFanRotation[FAN_ROTATION_NUM_MAX];
+
+	int nNetWebErrorPackageFlag ;
+	short nNetWebErrorNum;
+
+	Monitordata()
+	{
+		memset(nDClkState,0,sizeof(short) * SCAN_LINE_STATE_NUM);
+		memset(nScanLineState,0,sizeof(short) * SCAN_LINE_STATE_NUM);
+	}
+
+}MONITORDATA,*LPMONITORDATA;
+
+typedef struct MonitordataQ
+{
+	short nBrightness;			//浜害鍊�
+	float fTemperature;			//娓╁害鍊�
+	float fHumidity;			//婀垮害鍊�
+	bool bSmog;					//鏄惁鐑熼浘鎶ヨ
+}MONITORDATAQ,*LPMONITORDATAQ;
+
+typedef struct tagRECT
+{
+	long    left;
+	long    top;
+	long    right;
+	long    bottom;
+}RECT;
+
+typedef struct ScanCardAttachment
+{
+	int nID;					//鎵弿鍗D锛�锝�锛屽湪鍚屼竴绠变綋鍐呭敮涓�級
+	int nAddress;				//鎵弿鍗″湴鍧�紙缂栧潃寰楀埌锛屽湪杩炴帴鍦ㄥ悓涓�摼璺腑鍞竴锛�
+
+	CStructSingleScanCard scancard;			//鎵弿鍗″弬鏁�
+
+	LINKTABLE slinktable;		//鎵弿鍗¤蛋绾挎煡鎵�
+
+	LINKTABLE hublinktable;	//HUB璧扮嚎鏌ユ壘
+
+	LINKTABLE sSectionlinktable;	//鎵弿鍗″尯璧扮嚎鏌ユ壘
+
+	//鏄惁瀛樺湪
+	bool bTHSBoard;				//娓┿�婀垮害浼犳劅鍣ㄦ澘
+	bool bMFCard;				//澶氬姛鑳藉崱
+	bool bPDCard;				//鍔熺巼妫�祴鍗�	bool bPBPDCard;				//閫愮偣妫�祴鍗�	//鏄惁鐩戞帶
+	MonitorItem monitoritem;	//鐩戞帶椤逛娇鑳�	//缁х數鍣�
+	RelayPar relaypar[2];		//缁х數鍣�
+	
+	//
+	ColourRGB colourrgb;		//鎵弿鍗¤壊娓�
+
+	RECT rtRect;				//鎵弿鍗″乏涓婅鍙婂ぇ灏�
+
+	int nAtlvcID;				//杩炴帴鐨凙TLVC
+	short nPort;				//杩炴帴鐨勭鍙ｏ紙1锝�锛欰K6锛�U銆�D銆�U銆�D锛汚K10锛欰銆丅銆丆銆丏锛�
+	bool bBackUp;				//鏄惁澶囦唤杩斿洖
+}SCANCARDATTACHMENT;
+
+typedef struct ATLVCAK6Status
+{
+	int nReadErrorFlag;	//璇诲彇鏈夋晥浣� -1 --鎴愬姛 0 -- 鍒濆鍖� 1 -- 澶辫触
+	int nDvi;			//閲囬泦鍗vi鐘舵�锛�1锛氭棤鏁堬紱0锛氭棤淇″彿锛�锛氭甯�
+	//int nNetPort[CHANNEL_PORT_MAX];		//閲囬泦鍗0-P3缃戠粶鍙戦�鐘舵� -1锛氭棤鏁堬紱0锛氳繛鎺ワ紱1锛氭湭杩炴帴
+
+	int nHdmi;                 //HDMI鐘舵� 1- 鏈夋晥 0 - 鏃犳晥
+	int nDivPort;              //DVI绔彛 1- 鏈夋晥 0 -鏃犳晥
+	int nHdmiport ;            //HDMI绔彛 1- 鏈夋晥 0- 鏃犳晥
+	int nResolutionDvi;        //Dvi
+	int nResolutionHDMI;       //HDMI
+
+	int nVideowid ;            //b00-8bit瑙嗛 b01-10bit瑙嗛 b10-12bit瑙嗛
+	int nResolution[2];			//鍒嗚鲸鐜�0-X, 1-Y
+
+	float fTemperature; //ATLVC鐨勬俯搴�
+	float fHumidity;	//ATLVC鐨勬箍搴�
+
+	/*discription:琛ㄧずATLVC鐨勮嚜鍔ㄤ寒搴﹁皟鑺傚拰瀹氭椂璋冭妭鐨勭姸鎬� */
+	short nAutoLightAdjustStatus; //0-鑷姩浜害璋冭妭涓嶄娇鑳�1-琛ㄧず鑷姩浜害璋冭妭浣胯兘 -1 鏈煡
+	short nTimingLightAdjustStatus;//0-瀹氭椂浜害璋冭妭浣胯兘锛�-琛ㄧず瀹氭椂浜害璋冭妭浣胯兘 -1 鏈煡
+
+	short nFrame; //AK1000浣跨敤甯ч
+	int iFrame; //AK100浣跨敤
+
+	int nVideoRotate;          //0-涓嶆棆杞�1-椤烘椂閽�0搴�2-椤烘椂閽�80搴�3-椤烘椂閽�70搴�
+	 
+	long nSaturation;          //閲囬泦鍗￠ケ鍜屽害
+	long nContrast;            //閲囬泦鍗″姣斿害
+
+}*LPATLVCAK6_STATUS;
+struct ATIECStatus//zhangjj004added
+{
+	ATIECStatus()
+	{
+		dVersion=0.0;
+		ucTper=0;
+		bBackup=false;
+		bLockScreen=false;
+		bInit=false;
+		nP0LinkState=0;
+		nP1LinkState=0;
+		nP2LinkState=0;
+		nP3LinkState=0;
+		bBackupP2P3=false;
+	}
+	double dVersion;//鐗堟湰鍙�
+	unsigned char ucTper;//鐗堟湰绫诲瀷(0x01:鏍囧噯APP鐗�0x11:鏍囧噯BOOT鐗�0x02:PWM-APP鐗�0x12:PWM-BOOT鐗�
+	bool bBackup;//澶囦唤鐘舵�,瑙嗛閫氶亾銆�1锛歅1鍙ｃ�0锛歅0鍙�
+	bool bLockScreen;//閿佸睆
+	bool bInit;//鍒濆鍖�
+	short nP0LinkState;//P0杩炴帴鐘舵�锛�锛屾湁杩炴帴锛�锛屾棤杩炴帴
+	short nP1LinkState;//P1杩炴帴鐘舵�锛�锛屾湁杩炴帴锛�锛屾棤杩炴帴
+	short nP2LinkState;
+	short nP3LinkState;
+	bool bBackupP2P3;
+};
+typedef struct ScanCard_Cabinet
+{
+	int nScanCardAdress;		//鎵弿鍗″湴鍧�紝绱㈠紩
+	int nScanCardID;			//鎵弿鍗D
+	int nCabinetID;				//鎵弿鍗℃墍鍦ㄧ殑绠变綋ID
+	short nCabinetAddress;		//绠变綋鍦板潃
+}SCANCARDCABINET;
+
+//ATIEC
+struct ATIEC 
+{
+	ATIEC()
+	{
+		LightPort1Enable = 0;
+		LightPort2Enable = 0;
+		nType=-1;
+	}
+	short nID;					//ATIEC ID
+	short nAddress;	//ATIEC鍦板潃
+	short nType;    //绫诲瀷
+	//鏄惁鐩戞帶
+	MonitorItem monitoritem;	//鐩戞帶椤逛娇鑳�	//缁х數鍣�
+	RelayPar relaypar[4];		//缁х數鍣�
+	bool LightPort1Enable;//zhangjj001
+	bool LightPort2Enable;
+
+	int atlvcid;				//杩炴帴鐨勯�淇′俊閬揂TLVC ID
+	int backupatlvcid;			//澶囧崱ID
+	ATIECStatus  ATIEC_EStatus;
+	Version VScanCard;          //2012-09-24锛岃褰旳TIEC鐨勬壂鎻忓崱鐗堟湰
+	Version vMonitorCard;       //2012-09-24锛岃褰旳TIEC鐨勭洃鎺у崱鐗堟湰
+};
+
+enum display_type
+{
+	DISPLAY_TYPE_ONE_COLOR,
+	DISPLAY_TYPE_DOUBLE_COLOR,
+	DISPLAY_TYPE_REAL,			//0 - 鍏ㄥ僵瀹炲儚绱犲睆
+	DISPLAY_TYPE_VIRTUAL		//1 - 鍏ㄥ僵铏氭嫙灞�
+};
+
+#pragma endregion
+
+#endif

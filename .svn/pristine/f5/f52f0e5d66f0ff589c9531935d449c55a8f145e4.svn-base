@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/zong_bg"
+    tools:ignore="TextFields,HardcodedText,SpUsage,InefficientWeight,Deprecated,UselessParent" >
+
+    
+    <RelativeLayout
+    android:id="@+id/Layout_ConfigSysTitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:background="@drawable/common_bg" >
+
+    <TextView
+        android:id="@+id/textViewPathTitile"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:gravity="center_vertical"
+        android:text=">系统卡配置"
+        android:textSize="25sp" />
+
+    <Button
+        android:id="@+id/btn_ConfigsysBack"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/selector_tool_back" />
+
+    <Button
+        android:id="@+id/btn_Configsys_setings"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_toLeftOf="@+id/btn_ConfigsysBack"
+        android:background="@drawable/selector_settings" />
+
+    <ImageView
+        android:id="@+id/ConfigSysHome"
+        android:layout_width="80dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="2dp"
+        android:layout_toLeftOf="@+id/btn_Configsys_setings"
+        android:src="@drawable/selector_home" />
+</RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_btn"
+        android:layout_below="@+id/Layout_ConfigSysTitle"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:background="@anim/shape" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/textViewTTest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MAC"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="30sp" />
+
+                <EditText
+                    android:id="@+id/txt_MAC"
+                    android:layout_width="194dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.51"
+                    android:editable="false"
+                    android:textSize="30sp" >
+
+                    <requestFocus />
+                </EditText>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="0.74" >
+
+                <Switch
+                    android:id="@+id/switch_Video_SourceEnable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/config_sendcard_vido"
+                    android:textSize="30dp"
+                    android:typeface="sans" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" >
+
+                <TextView
+                    android:id="@+id/intervel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/config_acquisitioncard_chnum"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="30sp" />
+
+                <Spinner
+                    android:id="@+id/spin_Video_sourceNo"
+                    android:layout_width="513dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp" >
+
+        <Button
+            android:id="@+id/btn_Save"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/title_button"
+            android:text="@string/leddisplay_save"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
+    
+
+</RelativeLayout>

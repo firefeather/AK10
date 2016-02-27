@@ -1,0 +1,1228 @@
+package com.szaoto.ak10.ownerdraw;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.RectF;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Toast;
+
+import com.szaoto.ak10.Ak10Application;
+import com.szaoto.ak10.R;
+import com.szaoto.ak10.custom.CustomToast;
+import com.szaoto.ak10.sqlitedata.CabinetDB;
+import com.szaoto.ak10.util.UtilFun;
+
+public class CabinetAddCustomView extends View   {
+	Paint m_Paint;
+	PointF m_PrevFPts = new PointF();
+	PointF m_DownFPts = new PointF();	
+	PointF m_TouchDownPts =new PointF();
+	boolean bClick=false;
+	
+	//定义CustomView中的对象列表,相对坐标为本View
+	ArrayList<BasicViewObj> m_ViewObj =null;
+	
+	RectF  m_MoveRectF = new RectF();
+	
+	
+	//1:1时候的ViewPort
+    PointF	m_ViewPortPosFOrg = new  PointF(0,0);
+	
+   
+	final int LOG_MOVE =0;
+	final int LOG_SCROLL =1;
+	final int LOG_SIZE=2;
+	final int LOG_CREATE=3;
+	final int LOG_CREATE_GROUP=4;
+	final int LOG_DELETE=5;
+	final int LOG_DELETE_GROUP=6;
+	//
+	
+	OnBasicViewChangeListener m_BasicViewChangeListener;
+	
+	//相对于LedDisplay的位置	
+	/**/
+	int gTouchMode = 0;
+	private PointF mid = new PointF();  
+	private float oldDistance;  
+    private static final int NONE = 0;  
+    private static final int MOVE = 1;  
+    private static final int ZOOM = 2; 
+    private static final int SCROLL=3; 
+    public float gFactor = 1.0f;
+    public float gTempFactor=1.0f;
+    
+    HashMap<Integer, PointF> mapSelPos = new HashMap<Integer, PointF>();
+    
+//////////////////////////////////////////
+    
+    public BackForwardStack m_BackForwardStack = new  BackForwardStack();
+	//LedDisplay相对于View的坐标
+	private PointF m_ViewPortPosF=new PointF();	
+	//相对LED
+	public ArrayList<CabinetViewObj> m_ArrayCabinetViewList = new ArrayList<CabinetViewObj>();
+
+	
+	//选择的View对象
+	//private BasicViewObj m_SelBasicView=null;
+	
+	//比例因子
+	public float m_Factor = 1.0f;
+	final private int SPACE = 20;
+
+	PointF m_pFromDownPointViewPortF = new PointF();
+	ArrayList<BasicViewObj> m_ArrayListDownSel = new ArrayList<BasicViewObj>();
+	
+
+
+/////////////////////////////////////////
+    
+    
+    public ArrayList<CabinetViewObj> m_SelectedCbtArrayList =new ArrayList<CabinetViewObj>();
+
+	//当前选择的BaiscView
+	//public ArrayList<CabinetViewObj> m_ArraySelBasicView = new ArrayList<CabinetViewObj>();
+
+	public CabinetAddCustomView(Context context) {
+		super(context);			
+		m_Paint=new Paint();	
+		InitLedScreenViewHolder();
+		this.setClickable(true);		
+	}
+	
+	public void UpdateSelRect()
+	{
+		float xMax =0;
+		float yMax =0;
+		float xMin =0;
+		float yMin =0;
+		int nSelectedCbtArrayListCnt = m_SelectedCbtArrayList.size();
+		if (nSelectedCbtArrayListCnt==1) {		
+	    	    CabinetViewObj tCbtObj = m_SelectedCbtArrayList.get(0);
+				xMax = tCbtObj.m_leftCustomView+tCbtObj.m_WidthZoomed;    	
+	    		xMin =  tCbtObj.m_leftCustomView; 
+				yMax = tCbtObj.m_topCustomView+tCbtObj.m_HeightZoomed;
+	    		yMin =  tCbtObj.m_topCustomView;
+			
+		}
+		else {
+			    for(int i=0;i<nSelectedCbtArrayListCnt;i++)
+			    {
+			    	CabinetViewObj tCbtObj = m_SelectedCbtArrayList.get(i);
+			    	
+		            if (i==0) {
+						xMax = tCbtObj.m_leftCustomView+tCbtObj.m_WidthZoomed;    	
+			    		xMin =  tCbtObj.m_leftCustomView; 
+						yMax = tCbtObj.m_topCustomView+tCbtObj.m_HeightZoomed;
+			    		yMin =  tCbtObj.m_topCustomView;
+					}
+		            else {
+		            	if (xMax<tCbtObj.m_leftCustomView+tCbtObj.m_WidthZoomed) {
+							xMax = tCbtObj.m_leftCustomView+tCbtObj.m_WidthZoomed;
+						}
+				    	if (xMin>tCbtObj.m_leftCustomView) {
+				    		xMin =  tCbtObj.m_leftCustomView;
+						}
+				    	
+				    	if (yMax<tCbtObj.m_topCustomView+tCbtObj.m_HeightZoomed) {
+							yMax = tCbtObj.m_topCustomView+tCbtObj.m_HeightZoomed;
+						}
+				    	if (yMin>tCbtObj.m_topCustomView) {
+				    		yMin =  tCbtObj.m_topCustomView;
+						}
+					}
+			    
+			    	
+			    }
+		}
+	   
+	    
+	    m_MoveRectF.left = xMin;
+	    m_MoveRectF.top = yMin;
+	    m_MoveRectF.right = xMax;
+	    m_MoveRectF.bottom = yMax;
+	    
+	    for(int i =0;i<nSelectedCbtArrayListCnt;i++){ 	
+	    	CabinetViewObj tCbtObj = m_SelectedCbtArrayList.get(i);  	
+	    	tCbtObj.setxMoveRela(tCbtObj.m_leftCustomView-m_MoveRectF.left);
+	    	tCbtObj.setyMoveRela(tCbtObj.m_topCustomView-m_MoveRectF.top);
+	    }
+  
+	}
+	
+	public CabinetAddCustomView(Context context, AttributeSet attrs,
+			int defStyle) {
+			super(context, attrs, defStyle);
+			m_Paint=new Paint();	
+			InitLedScreenViewHolder();
+			this.setClickable(true);	
+	}
+
+		
+	public CabinetAddCustomView(Context context, AttributeSet attrs) {
+			super(context, attrs);
+			m_Paint=new Paint();	
+			InitLedScreenViewHolder();
+			this.setClickable(true);	
+	}
+	
+	
+	public void SelectAllCabinetViewObj(){
+		int nSize = m_ArrayCabinetViewList.size();
+		for(int i=0;i<nSize;i++){
+			m_ArrayCabinetViewList.get(i).setSel(true);
+			CabinetViewObj tCabinetViewObj = m_ArrayCabinetViewList.get(i);
+			m_SelectedCbtArrayList.add(tCabinetViewObj);
+		}
+		
+		invalidate();
+	}
+	
+	public void UnSelectAllCabinetViewObj()
+	{
+		for(int i=0;i<m_ArrayCabinetViewList.size();i++){
+			m_ArrayCabinetViewList.get(i).setSel(false);
+			m_SelectedCbtArrayList.remove(m_ArrayCabinetViewList.get(i));
+		}
+		
+		invalidate();
+		
+	}
+	
+	public void ZoomIn()
+	{
+		m_Factor+=0.1;
+		ZoomViews(m_Factor);
+	}
+	
+	public void ZoomOut()
+	{
+        m_Factor-=0.1;	
+		ZoomViews(m_Factor);
+	}
+	
+	public void FitToZoom()
+	{
+		float zoomx;
+		float zoomy;
+		
+		float leftMin=m_ArrayCabinetViewList.get(0).m_leftOrg;
+		float rightMax=m_ArrayCabinetViewList.get(0).m_leftOrg+
+				m_ArrayCabinetViewList.get(0).m_width;
+		float topMin =m_ArrayCabinetViewList.get(0).m_topOrg;
+		float bottomMax=m_ArrayCabinetViewList.get(0).m_topOrg+
+				m_ArrayCabinetViewList.get(0).m_height;
+
+		ArrayList<PointF> arrPoint = new ArrayList<PointF>();
+		int nArrayCabinetViewListSize = m_ArrayCabinetViewList.size();
+		for (int i = 0; i < nArrayCabinetViewListSize; i++) {
+			CabinetViewObj tCabinetViewObj = (CabinetViewObj) m_ArrayCabinetViewList.get(i);
+			
+			PointF point1 = new PointF(tCabinetViewObj.m_leftOrg,
+					tCabinetViewObj.m_topOrg);
+			PointF point2 = new PointF(tCabinetViewObj.m_leftOrg+tCabinetViewObj.m_width,
+					tCabinetViewObj.m_topOrg+tCabinetViewObj.m_height);
+			arrPoint.add(point1);
+			arrPoint.add(point2);
+			
+			if (leftMin>=point1.x) {
+				leftMin=point1.x;
+			}
+			if (topMin>=point1.y) {
+				topMin=point1.y;
+			}
+			if (rightMax<=point2.x) {
+				rightMax=point2.x;
+			}
+			if (bottomMax<=point2.y) {
+				bottomMax=point2.y;
+			}	
+		}
+
+
+		zoomx = (float) (1.00f * 1280 / (rightMax - leftMin));
+		zoomy = (float) (1.00f * 565 / (bottomMax - topMin));
+
+		float gZoomFactor;
+		
+		if (zoomx > zoomy) {
+			gZoomFactor = zoomy;
+		} else {
+			gZoomFactor = zoomx;
+		}
+		//m_Factor=(float) (m_Factor*gZoomFactor);
+		
+	 	m_ViewPortPosFOrg.x= leftMin;
+	 	m_ViewPortPosFOrg.y= topMin;
+
+	 	float tViewPortX = m_Factor*m_ViewPortPosFOrg.x;
+	 	float tViewPortY = m_Factor*m_ViewPortPosFOrg.y;
+	 	
+	 	setM_ViewPortPosF(new PointF(tViewPortX,tViewPortY));
+		 
+	 	ZoomViews(gZoomFactor);
+	 	
+
+		
+		
+	}
+	
+	public void ZoomNormal()
+	{
+        m_Factor=1;	
+		ZoomViews(m_Factor);
+	}
+	
+	
+
+		
+	//初始化数据
+	private void InitLedScreenViewHolder()
+	{
+
+		m_ViewPortPosF= new PointF();
+		
+		//初始是重合的
+		m_ViewPortPosF.x=0;
+		m_ViewPortPosF.y=0;
+		
+		setM_ViewPortPosF(m_ViewPortPosF);
+
+	}
+	
+	//新添加BasicView,这个坐标是相对于LedDisplay的	
+	public void AddBasicView(BasicViewObj tBasicView) {
+	
+		//初始状态
+		AddView(tBasicView);
+		//添加BasicView对象改变的方法
+		//m_BasicViewChangeListener.OnBasicViewChange(tBasicView);
+		invalidate();		
+	}
+	
+	public void SetOnBasicViewChange(OnBasicViewChangeListener tBasicViewChangeListenr){
+		m_BasicViewChangeListener= tBasicViewChangeListenr;
+	}
+	
+	//删去BasicView
+	public void DeleteBasicView(BasicViewObj tBasicView)
+	{
+		if (tBasicView instanceof CabinetViewObj) {
+			m_ArrayCabinetViewList.remove(tBasicView);
+		}
+		UpdateSelRect();
+		invalidate();
+	}
+	
+	//查找选择的对象
+	private BasicViewObj FindBasicViewByDownPoint(PointF tDownPointF)
+	{
+		//这个tDownPoint是针对View的坐标
+		int nSize = m_ArrayCabinetViewList.size();
+	   	for (int i = 0; i < nSize; i++) {
+			
+			RectF tRectF = new RectF();
+			
+			tRectF.left = m_ArrayCabinetViewList.get(i).m_leftCustomView;
+			tRectF.top = m_ArrayCabinetViewList.get(i).m_topCustomView;
+			tRectF.right =  m_ArrayCabinetViewList.get(i).m_leftCustomView+
+					 m_ArrayCabinetViewList.get(i).m_WidthZoomed;
+			tRectF.bottom = m_ArrayCabinetViewList.get(i).m_topCustomView+
+					 m_ArrayCabinetViewList.get(i).m_HeightZoomed;
+			if (PtInRect(tDownPointF, tRectF)) {		
+				return m_ArrayCabinetViewList.get(i);
+			}
+		}
+
+	   return null;
+	}
+
+
+	//移动视口，对象本身不移动
+	public void ScrollView(float deltaX,float deltaY)
+	{	
+		float tViewPortX = m_ViewPortPosF.x-deltaX;
+		float tViewPortY = m_ViewPortPosF.y-deltaY;
+			
+		if (tViewPortX<0) {
+			tViewPortX=0;
+		}
+	
+		if (tViewPortY<0) {
+			tViewPortY=0;
+		}
+		
+		if(tViewPortX>6400){
+			tViewPortX=6400;
+		}
+		if (tViewPortY>3420) {
+			tViewPortY=3420;
+		}
+		
+		//String strInfoString = "ViewPort:X="+tViewPortX+"Y="+tViewPortY+"DX="+deltaX+",DY="+deltaY;
+		
+		//Log.i("SCRoll", strInfoString);
+		
+		setM_ViewPortPosF(new PointF(tViewPortX,tViewPortY));
+		
+		invalidate();
+		
+	}
+	
+
+	
+	public void DrawCabinet(Canvas canvas,Paint paint,CabinetViewObj tCabinetView)
+	{
+		paint.setStyle(Style.FILL);
+		paint.setColor(getResources().getColor(R.color.cbt_green));
+	   
+	
+	   //画外包矩形
+	   RectF tmpRectF = new RectF();		
+	   tmpRectF.left=tCabinetView.m_leftCustomView+1;
+	   tmpRectF.top=tCabinetView.m_topCustomView+1;
+	   tmpRectF.right=tCabinetView.m_leftCustomView+tCabinetView.m_WidthZoomed-1;
+	   tmpRectF.bottom=tCabinetView.m_topCustomView+tCabinetView.m_HeightZoomed-1;	  
+	   canvas.drawRect(tmpRectF, paint);
+	   	  
+	   if(tCabinetView.isSel())
+	   {
+		   Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.select);  
+		   canvas.drawBitmap(bmp, tmpRectF.right-25, tmpRectF.top+5, null);  
+	   }
+	   
+	   paint.setColor(Color.YELLOW);
+	   //paint.setStrokeWidth(5);
+	   paint.setTextSize(18);
+	   String strID =String.valueOf(tCabinetView.getmBasicViewID());
+	   canvas.drawText(strID, tmpRectF.left+3, tmpRectF.top+15, paint);
+	   
+	   //
+		paint.setTextSize(18 * m_Factor);
+		String strCbtName = tCabinetView.getStrTypeString();
+		canvas.drawText(strCbtName, tmpRectF.left + 10, tmpRectF.top
+				+ (tmpRectF.bottom - tmpRectF.top) / 2, paint);
+
+	   
+	}
+	
+	public void DrawCabinetArray(Canvas canvas,Paint paint)
+	{
+		ArrayList<CabinetViewObj> tArr_BasicViews =  m_ArrayCabinetViewList;
+		int nViewSize = tArr_BasicViews.size();
+		for (int i = 0; i < nViewSize; i++) {
+			
+			DrawCabinet(canvas,paint,tArr_BasicViews.get(i));
+		}
+	}
+
+	//画选择框线和点
+	public void DrawRectAndPoint(RectF rect,Canvas canvas,Paint paint)
+	{
+			
+			
+			PointF[] ptArrPointsF=new PointF[8];
+			
+			for (int i = 0; i < ptArrPointsF.length; i++) {
+				ptArrPointsF[i]=new PointF();
+			}
+			
+			//左上
+			ptArrPointsF[0].x=rect.left;
+			ptArrPointsF[0].y=rect.top;  	
+	    	//左中	
+			ptArrPointsF[1].x=rect.left;
+			ptArrPointsF[1].y=((rect.bottom-rect.top)/2)+rect.top;
+	    	//左下
+			ptArrPointsF[2].x=rect.left;
+			ptArrPointsF[2].y=rect.bottom;
+	    	//上中
+			ptArrPointsF[3].x=((rect.right-rect.left)/2)+rect.left;
+			ptArrPointsF[3].y=rect.top;
+	    	//下中
+			ptArrPointsF[4].x=((rect.right-rect.left)/2)+rect.left;
+			ptArrPointsF[4].y=rect.bottom;
+	    	//右上
+			ptArrPointsF[5].x=rect.right;
+			ptArrPointsF[5].y=rect.top;
+	    	//右中
+			ptArrPointsF[6].x=rect.right;
+			ptArrPointsF[6].y=(rect.top-rect.bottom)/2+rect.bottom; 	
+	    	//右下
+			ptArrPointsF[7].x=rect.right;
+			ptArrPointsF[7].y=rect.bottom;
+			
+			paint.setColor(Color.YELLOW);
+			paint.setStrokeWidth(3);
+			
+			float[] fBorders = {ptArrPointsF[0].x,ptArrPointsF[0].y,ptArrPointsF[2].x,ptArrPointsF[2].y,
+					ptArrPointsF[2].x,ptArrPointsF[2].y,ptArrPointsF[7].x,ptArrPointsF[7].y,
+					ptArrPointsF[7].x,ptArrPointsF[7].y,ptArrPointsF[5].x,ptArrPointsF[5].y,
+					ptArrPointsF[5].x,ptArrPointsF[5].y,ptArrPointsF[0].x,ptArrPointsF[0].y,};
+			
+			for(int i=0;i<8;i++){
+				
+				canvas.drawCircle(ptArrPointsF[i].x, ptArrPointsF[i].y, 10, paint);
+			
+			}
+			
+			canvas.drawLines(fBorders, paint);
+			
+	}
+	
+	public void DrawInterface(Canvas canvas,Paint paint,InterfaceViewObj tInterfaceView)
+	{
+		paint.setStyle(Style.FILL_AND_STROKE);
+		paint.setColor(Color.argb(127,255,0,255));	
+		paint.setStrokeWidth(3);
+	    BasicViewObj tBasicView = tInterfaceView;   
+	
+	   //画外包矩形
+	   RectF tmpRectF = new RectF();		
+	   tmpRectF.left=tBasicView.m_leftCustomView+1;
+	   tmpRectF.top=tBasicView.m_topCustomView+1;
+	   tmpRectF.right=tBasicView.m_leftCustomView+tBasicView.m_WidthZoomed-1;
+	   tmpRectF.bottom=tBasicView.m_topCustomView+tBasicView.m_HeightZoomed-1;	  
+	   canvas.drawRect(tmpRectF, paint);
+	   
+	   //画外框选择效果
+	   if (tInterfaceView.isSel()) {	
+		   DrawRectAndPoint(tmpRectF,canvas,paint);
+	   }
+
+	}
+	
+	//画所有的对象
+	public void DrawBaiscViewObject(Canvas canvas,Paint paint)
+	{	
+	        DrawCabinetArray(canvas, paint);
+	}
+
+	
+	public boolean PtInRect(PointF point,RectF rect)
+	{
+		if (point.x>=rect.left&&point.x<=rect.right&&point.y>=rect.top&&point.y<=rect.bottom) {
+			
+			return true;
+		}else {
+			return false;
+		}
+	}
+		
+	
+	public void ZoomViews(float fFactor){
+		if (fFactor<0.2) {
+			fFactor=0.2f;
+		}
+		if (fFactor>2) {
+			fFactor=2f;
+		} 
+	
+		SetZoomFactor(fFactor);
+		invalidate();
+	}
+	
+	//撤销恢复
+	public void RedoOperation(){
+		ObjLog tObjLog =  m_BackForwardStack.getRedoOpStation();
+		if (tObjLog==null) {
+			Toast.makeText(getContext(), "已经前进完毕", Toast.LENGTH_LONG).show();
+			return;
+		}
+		  
+		int tMode = tObjLog.getM_ActionMode();   
+		if (tMode ==LOG_CREATE_GROUP ) {			
+			//群体添加，要群体添加
+			ArrayList<BasicViewObj>  tArrayList = tObjLog.getBasicViewObjArrTo();
+			int nSize = tArrayList.size();
+			for(int i = 0;i<nSize;i++)
+			{
+				//从UI中添加
+				AddBasicView(tArrayList.get(i));
+				//从文件中添加
+			}
+		    	 
+		}
+		    
+	    if (tMode == LOG_DELETE_GROUP) {
+	    	ArrayList<BasicViewObj>  tArrayList = tObjLog.getBasicViewObjArrFrom();
+	    	int nSize = tArrayList.size();
+	    	for(int i = 0;i<nSize;i++)
+	    	{
+	    		//从UI中添加
+	    		DeleteBasicView(tArrayList.get(i));
+	    		//从文件中添加
+	    	}
+	    }
+				
+	    if (tMode == LOG_SCROLL) {
+	    	PointF tPointFFrom = tObjLog.getM_ptVpFrom();
+	    	PointF tPointFTo = tObjLog.getM_ptVpTo();
+	    	
+	    	float deltaX = tPointFFrom.x-tPointFTo.x;
+	    	float deltaY = tPointFFrom.y-tPointFTo.y;
+	        ScrollView(deltaX, deltaY);
+	    	m_ViewPortPosF = tPointFTo;
+	    	m_ViewPortPosFOrg.x=tPointFTo.x/m_Factor;
+	    	m_ViewPortPosFOrg.y=tPointFTo.y/m_Factor;
+		}
+	    if (tMode == LOG_MOVE) {
+	    	ArrayList<BasicViewObj> tToListObjs = tObjLog.getBasicViewObjArrTo();
+	    	int nArrayCabinetViewListSize = m_ArrayCabinetViewList.size();
+	    	for(int i=0;i<nArrayCabinetViewListSize;i++){   	
+				CabinetViewObj tCbtObj =  m_ArrayCabinetViewList.get(i);
+				int nObjsCnt = tToListObjs.size(); 
+				for (int j = 0; j < nObjsCnt; j++) {
+					if (tCbtObj.getmBasicViewID()==tToListObjs.get(j).getmBasicViewID()) {			
+						tCbtObj.m_leftOrg = tToListObjs.get(j).m_leftOrg;
+						tCbtObj.m_topOrg = tToListObjs.get(j).m_topOrg;
+							
+						tCbtObj.m_leftZoomed = tToListObjs.get(j).m_leftZoomed;
+						tCbtObj.m_topZoomed= tToListObjs.get(j).m_topZoomed;
+							
+						tCbtObj.m_leftCustomView = tToListObjs.get(j).m_leftCustomView;
+						tCbtObj.m_topCustomView = tToListObjs.get(j).m_topCustomView;			
+						break;
+					}
+				}
+	    	}
+		}
+	    invalidate();  
+	}
+	
+	public void UndoOperation() throws CloneNotSupportedException{
+	
+	     ObjLog tObjLog =  m_BackForwardStack.getUndoOpStation();
+		
+	     if (tObjLog==null) {
+			Toast.makeText(getContext(), "已经返回完毕", Toast.LENGTH_LONG).show();
+			return;
+		}
+	     
+	     int tMode = tObjLog.getM_ActionMode();
+	     
+	     if (tMode ==LOG_CREATE_GROUP ) {			
+	    	 //群体添加，要群体删除
+	    	 ArrayList<BasicViewObj>  tArrayList=  tObjLog.getBasicViewObjArrTo();
+	    	 
+	    	 for(int i = 0;i<tArrayList.size();i++)
+	    	 {
+	    		 //从UI中删除
+	    	     DeleteBasicView(tArrayList.get(i));
+	    	     //从文件中删除
+	    	 }
+	    	 
+		}
+	     
+	    if (tMode == LOG_DELETE_GROUP) {
+			
+   	       ArrayList<BasicViewObj>  tArrayList=  tObjLog.getBasicViewObjArrFrom();
+	    	 
+	    	 for(int i = 0;i<tArrayList.size();i++)
+	    	 {
+	    		 //从UI中添加
+	    	     AddBasicView(tArrayList.get(i));
+	    	     //从文件中添加
+	    	 }
+		}
+		
+	    if (tMode == LOG_SCROLL) {
+			
+	    	PointF tPointFFrom = tObjLog.getM_ptVpFrom();
+	    	PointF tPointFTo = tObjLog.getM_ptVpTo();
+	    	
+	    	float deltaX = tPointFFrom.x-tPointFTo.x;
+	    	float deltaY = tPointFFrom.y-tPointFTo.y;
+	        ScrollView(-deltaX, -deltaY);
+	    	m_ViewPortPosF = tPointFFrom;
+	    	m_ViewPortPosFOrg.x=tPointFFrom.x/m_Factor;
+	    	m_ViewPortPosFOrg.y=tPointFFrom.y/m_Factor;
+		}
+	    
+	    if (tMode==LOG_MOVE) {			
+	    	  ArrayList<BasicViewObj> tFromListObjs = tObjLog.getBasicViewObjArrFrom();
+			  int nSize = m_ArrayCabinetViewList.size();
+	    	  for(int i=0; i<nSize; i++){   	
+	    		    CabinetViewObj tCbtObj =  m_ArrayCabinetViewList.get(i);
+					int nFromListObjsCnt = tFromListObjs.size(); 
+	    		    for (int j = 0; j < nFromListObjsCnt; j++) {
+						if (tCbtObj.getmBasicViewID()==tFromListObjs.get(j).getmBasicViewID()) {			
+							tCbtObj.m_leftOrg = tFromListObjs.get(j).m_leftOrg;
+							tCbtObj.m_topOrg = tFromListObjs.get(j).m_topOrg;
+							
+							tCbtObj.m_leftZoomed = tFromListObjs.get(j).m_leftZoomed;
+							tCbtObj.m_topZoomed= tFromListObjs.get(j).m_topZoomed;
+							
+							tCbtObj.m_leftCustomView = tFromListObjs.get(j).m_leftCustomView;
+							tCbtObj.m_topCustomView = tFromListObjs.get(j).m_topCustomView;
+							
+							break;
+						}
+					}
+	    		  
+
+	    	  }
+ 	
+		}
+	    
+		 invalidate();		
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+
+		 int action = event.getActionMasked();  	 
+		 if (action == MotionEvent.ACTION_POINTER_DOWN) { 		
+	    	   oldDistance = (float)Math.sqrt((event.getX(0)-event.getX(1))*(event.getX(0)-event.getX(1))
+		   			 +(event.getY(0)-event.getY(1))*(event.getY(0)-event.getY(1)));  
+		   
+			    if (oldDistance > 10f) {  
+		          mid.set((event.getX(0)+event.getX(1))/2, (event.getY(0)+event.getY(1))/2);  
+		          gTempFactor = m_Factor;
+		          gTouchMode = ZOOM;  
+		        } 
+ 
+		 } else if (action == MotionEvent.ACTION_POINTER_UP) {
+			// getParent().requestDisallowInterceptTouchEvent(false);
+			 
+			 float newDistance;  
+				newDistance = (float)Math.sqrt((event.getX(0)-event.getX(1))*(event.getX(0)-event.getX(1))+(event.getY(0)-event.getY(1))*(event.getY(0)-event.getY(1)));  
+				if(newDistance > 10f) {  
+				  
+					m_Factor=newDistance/oldDistance; 
+					m_Factor=m_Factor*gTempFactor;
+				    ZoomViews(m_Factor);
+				  
+				   // oldDistance = newDistance;                       
+				}
+				   
+				gTouchMode=NONE;  	
+			 
+		 }else if (action ==MotionEvent.ACTION_MOVE) {
+			
+			  if(gTouchMode == ZOOM)   {
+	               float newDistance1;  
+	               newDistance1 = (float)Math.sqrt((event.getX(0)-event.getX(1))*(event.getX(0)-event.getX(1))+(event.getY(0)-event.getY(1))*(event.getY(0)-event.getY(1)));  
+	             
+		           if(newDistance1 > 10f) {      
+		        	      m_Factor=newDistance1/oldDistance;      	  
+		        	      m_Factor=m_Factor*gTempFactor;
+	            	      ZoomViews(m_Factor);
+		            	  
+		           }
+
+	              // return true;
+			 }
+			 
+			 else if (gTouchMode == SCROLL) {
+			 
+					 //滚动
+					 PointF tPointF=new PointF();
+					 tPointF.x=event.getX();
+					 tPointF.y=event.getY();
+				 
+					 float fDeltaX = tPointF.x-m_PrevFPts.x;
+					 float fDeltaY = tPointF.y-m_PrevFPts.y;
+	
+					 if ((Math.abs(fDeltaX)>=1024f&&Math.abs(fDeltaY)<=-1024f)) {
+						 fDeltaX=0;
+						 fDeltaY=0;
+					 }
+					 
+					 if (!(Math.abs(fDeltaX)<=5f&&Math.abs(fDeltaY)<=5f)) {
+						 ScrollView(fDeltaX,fDeltaY);
+					 }
+				 
+					 m_PrevFPts=tPointF;
+					 
+					 
+			 }
+			 else if (gTouchMode == MOVE) {
+				 
+				 PointF tPointF=new PointF();
+				 tPointF.x=event.getX();
+				 tPointF.y=event.getY();
+			 
+				 float fDeltaX = tPointF.x-m_PrevFPts.x;
+				 float fDeltaY = tPointF.y-m_PrevFPts.y;
+				 
+				 MoveBasicView(fDeltaX, fDeltaY);
+		 
+				 m_PrevFPts=tPointF;
+			}
+			 
+		 }else if (action==MotionEvent.ACTION_DOWN) {
+			 
+			 mapSelPos.clear();
+	 
+			 PointF tPointF = new PointF();
+			 tPointF.x=event.getX();
+			 tPointF.y=event.getY();
+			 
+			 m_DownFPts.x=event.getX();
+			 m_DownFPts.y=event.getY();
+	
+			 //看落下的点是否在选择的BaiscView的Rect内	 
+			 gTouchMode = SCROLL;
+		
+			 
+			 int i =0;
+			 for(;i<m_SelectedCbtArrayList.size();i++)
+			 {
+				 BasicViewObj tBasicVieObj = m_SelectedCbtArrayList.get(i);
+				 RectF tRectF = new RectF();
+				 tRectF.left =tBasicVieObj.m_leftCustomView;
+				 tRectF.top = tBasicVieObj.m_topCustomView;
+				 tRectF.right = tBasicVieObj.m_leftCustomView + 
+						 tBasicVieObj.m_WidthZoomed;
+				 tRectF.bottom =tBasicVieObj.m_topCustomView+
+						 tBasicVieObj.m_HeightZoomed;
+			
+				     if (PtInRect(tPointF, tRectF)) {
+				    	 gTouchMode = MOVE;
+				    	 //记录移动对象的初始位置
+				    	 for (int j = 0; j < m_SelectedCbtArrayList.size(); j++) {
+				    		 
+				    		 mapSelPos.put(m_SelectedCbtArrayList.get(j).getmBasicViewID(),
+				    				 new PointF(tBasicVieObj.m_leftCustomView, tBasicVieObj.m_topCustomView));
+							
+						 }
+				    	 
+				    	
+				    	 break;
+					 }else{
+						 continue;
+					 }						 
+			 }
+			 
+		     m_pFromDownPointViewPortF.x= m_ViewPortPosF.x;
+		     m_pFromDownPointViewPortF.y= m_ViewPortPosF.y;
+		     
+			 m_PrevFPts = tPointF;
+
+		 }else if (action==MotionEvent.ACTION_UP) {		
+			 
+			 if (gTouchMode==SCROLL) {
+					ObjLog tObjLog = new ObjLog();
+					tObjLog.setM_ActionMode(LOG_SCROLL);
+					tObjLog.setM_ptVpFrom(m_pFromDownPointViewPortF);
+					tObjLog.setM_ptVpTo(m_ViewPortPosF);
+					m_BackForwardStack.UpdateCurOpStation(tObjLog);
+			}
+			 
+			 //当MOVE停止的时候
+			 if (gTouchMode==MOVE) {
+		
+
+			     for (int i = 0; i < m_SelectedCbtArrayList.size(); i++) {
+					
+			       float x = m_SelectedCbtArrayList.get(i).m_leftCustomView;
+			       float y = m_SelectedCbtArrayList.get(i).m_topCustomView;
+			       
+			       double dMovDis = getDistance(new PointF(
+							x,
+							y), mapSelPos.get(m_SelectedCbtArrayList.get(i).getmBasicViewID()));
+			    	 
+					if (dMovDis <= 5) {
+
+						m_SelectedCbtArrayList.get(i).m_leftCustomView = mapSelPos.get(m_SelectedCbtArrayList.get(i).getmBasicViewID()).x;
+						m_SelectedCbtArrayList.get(i).m_topCustomView = mapSelPos.get(m_SelectedCbtArrayList.get(i).getmBasicViewID()).y;
+
+						m_SelectedCbtArrayList.get(i).m_leftZoomed = m_SelectedCbtArrayList.get(i).m_leftCustomView
+								+ m_ViewPortPosF.x;
+						m_SelectedCbtArrayList.get(i).m_topZoomed = m_SelectedCbtArrayList.get(i).m_topCustomView
+								+ m_ViewPortPosF.y;
+
+						m_SelectedCbtArrayList.get(i).m_leftOrg = m_SelectedCbtArrayList.get(i).m_leftZoomed
+								/ m_Factor;
+						m_SelectedCbtArrayList.get(i).m_topOrg = m_SelectedCbtArrayList.get(i).m_topZoomed
+								/ m_Factor;
+
+					}
+			       
+			       
+				}
+		
+		    	 
+
+				 
+			  }
+			 //如果抬起的点和落下的点事同一点，选择
+			 gTouchMode = NONE;
+			 PointF tPointF = new PointF();
+			 tPointF.x=event.getX();
+			 tPointF.y=event.getY();
+
+			 boolean bClick=false;			
+			 if (Math.abs(tPointF.x-m_DownFPts.x)<=3&&Math.abs( tPointF.y-m_DownFPts.y)<=3) {		
+					bClick=true;
+			  }
+			 
+			 if (bClick) {
+				
+				 //获取选择的对象
+				CabinetViewObj tBasicViewObj = (CabinetViewObj)FindBasicViewByDownPoint(tPointF);
+				if (tBasicViewObj!=null) {	
+
+					if(!tBasicViewObj.isSel())
+					{
+						tBasicViewObj.setSel(true);
+						m_SelectedCbtArrayList.add(tBasicViewObj);
+					}
+					else {
+						tBasicViewObj.setSel(false);
+						m_SelectedCbtArrayList.remove(tBasicViewObj);
+					}						
+					//m_LedScreenViewHolder.setM_SelBasicView(tBasicViewObj);
+				}
+				else {
+			
+					  UnSelectAllCabinetViewObj();
+				}
+				invalidate();	
+				
+				UpdateSelRect();
+			 }
+			 
+			 SnapCabinet(1);
+			 
+
+			 //将坐标更新进去
+			 for (int j = 0; j < m_SelectedCbtArrayList.size(); j++) {
+				
+				 int nID = m_SelectedCbtArrayList.get(j).getmBasicViewID();
+				 int nx = UtilFun.f2i(m_SelectedCbtArrayList.get(j).m_leftOrg);
+				 int ny = UtilFun.f2i( m_SelectedCbtArrayList.get(j).m_topOrg);
+				 
+				 CabinetDB.UpdateCoordinate(nID, new Point(nx,ny),Ak10Application.GetLedId());
+			 }
+			 
+			 CustomToast.showToast(getContext(), "", 1);
+			 
+			 invalidate();
+		 }
+		 
+		 
+		
+		
+		return super.onTouchEvent(event);
+	}	
+	
+	@Override
+	protected void onDraw(Canvas canvas) {	
+		DrawBaiscViewObject(canvas,m_Paint);
+		super.onDraw(canvas);
+	}
+
+	public ArrayList<CabinetViewObj> getM_SelectedCbtArrayList() {
+		return m_SelectedCbtArrayList;
+	}
+
+	public void setM_SelectedCbtArrayList(ArrayList<CabinetViewObj> m_SelectedCbtArrayList) {
+		this.m_SelectedCbtArrayList = m_SelectedCbtArrayList;
+	}
+
+	
+
+	
+	public void setM_ViewPortPosF(PointF t_ViewPortPosF) {
+		this.m_ViewPortPosF = t_ViewPortPosF;
+		
+		m_ViewPortPosFOrg.x= t_ViewPortPosF.x/m_Factor;
+		m_ViewPortPosFOrg.y= t_ViewPortPosF.y/m_Factor;
+	
+		//更新viewport后，要跟新zoomed和view
+		for (int i = 0; i < m_ArrayCabinetViewList.size(); i++) {
+	  
+		  float tLeft =  m_ArrayCabinetViewList.get(i).m_leftZoomed-m_ViewPortPosF.x;
+		  float tTop  =  m_ArrayCabinetViewList.get(i).m_topZoomed-m_ViewPortPosF.y;
+		  
+		  m_ArrayCabinetViewList.get(i).m_leftCustomView  =tLeft;
+		  m_ArrayCabinetViewList.get(i).m_topCustomView  =tTop;
+		
+		}
+	
+		UpdateSelRect();
+		
+	}
+	
+	public double getDistance(PointF p1, PointF p2) {
+		double _x = Math.abs(p1.x - p2.x);
+		double _y = Math.abs(p1.y - p2.y);
+		return Math.sqrt(_x * _x + _y * _y);
+	}
+
+	//箱体吸附
+	public void SnapCabinet(int tStyle){
+		
+	    for (int a = 0; a < m_SelectedCbtArrayList.size(); a++) {
+			
+	    	BasicViewObj tBasicViewObj = m_SelectedCbtArrayList.get(a);
+
+	    	//移动对象4个角的坐标，//换算过去的1:1的坐标
+			float left1 = tBasicViewObj.m_leftCustomView;
+			float top1 = tBasicViewObj.m_topCustomView;
+			float right1 =tBasicViewObj.m_leftCustomView+tBasicViewObj.m_WidthZoomed;
+			float bottom1 = tBasicViewObj.m_topCustomView+tBasicViewObj.m_HeightZoomed;
+			
+			
+			//tBasicView.adsorptCbtViewPosPoint.x=-1;
+			//tBasicView.adsorptCbtViewPosPoint.y=-1;
+
+			PointF[] ptsTemPoints = new PointF[4];
+			ptsTemPoints[0]=new PointF(left1,top1);
+			ptsTemPoints[1]=new PointF(left1,bottom1);
+			ptsTemPoints[2]=new PointF(right1,top1);
+			ptsTemPoints[3]=new PointF(right1,bottom1);
+			
+			float TempX=0;
+			float TempY=0;
+			int nStation=-1;
+			
+			for (int j=0; j<m_ArrayCabinetViewList.size();j++) { // 遍历箱体
+			    CabinetViewObj	cabinetView=m_ArrayCabinetViewList.get(j);
+   
+				if (cabinetView!=null) {
+					
+				if (cabinetView.getmBasicViewID()==tBasicViewObj.getmBasicViewID()) {
+					continue;
+				}
+					
+				//箱体4个角的坐标
+				float left = cabinetView.m_leftCustomView;
+				float top = cabinetView.m_topCustomView;
+				float right =cabinetView.m_leftCustomView+cabinetView.m_WidthZoomed;
+				float bottom = cabinetView.m_topCustomView+cabinetView.m_HeightZoomed;
+				
+				int i=0;
+				for (i = 0; i < 4; i++) {
+
+					switch (i) {
+					case 0:
+						TempX =left;
+						TempY =top;
+				     	break;
+					case 1:
+						TempX =right;
+						TempY =top;	
+						break;
+					case 2:
+						TempX =left;
+						TempY =bottom;		
+						break;
+					case 3:
+						TempX =right;
+						TempY =bottom;			
+						break;
+					default:
+						break;
+					}
+					int m=0;
+					for( m=0;m<4;m++){
+						if((Math.abs(ptsTemPoints[m].x - TempX) <= SPACE*m_Factor&&
+								Math.abs(ptsTemPoints[m].y - TempY) <= SPACE*m_Factor))
+					    {
+							 nStation=m+1;					
+							 break;
+						}
+					}
+					
+					if (nStation!=-1) {
+						break;
+					}
+					//查看时哪个角吸附
+
+				}      
+				//变换大小
+				if (tStyle==0) {
+					continue;
+				}
+				else{
+					//移动
+					
+					if (nStation==-1) {		
+						continue;
+					}
+					
+					float dx=TempX-ptsTemPoints[nStation-1].x;
+					float dy=TempY-ptsTemPoints[nStation-1].y;
+					
+					RectF tRect = new RectF();
+		
+					if (nStation==1) {	
+						tRect.left=TempX;
+						tRect.top=TempY;
+						tRect.right=right1+dx;
+						tRect.bottom=bottom1+dy;
+						
+					}else if (nStation==2) {	
+						tRect.left=TempX;
+						tRect.top=top1+dy;
+						tRect.right=right1+dx;
+						tRect.bottom=TempY;
+					
+					}else if (nStation==3) {
+						
+						tRect.left=left1+dx;
+						tRect.top=TempY;
+						tRect.right=TempX;
+						tRect.bottom=bottom1+dy;
+						
+				
+					}else if (nStation==4) {
+						
+						tRect.left=left1+dx;
+						tRect.top=top1+dy;
+						tRect.right=TempX;
+						tRect.bottom=TempY;
+				    }
+	
+					tBasicViewObj.m_leftOrg=(tRect.left+m_ViewPortPosF.x)/m_Factor;
+					tBasicViewObj.m_topOrg=(tRect.top+m_ViewPortPosF.y)/m_Factor;
+				
+					tBasicViewObj.m_leftZoomed=tRect.left+m_ViewPortPosF.x;
+					tBasicViewObj.m_topZoomed=tRect.top+m_ViewPortPosF.y;
+					
+					tBasicViewObj.m_leftCustomView=tRect.left;
+					tBasicViewObj.m_topCustomView=tRect.top;
+		
+			    break;
+				} 
+			  }
+			}
+
+	    }
+	    
+	    UpdateSelRect();
+		
+	}	
+
+	public void AddView(BasicViewObj tBasicView){
+		
+		//zoom
+		tBasicView.m_leftZoomed=tBasicView.m_leftOrg*m_Factor;
+		tBasicView.m_topZoomed=tBasicView.m_topOrg*m_Factor;
+		tBasicView.m_WidthZoomed=tBasicView.m_width*m_Factor;
+		tBasicView.m_HeightZoomed=tBasicView.m_height*m_Factor;
+		//view in custom
+		tBasicView.m_leftCustomView=tBasicView.m_leftZoomed-m_ViewPortPosF.x;
+		tBasicView.m_topCustomView=tBasicView.m_topZoomed-m_ViewPortPosF.y;
+		
+		
+		if (tBasicView instanceof CabinetViewObj) {
+			m_ArrayCabinetViewList.add((CabinetViewObj)tBasicView);
+		}
+	
+	}
+
+	public BasicViewObj findBasicViewByID(int tBasicViewID)
+	{
+		for (int i = 0; i < m_ArrayCabinetViewList.size(); i++) {
+			if(m_ArrayCabinetViewList.get(i).getmBasicViewID()==tBasicViewID)
+			{
+			  return m_ArrayCabinetViewList.get(i); 
+			}
+			
+		}
+		
+	
+		
+		return null;
+	}
+
+	
+	public void GetSelMaxMinXY(float MinX,float MinY,float MaxX,float MaxY)
+	{
+		
+		
+		
+	}
+	
+	public void MoveBasicView(float tDeltaX,float tDeltaY){	
+	
+		//当整体中有任何一个触及到边界的时候停止移动
+		
+		float tWidth = m_MoveRectF.right - m_MoveRectF.left;
+		float tHeight = m_MoveRectF.bottom - m_MoveRectF.top;
+		
+		m_MoveRectF.left +=tDeltaX;
+		m_MoveRectF.top +=tDeltaY;
+		
+		if (m_MoveRectF.left<=0) {
+			m_MoveRectF.left = 0;
+		}
+		if (m_MoveRectF.top<=0) {
+			m_MoveRectF.top = 0;
+		}
+		
+		m_MoveRectF.right = m_MoveRectF.left + tWidth;
+		m_MoveRectF.bottom = m_MoveRectF.top + tHeight;
+		
+		
+		for (int i = 0; i < m_SelectedCbtArrayList.size(); i++) {
+			
+			CabinetViewObj tCabinetViewObj = m_SelectedCbtArrayList.get(i);
+
+			tCabinetViewObj.m_leftCustomView = m_MoveRectF.left+tCabinetViewObj.getxMoveRela();
+			tCabinetViewObj.m_topCustomView = m_MoveRectF.top+tCabinetViewObj.getyMoveRela();
+		
+			tCabinetViewObj.m_leftZoomed = tCabinetViewObj.m_leftCustomView-m_ViewPortPosF.x;
+			tCabinetViewObj.m_topZoomed = tCabinetViewObj.m_topCustomView-m_ViewPortPosF.y;
+			
+			tCabinetViewObj.m_leftOrg = tCabinetViewObj.m_leftZoomed/m_Factor;
+			tCabinetViewObj.m_topOrg = tCabinetViewObj.m_topZoomed/m_Factor;
+		}
+
+        invalidate();
+	}
+	
+	
+    public void SetZoomFactor(float fFactor)
+    {
+    	
+    	m_Factor = fFactor;  	
+    	//m_ArrayObjListZoomed.clear();  	
+    	m_ViewPortPosF.x=m_ViewPortPosFOrg.x*fFactor;
+    	m_ViewPortPosF.y=m_ViewPortPosFOrg.y*fFactor;
+    	
+    	if (m_MoveRectF!=null) {
+    		
+        	m_MoveRectF.left=m_MoveRectF.left*fFactor;
+        	m_MoveRectF.right=m_MoveRectF.right*fFactor;
+        	m_MoveRectF.top=m_MoveRectF.top*fFactor;
+        	m_MoveRectF.bottom=m_MoveRectF.bottom*fFactor;
+        	
+		}
+
+    	for (int i = 0; i < m_ArrayCabinetViewList.size(); i++) {	
+    		
+
+    	   BasicViewObj tBasicView =	m_ArrayCabinetViewList.get(i);
+    	   
+    	   tBasicView.m_leftZoomed =  tBasicView.m_leftOrg* fFactor;
+    	   tBasicView.m_topZoomed =  tBasicView.m_topOrg* fFactor;
+    	   tBasicView.m_WidthZoomed =  tBasicView.m_width* fFactor;
+    	   tBasicView.m_HeightZoomed =  tBasicView.m_height* fFactor;
+    
+    	   tBasicView.m_leftCustomView =  tBasicView.m_leftOrg* fFactor-m_ViewPortPosF.x;
+    	   tBasicView.m_topCustomView =  tBasicView.m_topOrg* fFactor-m_ViewPortPosF.y;
+  		
+		} 	
+
+    	
+    }
+	
+
+}

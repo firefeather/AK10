@@ -1,0 +1,689 @@
+package com.szaoto.ak10;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+import android.widget.SimpleAdapter;
+
+import com.szaoto.ak10.commsdk.SerialPortControlBroadCast;
+import com.szaoto.ak10.commsdk.SpiControl;
+import com.szaoto.ak10.configuration.CardInformation;
+import com.szaoto.ak10.configuration.CardInformationList;
+import com.szaoto.ak10.control.ControlActivity;
+import com.szaoto.ak10.datacomm.ChanComm;
+import com.szaoto.ak10.datacomm.InterfaceComm;
+import com.szaoto.ak10.entity.VideoFile;
+import com.szaoto.ak10.leddisplay.LedSelActivity;
+import com.szaoto.ak10.monitor.MonitorActivity;
+import com.szaoto.ak10.player.PlayerActivity;
+import com.szaoto.ak10.sqlitedata.CardInfoDB;
+import com.szaoto.ak10.sqlitedata.ChanGroupDb;
+import com.szaoto.ak10.sqlitedata.ChannelDB;
+import com.szaoto.ak10.sqlitedata.ChnData;
+import com.szaoto.ak10.sqlitedata.InterfaceDB;
+import com.szaoto.ak10.sqlitedata.IntfData;
+import com.szaoto.ak10.systemconfig.SystemConfigActivity;
+import com.szaoto.ak10.test.TestActivity;
+
+
+
+/**
+ * 网格形式的主页面
+ * @author huh
+ *
+ */
+public class HomePageGridActivity extends Activity {
+
+	
+	private GridView gv;
+	
+	public static HomePageGridActivity mHomePageActivity = null;
+	public static String CONFIG_PATH;
+	public static Intent intentLedDisplayActivity;
+	public static Intent intentSystemCardActivity;
+	public static Intent intentSystemConfigActivity;
+	public static Intent intentPlayerActivity;
+	public static Intent intentTestActivity;
+	public static Intent intentControlActivity;
+	public static Intent intentMonitorActivity;
+	
+	private SharedPreferences preferences;
+	private SharedPreferences.Editor editor;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		 // TODO Auto-generated method stub
+		 super.onCreate(savedInstanceState);
+		
+		
+		 setContentView(R.layout.home_grid); 
+	        //图片数组 
+	     Integer[] imgs = { 
+	                R.drawable.module_control, R.drawable.module_test, R.drawable.module_monitor,  
+	                R.drawable.module_system, R.drawable.module_player, R.drawable.module_leddisplay                
+	    }; 
+	     
+	     String[] strInfo = {"控制","测试","监控","系统","播放器","LED配置"};
+		 
+		 
+         List<Map<String, Object>> items = new ArrayList<Map<String,Object>>(); 
+         for (int i = 0; i < 6; i++) { 
+           Map<String, Object> item = new HashMap<String, Object>(); 
+           item.put("imageItem", imgs[i]); 
+           item.put("textItem", strInfo[i]); 
+           items.add(item); 
+         } 
+         
+         //实例化一个适配器 
+         SimpleAdapter adapter = new SimpleAdapter(this,  
+                                                     items,  
+                                                     R.layout.grid_item,  
+                                                     new String[]{"imageItem", "textItem"},  
+                                                     new int[]{R.id.image_item, R.id.text_item}); 
+
+         //获得GridView实例 
+         gv = (GridView)findViewById(R.id.gridViewHome); 
+         //为GridView设置适配器 
+         gv.setAdapter(adapter); 
+         
+         
+         gv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View view, int position,
+					long rowid) {
+	
+				switch (position) {
+				case 0:
+					startActivity(intentControlActivity);
+					break;
+				case 1:
+					startActivity(intentTestActivity);
+					break;
+				case 2:
+					startActivity(intentMonitorActivity);
+					break;
+				case 3:
+					startActivity(intentSystemConfigActivity);
+					break;
+				case 4:
+					startActivity(intentPlayerActivity);
+					break;
+				case 5:
+					startActivity(intentLedDisplayActivity);
+					break;
+
+				default:
+					break;
+				}
+				
+				
+			}	 
+        	 
+		});
+         
+     	CONFIG_PATH = ((Ak10Application)getApplication()).g_strConfPathString;
+         
+         
+     	intentLedDisplayActivity = new Intent(HomePageGridActivity.this,LedSelActivity.class);
+		intentLedDisplayActivity.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+	
+		intentSystemConfigActivity = new Intent(HomePageGridActivity.this ,SystemConfigActivity.class);
+		intentSystemConfigActivity.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		
+		intentPlayerActivity = new Intent(HomePageGridActivity.this,PlayerActivity.class);
+		intentPlayerActivity.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		
+		intentTestActivity = new Intent(HomePageGridActivity.this,TestActivity.class);
+		intentTestActivity.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		
+		intentControlActivity = new Intent(HomePageGridActivity.this,ControlActivity.class);
+		intentControlActivity.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		
+		intentMonitorActivity = new Intent(HomePageGridActivity.this,MonitorActivity.class);
+		intentMonitorActivity.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+		preferences = getSharedPreferences("11", MODE_PRIVATE); // zhangsj修改
+		// 获得修改器
+		setEditor(preferences.edit());
+		
+		
+		setlanguage();
+	
+		startService(new Intent(HomePageGridActivity.this,
+				ExternalStorageService.class));
+		startService(new Intent(HomePageGridActivity.this,
+				PannelButtonDownService.class));
+
+
+		// 打开串口设备
+	
+		SerialPortControlBroadCast.mCurrentContext = this; 
+		SerialPortControlBroadCast.OpenSerialPort(this);
+ 
+		 //hh
+		 InitialLEDNew();
+
+      } 
+	
+	
+	public void setlanguage() {
+		int langtype = -1;
+		if (preferences.getString("LANGUAGETYPE", "Default").equals("Default")) {
+
+		} else {
+			langtype = Integer.valueOf(preferences.getString("LANGUAGETYPE",
+					"Default"));
+		}
+		Resources resources = getResources();
+		Configuration config = resources.getConfiguration();
+		DisplayMetrics dm = resources.getDisplayMetrics();
+		if (langtype == 1) {
+			config.locale = Locale.SIMPLIFIED_CHINESE;
+		} else if (langtype == 0) {
+			config.locale = Locale.ENGLISH;
+		} else if (langtype == 2) {
+			config.locale = Locale.TRADITIONAL_CHINESE;
+		}
+		resources.updateConfiguration(config, dm);
+		
+
+	}
+
+
+	public SharedPreferences.Editor getEditor() {
+		return editor;
+	}
+
+
+	public void setEditor(SharedPreferences.Editor editor) {
+		this.editor = editor;
+	}
+	
+	
+	public static void InitialLEDNew()
+	{
+		//先检查视频端口配置，现在时候存在，不存在就直接删除
+		CardInformationList.GetCardInformationList();
+		
+		CardInformation[] tCardInformations = CardInformationList.GetCardInformations();	
+		
+		final ArrayList<CardInformation> tCardInfosHardware = new ArrayList<CardInformation>();
+		
+		for (int i = 0; i < tCardInformations.length; i++) {
+			
+			if (tCardInformations[i].getnSlotID()!=-1) {
+				tCardInfosHardware.add(tCardInformations[i]);
+			}
+		}
+		
+		//初始化加载LED1的配置
+		final ArrayList<CardInformation> tCardInfosDb = CardInfoDB.GetAllCardInfoRecord();
+		
+	
+		
+		
+		if (tCardInfosDb.size()<tCardInfosHardware.size()) {
+			//有新插入的卡
+			
+			new AlertDialog.Builder(HomePageActivity.getInstance())
+			/* 弹出窗口的最上头文字 */
+			.setTitle(R.string.text_hardware_change)
+			/* 设置弹出窗口的图式 */
+			.setIcon(android.R.drawable.ic_dialog_info)
+			/* 设置弹出窗口的信息 */
+			.setMessage(R.string.text_hardware_insert)
+			.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialoginterface, int i) {
+					
+					int j = 0;
+					for (; j < tCardInfosDb.size(); j++) {
+						
+						byte[] MacAddressOld =  tCardInfosDb.get(j).getUcMACAddress();
+						byte[] MacAddressNew =  tCardInfosHardware.get(j).getUcMACAddress(); 
+						
+						int k = 0;
+						for (; k < 6; k++) {
+							if (MacAddressNew[k]!=MacAddressOld[k]) {
+								break;
+							}
+						}
+						
+						if (k!=6) {
+							new AlertDialog.Builder(HomePageActivity.getInstance())
+							/* 弹出窗口的最上头文字 */
+							.setTitle(R.string.text_hardware_change)
+							/* 设置弹出窗口的图式 */
+							.setIcon(android.R.drawable.ic_dialog_info)
+							/* 设置弹出窗口的信息 */
+							.setMessage(R.string.text_hardware_insert_slot_channege)
+							.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialoginterface, int i) {
+									
+									//删除所有相关配置的表中的数据
+									ChannelDB.DeleteAllChanData(1);
+									InterfaceDB.DeleteAllData(1);
+									ChanGroupDb.DeleteAllRecords(1);
+						
+								}
+							})
+							.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() { 
+								public void onClick(DialogInterface dialoginterface, int i) {
+									
+									
+									return ;
+									
+								}
+							}).show();
+							
+							break;
+						}
+						
+					}
+					
+					//和上次的配置完全一致，卡没有改变
+					if (j!=tCardInfosDb.size()) {			
+						return;
+					}
+					
+				}
+			})
+			.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() { 
+				public void onClick(DialogInterface dialoginterface, int i) {
+					
+				}
+			}).show();
+			
+		}
+		
+	
+		if (tCardInfosDb.size()>=tCardInfosHardware.size()) {
+			
+			int i = 0;
+			for (; i < tCardInfosHardware.size(); i++) {
+				
+				byte[] MacAddressOld =  tCardInfosDb.get(i).getUcMACAddress();
+				byte[] MacAddressNew =  tCardInfosHardware.get(i).getUcMACAddress(); 
+				
+				int j = 0;
+				for (; j < 6; j++) {
+					if (MacAddressNew[j]!=MacAddressOld[j]) {
+						break;
+					}
+				}
+				
+				if (j!=6) {
+					new AlertDialog.Builder(HomePageActivity.getInstance())
+					/* 弹出窗口的最上头文字 */
+					.setTitle(R.string.text_hardware_change)
+					/* 设置弹出窗口的图式 */
+					.setIcon(android.R.drawable.ic_dialog_info)
+					/* 设置弹出窗口的信息 */
+					.setMessage(R.string.text_hardware_insert_slot_channege)
+					.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialoginterface, int i) {
+							
+							//删除所有相关配置的表中的数据
+							ChannelDB.DeleteAllChanData(1);
+							InterfaceDB.DeleteAllData(1);
+							ChanGroupDb.DeleteAllRecords(1);
+				
+						}
+					})
+					.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() { 
+						public void onClick(DialogInterface dialoginterface, int i) {
+							
+							
+							return ;
+							
+						}
+					}).show();
+					
+					break;
+				}
+				
+			}
+			
+			//和上次的配置完全一致，卡没有改变
+			if (i!=tCardInfosDb.size()) {			
+				return;
+			}
+			
+		}
+		
+
+		//打开所有1的视频端口	
+		OpenChPortsFromDbCfg(1);
+		//配置所有1的发送卡端口
+		ConfigAddSendCardParams(1);
+		
+		
+		ArrayList<CardInformation> tArrayListAcq =FindAcqCards();
+		for (int k = 0; k < tArrayListAcq.size(); k++) {
+			
+			 ChanComm.SetAcqCardTranparentTransferEnable(false,tArrayListAcq.get(k).getUcMACAddress());
+		}
+		
+	
+		ArrayList<CardInformation> tArrayListAcqTransp = FindAcqCardsNeedTransparentTransfer();
+		
+		for (int k = 0; k < tArrayListAcqTransp.size(); k++) {
+	
+			 ChanComm.SetAcqCardTranparentTransferEnable(true,tArrayListAcqTransp.get(k).getUcMACAddress());
+		}
+		
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	
+	public static ArrayList<CardInformation> FindAcqCards()
+	{
+
+        ArrayList<CardInformation> arrAcqArrayList = new ArrayList<CardInformation>();
+	
+		CardInformation[] tCardInformations = CardInformationList.GetCardInformations();
+		
+		for (int i = 0; i < tCardInformations.length; i++) {
+			
+			//从第二个开始检查
+		   int nCurType  =	tCardInformations[i].getnType();
+  
+		   if (nCurType==2) {
+			   arrAcqArrayList.add(tCardInformations[i]);
+		   }
+		  
+		}
+		
+
+		return arrAcqArrayList;
+		
+	}
+	
+	public static ArrayList<CardInformation> FindAcqCardsNeedTransparentTransfer()
+	{
+
+        ArrayList<CardInformation> arrAcqArrayList = new ArrayList<CardInformation>();
+        ArrayList<CardInformation> arrInterfArrayList = new ArrayList<CardInformation>(); 
+        ArrayList<CardInformation> arrRetAcqArrayList = new ArrayList<CardInformation>();
+		
+		CardInformation[] tCardInformations = CardInformationList.GetCardInformations();
+		
+		for (int i = 0; i < tCardInformations.length; i++) {
+			
+			//从第二个开始检查
+		   int nCurType  =	tCardInformations[i].getnType();
+  
+		   if (nCurType==2) {
+			   arrAcqArrayList.add(tCardInformations[i]);
+		   }
+		   if (nCurType==3) {
+			   arrInterfArrayList.add(tCardInformations[i]);
+		   }
+		}
+		
+		if (arrAcqArrayList.size()<=1) {		
+			return arrAcqArrayList;
+		}
+		
+		else {
+		
+			for (int i = 1; i < arrAcqArrayList.size(); i++) {
+				
+				CardInformation tAcqCardInfomationCard = arrAcqArrayList.get(i);
+				CardInformation tPrevAcqCardInfomationCard = arrAcqArrayList.get(i-1);
+				
+			    int SlotId =	tAcqCardInfomationCard.getnSlotID();
+			    int PreSlotId = tPrevAcqCardInfomationCard.getnSlotID();
+			    
+			    
+			    int j = 0;
+			    for (; j < arrInterfArrayList.size(); j++) {
+					
+			         int tTmpSlotId = arrInterfArrayList.get(j).getnSlotID();
+			         
+			         if (tTmpSlotId>PreSlotId&&tTmpSlotId<SlotId) {
+						
+			        	 //有发送卡
+			        	 //不能透传
+			        	 continue;
+					}
+				}
+			
+			    //没有发送卡
+			    if (j == arrInterfArrayList.size()) {
+			    	arrRetAcqArrayList.add(arrAcqArrayList.get(i));
+				}
+			    
+			}
+			
+		}
+
+		if (arrAcqArrayList.size()!=0) {
+			
+			arrRetAcqArrayList.add(arrAcqArrayList.get(0));
+		}
+		
+		return arrRetAcqArrayList;
+		
+	}
+	
+	public static void OpenChPortsFromDbCfg(int LEDID)
+	{
+		
+		 ArrayList<ChnData> tArrayList =  ChannelDB.GetAllRecord(LEDID);	
+		 
+		 for (int i = 0; i < tArrayList.size(); i++) {
+			
+			 ChnData tChnDataInfo = tArrayList.get(i);
+			 ChanComm.SetAcqCardPortNumAndEnable(true, tChnDataInfo.videosourceid, tChnDataInfo.Id%1000,LEDID);
+			 
+		}
+		
+	}
+	
+	
+	public static void ConfigAddSendCardParams(int LEDID)
+	{
+		
+		 ArrayList<IntfData> tArrayList =  InterfaceDB.GetAllRecord(LEDID);	
+		 
+		 for (int i = 0; i < tArrayList.size(); i++) {
+			
+			 IntfData tintfData = tArrayList.get(i);
+			
+			 int ChPortNum = InterfaceDB.GetChportIdById(tintfData.Id, LEDID);
+			
+			 //设置视频源接口
+			 
+			 //端口使能
+			// InterfaceComm.SetSendCardPortEnable(true, tintfData.macaddress);
+			 
+			// InterfaceComm.SetSendCardVideoCaptureEnable(true, tintfData.macaddress, tintfData.Id%1000);
+			 
+			 InterfaceComm.SetSendCardChPortAndEnable(
+					 true,ChPortNum,tintfData.macaddress,tintfData.Id%1000);
+		 
+			 //设置剪裁区域
+			 ChnData tChnData = ChannelDB.GetRecordById(tintfData.channelid,LEDID);
+			 
+			 short xRelative = (short) (tintfData.offsetX - tChnData.offsetX);
+			 short yRelative = (short) (tintfData.offsetY - tChnData.offsetY);
+			 short width = (short) tintfData.width;
+			 short height = (short) tintfData.height;
+			 
+			 InterfaceComm.SetSendCardPortParam(xRelative, yRelative, width, height, tintfData.macaddress,tintfData.Id%1000);
+			 
+		}
+		
+		
+	}
+	
+	
+	public static HomePageGridActivity getInstance() {
+		if (mHomePageActivity != null) {
+			return mHomePageActivity;
+		}
+		return null;
+	}
+
+	public void startControlActivity() {
+		intentControlActivity.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(intentControlActivity);
+	}
+
+	public void startTestActivity() {
+		intentTestActivity.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(intentTestActivity);
+	}
+
+	public void startPlayerActivity() {
+		intentPlayerActivity.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(intentPlayerActivity);
+	}
+
+
+
+	// 用root权限运行命令
+	public static boolean runRootCommand(String command) {
+		Process process = null;
+		DataOutputStream os = null;
+		try {
+			process = Runtime.getRuntime().exec("su");
+			os = new DataOutputStream(process.getOutputStream());
+			os.writeBytes(command + "n");
+			os.writeBytes("exitn");
+			os.flush();
+			process.waitFor();
+		} catch (Exception e) {
+			return false;
+		} finally {
+			try {
+				if (os != null) {
+					os.close();
+				}
+				process.destroy();
+			} catch (Exception e) {
+				// nothing
+			}
+		}
+		return true;
+	}
+	// 将assets文件夹下面的文件全部copy到DATA_PATH路径下面，可以使一些用到的工具文件
+	
+
+
+	public static void delete(File file) {
+		if (file.isFile()) {
+			file.delete();
+			return;
+		}
+
+		if (file.isDirectory()) {
+			File[] childFiles = file.listFiles();
+			if (childFiles == null || childFiles.length == 0) {
+				file.delete();
+				return;
+			}
+
+			for (int i = 0; i < childFiles.length; i++) {
+				delete(childFiles[i]);
+			}
+			file.delete();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		stopService(new Intent(HomePageGridActivity.this,
+				ExternalStorageService.class));
+		// 关闭SPI设备
+
+		SpiControl.CloseSpiDevice();
+		// 关闭串口设备
+	//	SerialPortControl.ColseSerialPort();
+		stopService(new Intent(HomePageGridActivity.this,
+			PannelButtonDownService.class));
+		SerialPortControlBroadCast.ColseSerialPort();
+		super.onDestroy();
+	}
+
+	// 添加播放列表模块拖拽排序到此处
+	/**********************************************************/
+	/**
+	 * 公用的 排列顺序后的列表集合
+	 */
+	public static ArrayList<VideoFile> VideoFileList_Public = new ArrayList<VideoFile>();
+
+	/**
+	 * 公用的 已选中的 列表集合 --（添加视频文件）
+	 */
+	public static ArrayList<VideoFile> VideoFileList_Added = new ArrayList<VideoFile>();
+
+	/**
+	 * 公用的 已加载到 内存的 图片（方便读取，不用再次通过文件路径读取图片）
+	 */
+	public static HashMap<String, Bitmap> hashMapImage_Added = new HashMap<String, Bitmap>();
+
+	/**
+	 * 公用 默认 加载 的图片
+	 */
+	public static Bitmap bitmap;
+
+	/**
+	 * 公用 默认图片 的 宽度，高度
+	 */
+
+	@Override
+	protected void onRestart() {
+
+		SerialPortControlBroadCast.mCurrentContext = this; 
+		super.onRestart();
+	}
+	@Override
+	protected void onStop() {
+
+		super.onStop();
+	}
+	@Override
+	protected void onResume() {
+
+
+
+
+
+		super.onResume();
+	}
+	/**********************************************************/
+         
+}
+	
+	
+

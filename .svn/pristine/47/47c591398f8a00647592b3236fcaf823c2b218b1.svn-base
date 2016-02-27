@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="BUTTON">30dp</dimen>
+    <dimen name="size15">15sp</dimen>
+    <dimen name="size20">20sp</dimen>
+    <dimen name="size25">25sp</dimen>
+    <dimen name="size30">30sp</dimen>
+    <dimen name="size40">40sp</dimen>
+    <dimen name="size50">50sp</dimen>
+   
+    <dimen name="drag_item_normal_height">48dip</dimen>
+    <dimen name="drag_item_expand_height">96dip</dimen>
+    <dimen name="text_size">28sp</dimen>
+    <dimen name="margin">28dp</dimen>
+    <dimen name="group_margin">8dp</dimen>
+    <dimen name="padding">32dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen  name="text_X_width">100dp</dimen>
+    
+    <dimen name="thumnail_default_width">100dip</dimen>
+    <dimen name="thumnail_default_height">100dip</dimen>
+</resources>

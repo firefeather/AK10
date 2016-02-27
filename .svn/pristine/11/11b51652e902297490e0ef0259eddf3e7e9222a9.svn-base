@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/zong_bg"
+    tools:ignore="DuplicateIds,TextFields,InefficientWeight,UselessLeaf" >
+
+	<RelativeLayout
+	    android:id="@+id/Layout_CommnicateTitle"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    >
+	
+	    <TextView
+	        android:id="@+id/textViewPathTitile"
+	        android:layout_width="wrap_content"
+	        android:layout_height="55dp"
+	        android:gravity="center_vertical"
+	        android:text="@string/communicate_debug_entrance"
+	        android:textSize="20sp" />
+	  <LinearLayout
+	            android:id="@+id/main_playerback"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:orientation="vertical" >
+	    <Button
+	        android:id="@+id/btn_CommnicateBack"
+	        android:layout_width="80dp"
+	        android:layout_height="50dp"
+	        android:layout_marginRight="8dp"
+	        android:background="@drawable/selector_tool_back" />
+	      <TextView
+	                android:id="@+id/text_playerback"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_gravity="center_horizontal"
+	                android:text="@string/cabinet_back_text"
+	                android:textSize="@dimen/size15" />
+	        </LinearLayout>
+	 <LinearLayout
+	            android:id="@+id/main_home"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_toLeftOf="@+id/main_setting"
+	            android:orientation="vertical" >
+	    <ImageView
+	        android:id="@+id/CommnicateHome"
+	        android:layout_width="80dp"
+	        android:layout_height="50dp"
+	        android:src="@drawable/selector_home" />
+	     <TextView
+	                android:id="@+id/text_playermain"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_gravity="center_horizontal"
+	                android:text="@string/ledconfig_main"
+	                android:textSize="@dimen/size15" />
+	        </LinearLayout>
+	</RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/Layout_CommnicateTitle"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+          
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/autotest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLength="17"
+                android:text="@string/communicate_debug_dest"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/size15" />
+
+            <Spinner
+                android:id="@+id/spin_SendDest"
+                android:layout_marginLeft="30dp"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size15" />
+
+            <TextView
+                android:id="@+id/autotest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/communicate_debug_addr"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/txt_SendAdd"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:digits="1234567890abcdefABCDEF "
+                android:imeOptions="actionNext"
+                android:maxLength="5"
+                android:textSize="@dimen/size15" >
+            </EditText>
+
+            <TextView
+                android:id="@+id/length"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/communicate_debug_length"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/txt_SendLength"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:digits="1234567890abcdefABCDEF "
+                android:imeOptions="actionNext"
+                android:maxLength="5"
+                android:textSize="@dimen/size15" >
+            </EditText>
+            
+            <Button
+                android:id="@+id/btn_Write"
+                android:layout_marginLeft="50dp"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/title_button"
+                android:text="@string/communicate_debug_write"
+                android:textSize="15sp" />
+            <Button
+                android:id="@+id/btn_Read"
+                android:layout_marginLeft="20dp"
+                 android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/title_button"
+                android:text="@string/communicate_debug_read"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/intervel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.03"
+                android:text="@string/communicate_debug_data"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/txt_SendData"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:digits="1234567890abcdefABCDEF "
+                android:ems="10"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                android:textSize="@dimen/size15" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </LinearLayout>
+
+   
+       <TextView
+                android:id="@+id/TextView06"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/communicate_debug_rev"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="15sp" />
+    
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            <EditText
+                android:id="@+id/txt_RevContent"
+                android:layout_width="wrap_content"
+                android:layout_height="480dp"
+                android:layout_weight="1"
+                android:digits="1234567890abcdefABCDEF "
+                android:ems="10"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                android:textSize="@dimen/size15" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

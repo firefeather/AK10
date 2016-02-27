@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLFile class="com.szaoto.ak10.common.TestConfigState.TestConfig">
+    <default mIsFullScreen = "0" mModuleSet = "1">
+        <mWindowSetting mLeft_Topx = "0" mLeft_Topy = "0" mHeight = "100" mWidth = "100"/>
+        <mGrayState mGrayLevel = "200" />
+        <mGridState HorizontalLine = "0" VerticalLine = "1" LeftSlantLine = "1" RightSlantLine = "1" space = "60" ColorType = "0"/>
+        <mRibbonState mLeft_Topx = "0" mLeft_Topy = "0" mHeight = "100" mWidth = "100"/>
+        <mSpotState mLeft_Topx = "0" mLeft_Topy = "0" mHeight = "100" mWidth = "100"/>    
+    </default>
+</XMLFile>

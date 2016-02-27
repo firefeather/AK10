@@ -1,0 +1,232 @@
+/*
+   * 文件名 SendCardActivity.java
+   * 包含类名列表com.szaoto.ak10.configuration
+   * 版本信息，版本号
+   * 创建日期2014年1月8日下午2:13:32
+   * 版权声明 liangdb-szaoto
+*/
+package com.szaoto.ak10.configuration;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+import com.szaoto.ak10.Ak10Application;
+import com.szaoto.ak10.R;
+import com.szaoto.ak10.commsdk.SerialPortControlBroadCast;
+import com.szaoto.ak10.datacomm.InterfaceComm;
+import com.szaoto.ak10.sqlitedata.InterfaceDB;
+import com.szaoto.ak10.sqlitedata.IntfData;
+
+/*
+ * 类名        SendCardActivity
+ * 主要功能 发送卡配置界面
+ * 修改者，修改日期，修改内容
+ */
+public class SendCardSetupActivity extends Activity implements OnClickListener{
+	 //TextView tvCutOffsetX;          //裁剪偏移量x
+	 //TextView tvCutOffsetY;          //裁剪偏移量y
+	 EditText tv_cut_OffsetxValue;   //裁剪偏移量x值
+	 EditText tv_cut_OffsetyValue;   //裁剪偏移量y值
+	 //TextView tv_Send_Cardwidth;     //发送卡分辨率宽度
+	 //TextView tv_Send_Cardheight;    //发送卡分辨率宽度
+	 EditText et_Sendcard_width;	//发送卡分辨率宽度
+	 EditText et_Sendcard_height;	//发送卡分辨率宽度
+	 Button btn_ensure;
+	 Button btn_Cancel;
+	 Button btn_ReadVersion;
+	 TextView txt_version;
+	 TextView activityNameTextView;
+	 
+//	 CheckBox chk_3D;
+//	 RadioButton rdo_LeftAndRight;
+//	 RadioButton rdo_TopAndButton;
+//	 RadioButton rdo_FrameSeq;  
+	 
+	 private int m_id;
+	 private int g_ledid;
+//	 private int m_nCfg3d;
+//	 private int m_nCfg3d_last;//上一次操作值
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	//	DataAccessSendCardsData;
+
+		SerialPortControlBroadCast.SetCurrentContext(this);
+		setContentView(R.layout.leddisplay_send_cardset);
+		initView();
+		Bundle bundle = this.getIntent().getExtras(); 
+
+		m_id = bundle.getInt("id");
+		g_ledid =  Ak10Application.GetLedId();
+		
+		LoadDataFromDb(m_id);
+//		switch (m_nCfg3d) {
+//		case 1:
+//			chk_3D.setChecked(true);
+//			rdo_LeftAndRight.setEnabled(true);
+//			rdo_TopAndButton.setEnabled(true);
+//			rdo_FrameSeq.setEnabled(true);
+//			rdo_LeftAndRight.setChecked(true);
+//			rdo_TopAndButton.setChecked(false);
+//			rdo_FrameSeq.setChecked(false);
+//			break;
+//		case 2:
+//			chk_3D.setChecked(true);
+//			rdo_LeftAndRight.setEnabled(true);
+//			rdo_TopAndButton.setEnabled(true);
+//			rdo_FrameSeq.setEnabled(true);
+//			rdo_LeftAndRight.setChecked(false);
+//			rdo_TopAndButton.setChecked(true);
+//			rdo_FrameSeq.setChecked(false);
+//			break;		
+//		case 3:
+//			chk_3D.setChecked(true);
+//			rdo_LeftAndRight.setEnabled(true);
+//			rdo_TopAndButton.setEnabled(true);
+//			rdo_FrameSeq.setEnabled(true);
+//			rdo_LeftAndRight.setChecked(false);
+//			rdo_TopAndButton.setChecked(false);
+//			rdo_FrameSeq.setChecked(true);
+//			break;
+//		default:
+//			chk_3D.setChecked(false);
+//			rdo_LeftAndRight.setEnabled(false);
+//			rdo_TopAndButton.setEnabled(false);
+//			rdo_FrameSeq.setEnabled(false);
+//			break;
+//		}
+//		m_nCfg3d_last = m_nCfg3d;
+
+		activityNameTextView.setText(getString(R.string.tv_send_card)+ m_id/1000 + "_"+m_id%1000);
+		
+//		if (false) {//3D配置
+//			chk_3D.setVisibility(8);
+//			rdo_LeftAndRight.setVisibility(8);
+//			rdo_TopAndButton.setVisibility(8);
+//			rdo_FrameSeq.setVisibility(8);
+//		}
+	}
+
+
+
+	private void initView() {
+		tv_cut_OffsetxValue = (EditText) findViewById(R.id.tv_cut_Offsetx);
+		tv_cut_OffsetyValue = (EditText) findViewById(R.id.tv_cut_Offsety);
+
+		et_Sendcard_width = (EditText) findViewById(R.id.Sp_sendcard_w);
+		et_Sendcard_height = (EditText) findViewById(R.id.Sp_sendcard_h);
+		activityNameTextView = (TextView)findViewById(R.id.tv_sendcard_set);
+		txt_version = (TextView) findViewById(R.id.txtReadVersion);
+		
+		btn_ensure = (Button) findViewById(R.id.btn_ensure); 
+		btn_Cancel = (Button) findViewById(R.id.btn_Cancel); 
+
+//		//3D影院
+//		chk_3D = (CheckBox)findViewById(R.id.checkBox3D);
+//		rdo_LeftAndRight = (RadioButton)findViewById(R.id.radioButton_LeftAndRight);
+//		rdo_TopAndButton = (RadioButton)findViewById(R.id.radioButton_TopAndButton);
+//		rdo_FrameSeq = (RadioButton)findViewById(R.id.radioButton_FrameSeq);	
+		
+		btn_ensure.setOnClickListener(this);
+		btn_Cancel.setOnClickListener(this);
+//		chk_3D.setOnClickListener(this);
+//		rdo_LeftAndRight.setOnClickListener(this);
+//		rdo_TopAndButton.setOnClickListener(this);
+//		rdo_FrameSeq.setOnClickListener(this);
+	}
+
+
+	private void LoadDataFromDb(int id)
+	{		
+		IntfData tInterfData = InterfaceDB.GetRecordById(id, g_ledid);
+		
+		tv_cut_OffsetxValue.setText(String.valueOf(tInterfData.offsetX));
+		tv_cut_OffsetyValue.setText(String.valueOf(tInterfData.offsetY));
+		et_Sendcard_width.setText(String.valueOf(tInterfData.width));
+		et_Sendcard_height.setText(String.valueOf(tInterfData.height));	
+//		m_nCfg3d = tInterfData.cfg3d;
+			
+		String strVersion = InterfaceComm.GetSndCardSoftwareVersion(tInterfData.macaddress);
+		if (strVersion!=null) {
+			txt_version.setText(strVersion);
+		}
+	}
+
+
+	@Override
+	public void onClick(View v) {
+       switch (v.getId()) {
+	case R.id.btn_ensure:	   
+		String strX = tv_cut_OffsetxValue.getText().toString();
+		String strY = tv_cut_OffsetyValue.getText().toString();
+		String strW = et_Sendcard_width.getText().toString();
+		String strH = et_Sendcard_height.getText().toString();
+		
+		if (0 == strX.length() || 0 == strY.length() || 0 == strW.length() || 0 == strH.length()) {
+			 Toast.makeText(this,getString(R.string.offsetnull), Toast.LENGTH_SHORT).show();
+			 return;	
+		}
+		
+		InterfaceDB.UpdateInterfacePosParam(m_id, Integer.valueOf(strX), 
+				Integer.valueOf(strY),Integer.valueOf(strW), Integer.valueOf(strH), g_ledid);
+		
+	    finish();
+	    break;
+	case R.id.btn_Cancel:
+		finish();
+		break;
+//	case R.id.checkBox3D:
+//		if (m_nCfg3d > 0) {
+//			chk_3D.setChecked(false);
+//			m_nCfg3d = 0;
+//			rdo_LeftAndRight.setEnabled(false);
+//			rdo_TopAndButton.setEnabled(false);
+//			rdo_FrameSeq.setEnabled(false);
+//		}
+//		else {
+//			chk_3D.setChecked(true);
+//			rdo_LeftAndRight.setEnabled(true);
+//			rdo_TopAndButton.setEnabled(true);
+//			rdo_FrameSeq.setEnabled(true);
+//			m_nCfg3d = m_nCfg3d_last;
+//			if (0 == m_nCfg3d) {
+//				m_nCfg3d = 1;
+//				m_nCfg3d_last = 1;
+//				rdo_LeftAndRight.setChecked(true);
+//				rdo_TopAndButton.setChecked(false);
+//				rdo_FrameSeq.setChecked(false);
+//			}
+//		}
+//		break;
+//	case R.id.radioButton_LeftAndRight:
+//		m_nCfg3d = 1;
+//		m_nCfg3d_last = 1;
+//		rdo_TopAndButton.setChecked(false);
+//		rdo_FrameSeq.setChecked(false);
+//		break;	
+//	case R.id.radioButton_TopAndButton:
+//		m_nCfg3d = 2;
+//		m_nCfg3d_last = 2;
+//		rdo_LeftAndRight.setChecked(false);
+//		rdo_FrameSeq.setChecked(false);
+//		break;
+//	case R.id.radioButton_FrameSeq:
+//		m_nCfg3d = 3;
+//		m_nCfg3d_last = 3;
+//		rdo_LeftAndRight.setChecked(false);
+//		rdo_TopAndButton.setChecked(false);
+//		break; 	
+	default:
+		break;
+	}
+		
+		
+	}
+
+}

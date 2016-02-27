@@ -1,0 +1,160 @@
+/*
+   * 文件名 ExternalStorageService.java
+   * 包含类名列表com.szaoto.ak10
+   * 版本信息，版本号
+   * 创建日期2013年12月10日下午7:30:46
+   * 版权声明 liangdb-szaoto
+*/
+package com.szaoto.ak10;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.IBinder;
+import android.util.Log;
+
+/*
+ * 类名ExternalStorageService
+ * 作者 liangdb
+ * 主要功能 外部设备服务
+ * 创建日期2013年12月10日
+ * 修改者，修改日期，修改内容
+ */
+
+public class ExternalStorageService extends Service {
+	public static List<IInfoChangeObserver> observers = new ArrayList<IInfoChangeObserver>();
+	private static final String TAG = "ExternalStorageService";
+	private BroadcastReceiver externalStorageReceiver = null;
+
+	/**
+	 * 
+	 */
+	public ExternalStorageService() {
+		// TODO Auto-generated constructor stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see android.app.Service#onBind(android.content.Intent)
+	 */
+	@Override
+	public IBinder onBind(Intent intent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		registerReceivers();
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		unregisterReceivers();
+	}
+	/**
+	 * 注册广播
+	 */
+	private void registerReceivers() {
+		if (externalStorageReceiver == null) {
+			externalStorageReceiver = new BroadcastReceiver() {
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					final String action = intent.getAction();
+					final String path = intent.getData().getPath();
+					Log.d(TAG, "receive action = " + action);
+					boolean value = intent.getBooleanExtra("read-only", true);
+					Log.d(TAG, "external storage path = " + path);
+					Log.d(TAG, "external storage value = " + value);
+					//	sendBroadcast(intent);
+		    		if (Intent.ACTION_MEDIA_EJECT.equals(action)) 
+		    		{
+		    			// 本人感觉 ACTION_MEDIA_EJECT 比
+		    			//  ACTION_MEDIA_UNMOUNTED 好
+		    			// sd 卡不可用
+		    			if (null != observers && 0 != observers.size()) {
+							for (int i = 0; i < observers.size(); i++) {
+								observers.get(i).onChangedNotify(0, action, path);
+							}
+						}
+		    		} else if (Intent.ACTION_MEDIA_REMOVED.equals(action)) 
+		    		{
+		    			// sd 卡已经被移除卡槽
+		    		} else if (Intent.ACTION_MEDIA_SHARED.equals(action)) 
+		    		{
+		    			// 选择通过 usb 共享
+		    		} else if (Intent.ACTION_MEDIA_MOUNTED.equals(action)) 
+		    			
+		    			
+		    		{
+		    			// sd 卡可用
+		    			if (null != observers && 0 != observers.size()) {
+							for (int i = 0; i < observers.size(); i++) {
+								observers.get(i).onChangedNotify(0, action, path);
+							}
+						}
+		    			
+		    		}
+		    		/*
+		    		if (null != observers && 0 != observers.size()) {
+						for (int i = 0; i < observers.size(); i++) {
+							observers.get(i).onChangedNotify(0, action, path);
+						}
+					}
+					*/
+				}
+			};
+
+			//ACTION_MEDIA_REMOVED 表示 sdcard 已经从卡槽移除。
+			//ACTION_MEDIA_UNMOUNTED 只可以说明 sd 卡没有 mount 在文件系统上面，不可以说明其已经从卡槽移除。
+			
+			//ACTION_MEDIA_BAD_REMOVAL 只有在直接拔出 sd 卡时，系统才会发送这样的 action 广播。
+			//ACTION_MEDIA_REMOVED 不管何种方式从卡槽拔出 sd 卡时，系统就会发送这样的 action 广播。
+
+           //	ACTION_MEDIA_SHARED 选择通过 usb 共享 
+
+			//接收到 ACTION_MEDIA_EJECT 广播之后，sd 卡还是可以读写的，直到接收到 ACTION_MEDIA_REMOVED、ACTION_MEDIA_UNMOUNTED等广播之后，sd 卡才不可以读写。
+
+
+			final IntentFilter filter = new IntentFilter();
+			filter.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
+			filter.addAction(Intent.ACTION_MEDIA_BUTTON);
+			filter.addAction(Intent.ACTION_MEDIA_CHECKING);
+			filter.addAction(Intent.ACTION_MEDIA_EJECT);
+			filter.addAction(Intent.ACTION_MEDIA_MOUNTED);
+			filter.addAction(Intent.ACTION_MEDIA_NOFS);
+			filter.addAction(Intent.ACTION_MEDIA_REMOVED);
+			filter.addAction(Intent.ACTION_MEDIA_SCANNER_FINISHED);
+			filter.addAction(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+			filter.addAction(Intent.ACTION_MEDIA_SCANNER_STARTED);
+			filter.addAction(Intent.ACTION_MEDIA_SHARED);
+			filter.addAction(Intent.ACTION_MEDIA_UNMOUNTABLE);
+			filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+			// 必须添加，否则无法接收到广播
+			filter.addDataScheme("file");
+			registerReceiver(externalStorageReceiver, filter);
+		}
+	}
+	/**
+	 * 取消注册
+	 */
+	private void unregisterReceivers() {
+		if (externalStorageReceiver != null) {
+			unregisterReceiver(externalStorageReceiver);
+			externalStorageReceiver = null;
+		}
+	}
+}

@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cabinet_select"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background"
+    tools:ignore="MergeRootFrame" >
+
+   
+    <RelativeLayout
+        android:id="@+id/cabinetsel_top"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >   
+         <TextView
+                android:id="@+id/btn_selcabinetback"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginLeft="610dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="18dp"
+                android:drawableLeft="@drawable/selector_tool_back"
+                android:gravity="center_vertical"
+                android:text="@string/cabinet_back_text"
+                android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/textView_manage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+           android:layout_alignParentLeft="true"
+            android:text="@string/leddisplay_cabinet_manage" 
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/size25"
+            />
+         <TextView
+            android:id="@+id/cbtlibusbstates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:layout_marginTop="20dp"   
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@id/textView_manage"
+            android:background="@drawable/common_bg" 
+            android:textSize="@dimen/size20"
+             android:textColor="@color/green"
+            />
+          <ImageView 
+              android:id="@+id/cbtlibusbmounted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/usb_mounted"
+            android:layout_toRightOf="@id/cbtlibusbstates"
+            android:visibility="invisible"
+            android:contentDescription="@string/app_name"
+              />
+        
+
+         <TextView
+        android:id="@+id/tvMessageAuto"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="4dp"
+        android:layout_height="2dp"
+        android:layout_below="@+id/btn_selcabinetback"
+        android:background="@color/white" />
+    </RelativeLayout>
+
+
+    <ListView
+        android:id="@+id/listViewcabinetFilePath"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:layout_below="@+id/cabinetsel_top"
+         >
+
+    </ListView>
+ 
+    <LinearLayout
+        android:id="@+id/layout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/listViewcabinetFilePath"
+        android:layout_alignParentBottom="true">
+         
+       <Button
+        android:id="@+id/btnCabinetClose"
+        android:layout_width="196dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="420dp"
+        android:layout_gravity="center"
+        android:text="@string/Close" />
+                
+       <Button
+        android:id="@+id/btnCabinetSubmit"
+        android:layout_width="196dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_gravity="center"
+        android:text="@string/OK" />
+    </LinearLayout>
+</RelativeLayout>

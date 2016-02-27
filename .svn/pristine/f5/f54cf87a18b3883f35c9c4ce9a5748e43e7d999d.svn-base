@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="ContentDescription" >
+
+    <RelativeLayout
+        android:id="@+id/Layout_MonitorConfig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/common_bg" >
+
+        <TextView
+            android:id="@+id/textViewPathTitile"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:gravity="center_vertical"
+            android:text="@string/Monitor_config"
+            android:textSize="25sp" />
+  <LinearLayout
+            android:id="@+id/main_playerconfigback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical" > 
+        <Button
+            android:id="@+id/btn_MonitorConfigBack"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/selector_tool_back" />
+  <TextView
+                android:id="@+id/text_playerback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/cabinet_back_text"
+                android:textSize="@dimen/size15" />
+        </LinearLayout>
+        
+    <LinearLayout
+            android:id="@+id/main_playconfighome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/main_playerconfigback"
+            android:orientation="vertical" > 
+        <ImageView
+            android:id="@+id/MonitorConfigHome"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:src="@drawable/selector_home" />
+          <TextView
+                android:id="@+id/text_playerconfigmain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/ledconfig_main"
+                android:textSize="@dimen/size15" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/Layout_MonitorConfig"
+        android:layout_marginRight="8dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="635dp"
+            android:orientation="vertical"
+            android:background="@anim/shape"
+             >
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="59dp"
+                android:textColor="@color/white" >
+            </TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="576dp" >
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+    <Button
+        android:id="@+id/btnmonitorsave"
+        android:layout_width="171dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/button_selector_data"
+        android:text="@string/save"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

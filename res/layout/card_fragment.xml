@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="ContentDescription,UselessParent,DuplicateIds,DisableBaselineAlignment,InefficientWeight" >
+
+    <LinearLayout
+        android:id="@+id/line_top"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/title_tool_bg"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.53" >
+
+            <LinearLayout
+                android:id="@+id/channel1"
+                style="@style/main_tab_but_linear"
+                android:layout_marginLeft="4dp"
+                 >
+
+                <ImageView
+                    android:id="@+id/btn_Slot1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/selector_acq" />
+
+            </LinearLayout>
+
+            <View
+               android:layout_width="1dp"
+               android:layout_height="50dp"
+               android:layout_marginLeft="3dp"
+               android:layout_gravity="center"
+               android:background="@color/white" 
+                />
+            
+            <LinearLayout
+                android:id="@+id/channel2"
+                style="@style/main_tab_but_linear" >
+
+                <ImageView
+                    android:id="@+id/btn_Slot2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/selector_acq" />
+
+            </LinearLayout>
+
+              <View
+               android:layout_width="1dp"
+               android:layout_height="50dp"
+               android:layout_marginLeft="3dp"
+               android:layout_gravity="center"
+               android:background="@color/white" 
+                />
+            
+            <LinearLayout
+                android:id="@+id/channel3"
+                style="@style/main_tab_but_linear" >
+
+                <ImageView
+                    android:id="@+id/btn_Slot3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="2dp" 
+                    android:src="@drawable/selector_acq" />
+                
+
+            </LinearLayout>
+            <View
+               android:layout_width="1dp"
+               android:layout_height="50dp"
+               android:layout_marginLeft="3dp"
+               android:layout_gravity="center"
+               android:background="@color/white" 
+                />
+
+            <LinearLayout
+                android:id="@+id/channel4"
+                style="@style/main_tab_but_linear" >
+
+                <ImageView
+                    android:id="@+id/btn_Slot4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="3dp"
+                    android:src="@drawable/selector_acq" />
+
+            </LinearLayout>
+            <View
+               android:layout_width="1dp"
+               android:layout_height="50dp"
+               android:layout_marginLeft="1dp"
+               android:layout_gravity="center"
+               android:background="@color/white" 
+                />
+            <LinearLayout
+                android:id="@+id/channel5"
+                style="@style/main_tab_but_linear" >
+
+                <ImageView
+                    android:id="@+id/btn_Slot5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="3dp"
+                    android:src="@drawable/selector_acq" />
+                
+
+            </LinearLayout>
+            
+            <View
+               android:layout_width="1dp"
+               android:layout_height="50dp"
+               android:layout_marginLeft="1dp"
+               android:layout_gravity="center"
+               android:background="@color/white" 
+                />
+
+            <LinearLayout
+                android:id="@+id/channel6"
+                style="@style/main_tab_but_linear" >
+
+                <ImageView
+                    android:id="@+id/btn_Slot6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="2dp"
+                    android:background="@drawable/selector_button_cmd"
+                    android:src="@drawable/selector_acq" />
+
+            </LinearLayout>
+
+            <View
+               android:layout_width="1dp"
+               android:layout_height="50dp"
+               android:layout_marginLeft="3dp"
+               android:layout_gravity="center"
+               android:background="@color/white" 
+                />
+            
+            <LinearLayout
+                android:id="@+id/channel7"
+                style="@style/main_tab_but_linear" >
+
+                <ImageView
+                    android:id="@+id/btn_Slot7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="3dp"
+                    android:src="@drawable/selector_acq" />
+
+            </LinearLayout>
+        <View
+               android:layout_width="1dp"
+               android:layout_height="50dp"
+               android:layout_marginLeft="3dp"
+               android:layout_gravity="center"
+               android:background="@color/white" 
+                />
+
+        <LinearLayout
+            android:id="@+id/channel8"
+                style="@style/main_tab_but_linear" >
+
+                <ImageView
+                    android:id="@+id/btn_Slot8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/selector_acq" />
+
+            </LinearLayout>
+        </LinearLayout>
+        
+
+
+    <LinearLayout
+        android:id="@+id/mian_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+     >
+
+           <TextView
+               android:id="@+id/text_toolmain"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:gravity="center_vertical|right"
+               android:drawableLeft="@drawable/selector_home"
+               android:text="@string/ledconfig_main"
+               android:textSize="15sp" />
+
+           <TextView
+               android:id="@+id/text_toolmore"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:layout_marginLeft="10dp"
+               android:gravity="center_vertical|right"
+               android:drawableLeft="@drawable/selector_tool_more"
+               android:text="@string/ledconfig_more"
+               android:textSize="@dimen/size15" />
+
+            <TextView
+                android:id="@+id/text_toolback"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:gravity="center_vertical|right"
+                android:drawableLeft="@drawable/selector_tool_back"
+                android:text="@string/cabinet_back_text"
+                android:textSize="@dimen/size15" />
+           
+        </LinearLayout>
+    
+        
+
+    </LinearLayout>
+
+</RelativeLayout>

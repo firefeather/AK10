@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    tools:ignore="ObsoleteLayoutParam,ButtonStyle,HardcodedText,DisableBaselineAlignment,ContentDescription" >
+
+    <LinearLayout
+        android:id="@+id/layout_template"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/Layout_ControlTitle"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="2dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btn_Group1"
+            style="@style/AppTheme"
+            android:layout_width="145dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_Group2"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="1"
+            android:background="@drawable/selector_button"
+            android:textSize="@dimen/size30" />
+
+        <Button
+            android:id="@+id/btn_Group2"
+            style="@style/AppTheme"
+            android:layout_width="145dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_Group3"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="2"
+             android:background="@drawable/selector_button"
+            android:textSize="@dimen/size30" />
+
+        <Button
+            android:id="@+id/btn_Group3"
+            style="@style/AppTheme"
+            android:layout_width="145dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_Group4"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="3"
+          android:background="@drawable/selector_button"
+            android:textSize="@dimen/size30" />
+
+        <Button
+            android:id="@+id/btn_Group4"
+            style="@style/AppTheme"
+            android:layout_width="145dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_Group5"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="4"
+          android:background="@drawable/selector_button"
+            android:textSize="@dimen/size30" />
+
+        <Button
+            android:id="@+id/btn_Group5"
+            style="@style/AppTheme"
+            android:layout_width="145dp"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_Save"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="5"
+          android:background="@drawable/selector_button"
+            android:textSize="@dimen/size30" />
+
+         
+        <Button
+            android:id="@+id/btn_Save"
+            style="@style/AppTheme"
+            android:layout_width="145dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:background="@drawable/selector_button"
+            android:text="@string/save"
+            android:textSize="@dimen/size30" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/Layout_ControlTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/common_bg" >
+
+        <TextView
+            android:id="@+id/textViewPathTitile"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:gravity="center_vertical"
+            android:text="@string/Control_title"
+            android:textSize="25sp" />
+
+        <LinearLayout
+            android:id="@+id/main_controlback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/text_controlback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/cabinet_back_text"
+
+                android:drawableTop="@drawable/selector_tool_back"
+                android:textSize="@dimen/size15" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main_leddisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@+id/main_controlback"
+            android:orientation="vertical" >
+
+
+
+            <TextView
+                android:id="@+id/text_leddisplasetting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                 android:gravity="center"
+                android:drawableTop="@drawable/selector_display"
+                android:text="LED1"
+                android:textSize="@dimen/size15" />
+          </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_controlmain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/main_controlback"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
+                android:layout_toLeftOf="@+id/main_leddisplay"
+                android:drawableTop="@drawable/selector_home"
+                android:text="@string/ledconfig_main"
+                android:textSize="@dimen/size15" />
+  
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/Layout_ControlTitle"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@id/Layout_Navigation"
+        android:layout_toRightOf="@id/layout_template"
+        android:background="@anim/shape"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/linear_bottom"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/layout_brightness"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                
+                <TextView
+                    android:id="@+id/textViewBrt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:drawableTop="@drawable/brightness"     
+                    android:layout_marginTop="5dp"
+                    android:text="@string/log_control_brightness"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="0dp"
+                    android:orientation="vertical" >
+
+                    <include
+                        android:id="@+id/seekbar_brightness"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="match_parent"
+                        layout="@layout/seekbarwithbutton" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_colortemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/textViewcortmp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginTop="0dp"
+                        android:drawableTop="@drawable/colortemp"
+                        android:text="@string/colortemp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="0dp"
+                        android:orientation="vertical" >
+
+                        <include
+                            android:layout_width="239dp"
+                            layout="@layout/colortemperature" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="25dp"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="vertical" >
+
+                        <include
+                            android:id="@+id/seekbar_colortemperature_r"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="20dp"
+                            layout="@layout/seekbarwithbutton" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="120dp"
+                        android:orientation="vertical" >
+
+                        <include
+                            android:id="@+id/seekbar_colortemperature_g"
+                            android:layout_height="match_parent"
+                            layout="@layout/seekbarwithbutton" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginLeft="120dp"
+                        android:orientation="vertical" >
+
+                        <include
+                            android:id="@+id/seekbar_colortemperature_b"
+                            android:layout_height="match_parent"
+                            layout="@layout/seekbarwithbutton" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_contrast"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                
+                <TextView
+                    android:id="@+id/textViewcontrast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:drawableTop="@drawable/contrast"     
+                    android:layout_marginTop="5dp"
+                    android:text="@string/contrast"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical" >
+
+                    <include
+                        android:id="@+id/seekbar_contrast"
+                        android:layout_height="match_parent"
+                        layout="@layout/seekbarwithbutton" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_saturation"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+      
+               
+                <TextView
+                    android:id="@+id/textViewcontrast1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:drawableTop="@drawable/saturation"     
+                    android:layout_marginTop="5dp"
+                    android:text="@string/saturation"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginTop="25dp"
+                    android:orientation="vertical" >
+
+                    <include
+                        android:id="@+id/seekbar_saturation"
+                        android:layout_height="match_parent"
+                        layout="@layout/seekbarwithbutton" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal" >
+            <com.szaoto.ak10.custom.HorizontalListView
+                android:id="@+id/horizon_listview"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_alignParentTop="true" >
+            </com.szaoto.ak10.custom.HorizontalListView>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/Layout_Navigation"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+</RelativeLayout>

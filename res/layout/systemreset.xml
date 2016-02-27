@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/uicontrol"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="UselessParent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="61dp" >
+
+            <Button
+                android:id="@+id/uisave"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/save"
+                android:textSize="@dimen/size25" />
+
+            <TextView
+                android:id="@+id/textViewPathTitile"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:paddingTop="9dp"
+                android:text="@string/system_reset_funtion"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="470dp" >
+
+            <TextView
+                android:id="@+id/textViewUpdateItemSel"
+                android:layout_width="500dp"
+                android:layout_height="300dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="189dp"
+                android:layout_marginTop="62dp"
+                android:text="@string/system_reset_tip"
+                android:textSize="@dimen/size25" />
+
+            <Button
+                android:id="@+id/buttonreset"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_alignRight="@+id/textViewUpdateItemSel"
+                android:layout_below="@+id/textViewUpdateItemSel"
+                android:layout_marginRight="122dp"
+                android:layout_marginTop="30dp"
+                android:text="@string/system_reset_defaultset"
+                android:textSize="@dimen/size25" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,9 @@
+CFLAGS = -g
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := packager
+LOCAL_SRC_FILES := ../util/util.cpp packager.cpp EthernetFrame/PackageBase/PackEthernetFrame.cpp 28ByteFrame/PackageBase/CLPackCommunicationData.cpp Datastruct/StructSingleScanCard.cpp 28ByteFrame/BLLMonitorProc.cpp 28ByteFrame/CLScanCardPackData.cpp
+LOCAL_LDLIBS += -llog
+include $(BUILD_SHARED_LIBRARY)

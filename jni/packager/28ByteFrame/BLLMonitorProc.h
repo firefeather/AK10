@@ -1,0 +1,54 @@
+#pragma once
+#include "../Datastruct/datastructdef.h"
+
+
+//////////////////////////////////////////////////////////////////////////
+//	created:		2012/01/05
+//	created:		5:1:2012   16:59
+//	copyright:		深圳市奥拓电子股份有限公司版权所有
+//	file base:		BLLMonitorProc
+//	author:			liangdb
+//	comment:		LED显示屏监控线程
+//1)		LED显示屏常规监控
+//2)		LED显示屏连接状态（查询ATLVC连接状态）
+//3)		LED显示屏备份状态（查询备份箱体与ATLVC连接状态）
+//4)		箱体（扫描卡）的常规监控
+//5)		箱体（扫描卡）连接状态（查询版本）
+//6)		箱体（扫描卡）5路电压值
+//7)		箱体（扫描卡）功率值
+//8)		箱体（扫描卡）逐点检测
+//分两个线程处理：
+//LED显示屏监控线程：包括1、2、3：判断是否有报警：发送报警邮件！
+//箱体监控线程：包括4、5、6、7、8：判断是否有报警：发送报警邮件！
+//////////////////////////////对1个LED操作////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//V2.0 支持多进程访问，暂不支持优先进程
+//////////////////////////////////////////////////////////////////////////
+#include "PackageBase/CLPackCommunicationData.h"
+#include "../../util/util.h"
+#include <stdio.h>
+class CBLLMonitorProc
+{
+
+
+public:
+	CBLLMonitorProc(void);
+	~CBLLMonitorProc(void);
+
+public:
+	//////////////////////////////////////////////////////////////////////////
+	//打包监控数据命令包括环境查询
+
+	long PackMonitorCommond(int ScAddress,int PackCommond,int SCAddress,uint8_t *ucdata);/* MONITORTYPE_COSTOM = 0;
+					 MONITORTYPE_POWER = 1;              monitortype表示5种监控类型
+					 MONITORTYPE_POINTDETECT = 2;
+					 MONITORTYPE_VOTAGE = 3;
+					 MONITORTYPE_WEBERROR = 4;
+
+					 MONITORACTIONTYPE_FF = 1;
+					 MONITORACTIONTYPE_NORMAL = 0;     monitoractiontype表示广播还是点播*/
+	//bool GetCustomMonitorData(LPMONITORDATA pMonitorData ,unsigned char * m_ucRcvData);
+
+public:
+	CCLPackCommunicationData pack28byte;
+};

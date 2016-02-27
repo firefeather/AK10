@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 一定要使用相对布局 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#0000"
+    tools:ignore="ContentDescription" >
+
+    <Button
+        android:id="@+id/btnDelFile"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="24dp"
+        android:background="@drawable/delete"
+        android:textColor="#ffff"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/drag_list_item_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@id/btnDelFile"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dip"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/drag_list_item_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="false"
+        android:src="@drawable/list_icon" />
+
+    <TextView
+        android:id="@+id/tvItemIndex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvFilePath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvImagePath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvspecialEffect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvMessageAuto"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignBottom="@id/drag_list_item_image"
+        android:background="#F0FFF0" />
+
+</RelativeLayout>

@@ -1,0 +1,286 @@
+/*
+   * 文件名 SerialPortControl.java
+   * 包含类名列表com.szaoto.ak10.commsdk
+   * 版本信息，版本号
+   * 创建日期2014年1月15日下午5:30:46
+   * 版权声明 liangdb-szaoto
+*/
+package com.szaoto.ak10.commsdk;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+
+import com.friendlyarm.AndroidSDK.HardwareControler;
+import com.szaoto.ak10.HomePageActivity;
+import com.szaoto.ak10.control.ControlActivity;
+import com.szaoto.ak10.test.TestActivity;
+import com.szaoto.ak10.test.TestConfigActivity;
+
+/*
+ * 类名SerialPortControl
+ * 作者 liangdb
+ * 主要功能 串口控制类
+ * 创建日期2014年1月15日
+ * 修改者，修改日期，修改内容
+ */
+public class SerialPortControlBroadCast {
+
+	public static Context mCurrentContext = null;
+	public static int m_fd = -1;
+	private final static int CMD_LENGHT = 1; // 命令长度（固定1个byte）
+	private final static int MESSAGE_RECEIVED_CMD = 1; 
+	public static boolean systemconfigtype = false;
+	private static String DYNAMICACTION = "PannelKeyDown";
+	
+	public static long  preTimeStamp =-1;
+	//无极旋钮1个
+	//功能按键13个：功能按键包括5个模板按键、6个快WriteSerialPort速按键、1个确认按键、1个取消按键。
+		//快速按键：包括亮度、色温、饱和度、对比度、切换、测试。
+	public final static byte CMD_TEMPLATE_NO1 	= 0x50;
+	public final static byte CMD_TEMPLATE_NO2 	= 0x51;
+	public final static byte CMD_TEMPLATE_NO3 	= 0x52;
+	public final static byte CMD_TEMPLATE_NO4 	= 0x53;
+	public final static byte CMD_TEMPLATE_NO5 	= 0x54;
+	public final static byte CMD_BRIGHTNESS 	= 0x55;
+	public final static byte CMD_COLORTEMP 		= 0x56;
+	public final static byte CMD_SATURATION 	= 0x58;
+	public final static byte CMD_CONTRAST 		= 0x57;
+	public final static byte CMD_SWITCH 		= 0x5A;
+	public final static byte CMD_TEST 			= 0x59;
+	public final static byte CMD_OK 			= 0x5C;
+	public final static byte CMD_CANCEL 		= 0x5B;
+
+	public final static byte CMD_CLOCKWISE 		= 0x60;
+	public final static byte CMD_ANTICLOCKWISE 	= 0x61;
+	public final static byte CMD_CLOCK_VALUE	= 0x70;
+	
+	public static byte CMD_CURRENT;
+	public static int value ;
+	public static boolean[] isLight = new boolean[13];
+	static Context mContext;
+	
+	
+//	public static boolean[] isControlmoduleLight = new boolean[5];
+//	public static boolean[] isControl = new boolean[8];
+	
+	/*ARM -> FPGA串口命令：
+	0x10：关闭按键按下自动灯。（默认打开）
+	0x11：打开按键按下自动灯。
+	0x20~2c：常亮对应按键灯，顺序同命令0x5x。
+	0x2f：常亮所有按键灯。
+	0x30~3c：关闭常亮对应按键灯，顺序同命令0x5x。
+	0x3f：关闭所有常亮按键灯。*/
+
+	/**
+	 * 
+	 */
+	public SerialPortControlBroadCast() {
+		// TODO Auto-generated constructor stub
+		CMD_CURRENT = 0x00;
+		value = 0;
+	}
+	public static int OpenSerialPort(Context context)
+	{
+		mContext = context;
+		if(-1 == m_fd){ 
+			m_fd = HardwareControler.openSerialPort("/dev/s3c2410_serial1", 115200, 8, 1);
+			listenCmd(); 
+		}
+		return m_fd;
+	}
+	public static void ColseSerialPort()
+	{
+		if (-1 == m_fd) {
+			m_fd = -1;
+			return; 
+		} 
+
+		HardwareControler.close(m_fd);
+	}
+	public static int WriteSerialPort(byte[] data)
+	{
+		if (-1 == m_fd) { 
+			return -1; 
+		}
+		return HardwareControler.write(m_fd, data);
+	}
+	private static boolean ControlKeyAdjugement(byte cmd) {
+		// TODO Auto-generated method stub
+		return (cmd != CMD_SWITCH && cmd !=CMD_TEST &&
+				cmd != CMD_OK && cmd != CMD_CANCEL&&
+				cmd != CMD_CLOCKWISE && cmd != CMD_ANTICLOCKWISE&&
+				cmd != CMD_CLOCK_VALUE);
+	}
+	private static boolean TestKeyAdjugement(byte cmd) {
+		// TODO Auto-generated method stub
+		return (cmd == CMD_TEST);
+	}
+	private static void doCmd(byte[] cmd) throws InterruptedException { 
+		
+		String temString = SerialPortControlBroadCast.mCurrentContext.getClass().getName().toString();//当前窗体名称
+		String classNameString = ControlActivity.class.getName();//控制窗体
+		if (systemconfigtype) {
+				Intent intent = new Intent();
+		        intent.setAction(getDYNAMICACTION());
+		        intent.putExtra("cmd", String.valueOf(cmd[0]));
+		        intent.putExtra("classname", temString);
+		        mContext.sendBroadcast(intent);
+		}else {
+		if (!temString.equals(classNameString)){
+			if (ControlKeyAdjugement(cmd[0]) ) {
+				HomePageActivity.getInstance().startControlActivity();
+				if (null == ControlActivity.getInstance()) {
+				}
+				else {
+					ControlActivity.getInstance().SetTemplate(1);
+				}
+			}
+		}
+		if (cmd[0] == CMD_TEST) {
+			HomePageActivity.getInstance().startTestActivity();
+		} else {
+			HomePageActivity.getInstance().startControlActivity();
+		}
+		
+		if (!temString.equals(TestActivity.class.getName())) {
+			Log.i("TESTTEST","test..."); 
+			if (TestKeyAdjugement(cmd[0]) ) {
+				HomePageActivity.getInstance().startTestActivity();
+				PannelLedControlBroadCast.MakePannelChoicesOFF();
+				PannelLedControlBroadCast.MakeSingleLightsAlwaysON(PannelLedControl.CMD_TESTLIGHT); 
+			}
+		}
+		if (temString.equals(ControlActivity.class.getName())){
+			Intent intent = new Intent();
+	        intent.setAction(getDYNAMICACTION());
+	        intent.putExtra("cmd", String.valueOf(cmd[0]));
+	        intent.putExtra("classname", temString);
+	        mContext. sendBroadcast(intent);
+		}
+		if (temString.equals(TestActivity.class.getName())){
+			Intent intent = new Intent();
+	        intent.setAction(getDYNAMICACTION());
+	        intent.putExtra("cmd", String.valueOf(cmd[0]));
+	        intent.putExtra("classname", temString);
+	        mContext. sendBroadcast(intent);
+		}
+		if (temString.equals(TestConfigActivity.class.getName())){
+			Intent intent = new Intent();
+	        intent.setAction(getDYNAMICACTION());
+	        intent.putExtra("cmd", String.valueOf(cmd[0]));
+	        intent.putExtra("classname", temString);
+	        mContext. sendBroadcast(intent);
+		}
+		
+
+	}  
+		
+		if (cmd[0] != CMD_CLOCKWISE && cmd[0] != CMD_ANTICLOCKWISE &&
+			cmd[0] != CMD_OK && cmd[0] != CMD_CANCEL) {
+			CMD_CURRENT = cmd[0];
+		}
+		
+	//	SystemDiagnoseActivity.mView.postInvalidate();	
+	} 
+	
+	private static Handler handler = new Handler(){ 
+		@Override 
+		public void handleMessage(Message msg) { 
+	
+			switch (msg.what) { 
+				case MESSAGE_RECEIVED_CMD: 
+					byte[] cmd = (byte[])msg.obj; 
+					try {
+						
+						if (cmd[0] == CMD_CLOCKWISE||cmd[0] == CMD_ANTICLOCKWISE) {
+							doCmd(cmd);
+						}else {
+							if (preTimeStamp==-1) {
+								preTimeStamp=System.currentTimeMillis();
+								doCmd(cmd);
+							}else {
+								long tCurTimeStamp = System.currentTimeMillis();
+								
+								long dTime = tCurTimeStamp-preTimeStamp;
+								
+								Log.i("DTIME", String.valueOf(dTime));
+								
+								if (dTime<=500) {
+									preTimeStamp =tCurTimeStamp;
+									return;
+								}else {
+									doCmd(cmd);
+								}
+								
+								
+								preTimeStamp =tCurTimeStamp;
+							}
+							
+						}
+						doCmd(cmd);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+
+					break; 
+				default: 
+					break; 
+			}
+		} 
+	}; 
+
+	
+	public static void listenCmd() { 
+		new Thread() { 
+		@Override 
+		public void run() { 
+			while (true) 
+			{
+				try 
+				{ 
+					Thread.sleep(10); 
+
+					if (-1 == m_fd) 
+					{
+						continue; 
+					}
+					else
+					{
+						//如果 fd 有数据可读，返回 1, 如 果没有数据可读，返回 0，出错时 返回-1。 
+						int result = HardwareControler.select(m_fd, 2, 0); 
+						if (1 == result) 
+						{
+							//Thread.sleep(100); 
+							byte[] buf = new byte[CMD_LENGHT]; 
+							int n = HardwareControler.read(m_fd, buf, buf.length); 
+							if(-1 != n)
+							{
+								Message message = new Message(); 
+								message.what = MESSAGE_RECEIVED_CMD; 
+								message.obj = buf; 
+								handler.sendMessage(message); 
+							}
+						}
+					} 
+				} 
+				catch (InterruptedException e) 
+				{ 
+					e.printStackTrace(); 
+				} 
+				
+			} 
+			} 
+	
+			}.start(); 
+		}
+	public static String getDYNAMICACTION() {
+		return DYNAMICACTION;
+	}
+	public static void setDYNAMICACTION(String dYNAMICACTION) {
+		DYNAMICACTION = dYNAMICACTION;
+	} 
+}

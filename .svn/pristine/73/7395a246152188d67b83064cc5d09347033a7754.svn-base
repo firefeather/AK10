@@ -1,0 +1,161 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/Rcontainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="UselessLeaf,DisableBaselineAlignment,ScrollViewSize,UselessParent,ObsoleteLayoutParam,HardcodedText,ContentDescription" >
+
+    <LinearLayout
+        android:id="@+id/leddisplay_top"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <fragment
+            android:id="@+id/tool_fragment"
+            android:name="com.szaoto.ak10.leddisplay.ToolFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/card_config"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/custom_bg" >
+
+        <LinearLayout
+            android:id="@+id/layout_et_top"
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/et_led_setup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:text="@string/et_leddisplay_setup"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/text_leddisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:text=">"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <fragment
+                android:id="@+id/card_fragment"
+                android:name="com.szaoto.ak10.leddisplay.CardFragment"
+                android:layout_width="match_parent"
+                android:layout_height="68dp" />
+        </LinearLayout>
+    </LinearLayout>
+    
+    <com.szaoto.ak10.ownerdraw.LedConfigCustomView
+        android:id="@+id/ledconfigcustomview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/leddisplay_top"
+        android:layout_below="@+id/card_config"
+        android:layout_weight="1"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="2dp"
+        android:orientation="vertical" >
+
+    </com.szaoto.ak10.ownerdraw.LedConfigCustomView >
+
+    <FrameLayout
+        android:id="@+id/popLable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/leddisplay_top"
+        android:visibility="gone" >
+
+        <LinearLayout
+            style="@style/main_tab_but_linear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/select_background"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <CheckBox
+                android:id="@+id/config_check_channel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="44dp"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/config_select_channel"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:text="@string/text_acq_channel"
+                android:textSize="@dimen/size25" />
+
+            <CheckBox
+                android:id="@+id/config_check_interface"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/config_select_interface"
+                android:layout_width="214dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:paddingRight="8dp"
+                android:text="@string/text_interface"
+                android:textSize="@dimen/size25" />
+
+            <CheckBox
+                android:id="@+id/config_check_cabinet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/config_select_cabinet"
+                android:layout_width="214dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:paddingRight="8dp"
+                android:text="@string/text_cabinet"
+                android:textSize="@dimen/size25" />
+
+            <CheckBox
+                android:id="@+id/config_check_All"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true" />
+
+            <TextView
+                android:id="@+id/config_select_lable"
+                android:layout_width="214dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingRight="8dp"
+                android:text="@string/text_lable"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>

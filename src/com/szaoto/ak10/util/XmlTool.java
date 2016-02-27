@@ -1,0 +1,1050 @@
+package com.szaoto.ak10.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlSerializer;
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+import android.util.Xml;
+import com.szaoto.ak10.entity.CabinetSeries;
+import com.szaoto.ak10.entity.CabinetXml;
+import com.szaoto.ak10.entity.VideoFile;
+/**
+ * 类名：XmlTool 解析xml工具 
+ * 主要功能：对xml文件进行读取及增删改操作
+ * 作者： zhangsj 
+ * 修改日期：2014年5月9日 
+ * 修改内容：修改了xml的存放路径，与其他xml文件存放位置统一 
+ */
+public class XmlTool {
+	/*
+	// 创建xml文件
+	public static boolean createXmlFile(final String xmlPath) {
+		File xmlFile = new File(xmlPath);
+		FileOutputStream fileOPStream = null;
+		try {
+			fileOPStream = new FileOutputStream(xmlFile);
+		} catch (FileNotFoundException e) {
+			Log.e("FileNotFoundException", "can't create FileOutputStream");
+			return false;
+		}
+
+		XmlSerializer serializer = Xml.newSerializer();
+		try {
+			serializer.setOutput(fileOPStream, "UTF-8");
+			serializer.startDocument(null, true);
+			serializer.startTag(null, "books");
+
+			for (int i = 0; i < 5; i++) {
+				serializer.startTag(null, "book");
+				serializer.startTag(null, "bookname");
+				serializer.text("Android教程" + i);
+				serializer.endTag(null, "bookname");
+				serializer.startTag(null, "bookauthor");
+				serializer.text("Frankie" + i);
+				serializer.endTag(null, "bookauthor");
+				serializer.endTag(null, "book");
+			}
+
+			serializer.endTag(null, "books");
+			serializer.endDocument();
+
+			serializer.flush();
+			fileOPStream.close();
+
+			return true;
+		} catch (Exception e) {
+			Log.e("XmlParserUtil", "error occurred while creating xml file");
+			return false;
+		}
+
+	}
+*/
+	/**
+	 * dom解析xml文件 xmlPath xml的路径
+	 */
+	/*
+	public static void domParseXML(final String xmlPath) {
+		File file = new File(xmlPath);
+		if (!file.exists() || file.isDirectory()) {
+			Log.e("domParseXML", "file not exists");
+			return;
+		}
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = null;
+		try {
+			db = dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			return;
+		}
+		Document doc = null;
+		try {
+			doc = db.parse(file);
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if (doc != null) {
+			Element root = doc.getDocumentElement();
+			NodeList books = root.getElementsByTagName("book");
+			String res = "本结果是通过dom解析:" + "\n";
+			int nLength = books.getLength();
+			for (int i = 0; i < nLength; i++) {
+				Element book = (Element) books.item(i);
+				Element bookname = (Element) book.getElementsByTagName("bookname").item(0);
+				Element bookauthor = (Element) book.getElementsByTagName("bookauthor").item(0);
+				res += "书名: " + bookname.getFirstChild().getNodeValue() + " "
+						+ "作者: " + bookauthor.getFirstChild().getNodeValue() + "\n";
+			}	
+		}
+	}
+*/
+	/**
+	 * xmlPullParser解析xml文件 xmlPath xml的路径
+	 */
+	/*
+	public static void xmlPullParseXML(final String xmlPath) {
+		String res = "本结果是通过XmlPullParse解析:" + "\n";
+		try {
+			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+			XmlPullParser xmlPullParser = factory.newPullParser();
+			try {
+				xmlPullParser.setInput(new StringReader(
+						bufferedReaderFile(xmlPath)));
+			} catch (Exception e) {
+				Log.e("xmlPullParseXML", e.toString());
+			}
+
+			int eventType = xmlPullParser.getEventType();
+			try {
+				while (eventType != XmlPullParser.END_DOCUMENT) {
+					String nodeName = xmlPullParser.getName();
+					switch (eventType) {
+					case XmlPullParser.START_TAG:
+						if ("bookname".equals(nodeName)) {
+							res += "书名: " + xmlPullParser.nextText() + " ";
+						} else if ("bookauthor".equals(nodeName)) {
+							res += "作者: " + xmlPullParser.nextText() + "\n";
+						}
+						break;
+
+					default:
+						break;
+					}
+					eventType = xmlPullParser.next();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (XmlPullParserException e) {
+			e.printStackTrace();
+		}
+	}
+*/
+	/**
+	 * 从sd卡中读取xml文件的内容
+	 * 
+	 * @param path
+	 * @return
+	 * @throws IOException
+	 */
+	/*
+	private static String bufferedReaderFile(final String path)
+			throws IOException {
+		File file = new File(path);
+		if (!file.exists() || file.isDirectory())
+			throw new FileNotFoundException();
+
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		String temp = null;
+		StringBuffer sb = new StringBuffer();
+		temp = br.readLine();
+		while (temp != null) {
+			sb.append(temp + " ");
+			temp = br.readLine();
+		}
+		br.close();
+
+		return sb.toString();
+	}
+*/
+	/**
+	 * 解析XML转换成对象
+	 * 
+	 * @param is
+	 *            输入流
+	 * @param clazz
+	 *            对象Class
+	 * @param fields
+	 *            字段集合一一对应节点集合
+	 * @param elements
+	 *            节点集合一一对应字段集合
+	 * @param itemElement
+	 *            每一项的节点标签
+	 * @return
+	 */
+	public static List<Object> parse(InputStream is, Class<?> clazz,
+			List<String> fields, List<String> elements, String itemElement) {
+		Log.v("rss", "开始解析XML.");
+		List<Object> list = new ArrayList<Object>();
+		try {
+
+			XmlPullParser xmlPullParser = Xml.newPullParser();
+
+			xmlPullParser.setInput(is, "UTF-8");
+			int event = xmlPullParser.getEventType();
+
+			Object obj = null;
+
+			while (event != XmlPullParser.END_DOCUMENT) {
+				switch (event) {
+				case XmlPullParser.START_TAG:
+					if (itemElement.equals(xmlPullParser.getName())) {
+						obj = clazz.newInstance();
+					}
+					if (obj != null
+							&& elements.contains(xmlPullParser.getName())) {
+						setFieldValue(obj, fields.get(elements
+								.indexOf(xmlPullParser.getName())),
+								xmlPullParser.nextText());
+					}
+					break;
+				case XmlPullParser.END_TAG:
+					if (itemElement.equals(xmlPullParser.getName())) {
+						list.add(obj);
+						obj = null;
+					}
+					break;
+				}
+				event = xmlPullParser.next();
+			}
+		} catch (Exception e) {
+			Log.e("rss", "解析XML异常：" + e.getMessage());
+			throw new RuntimeException("解析XML异常：" + e.getMessage());
+		}
+		return list;
+	}
+
+	/**
+	 * 解析XML转换成对象
+	 * 
+	 * @param clazz
+	 *            对象Class
+	 * @param fields
+	 *            字段集合一一对应节点集合
+	 * @param elements
+	 *            节点集合一一对应字段集合
+	 * @param itemElement
+	 *            每一项的节点标签
+	 * @return
+	 */
+	public static List<Object> parseByXmlId(Class<?> clazz,
+			List<String> fields, List<String> elements, String itemElement,
+			XmlPullParser xmlPullParser) {
+		Log.v("rss", "开始解析XML.");
+		List<Object> list = new ArrayList<Object>();
+		try {
+			// XmlPullParser xmlPullParser = Xml.newPullParser();
+			// xmlPullParser.setInput(is, "UTF-8");
+			int event = xmlPullParser.getEventType();
+			Object obj = null;
+			String itemName = "";
+			String primaryKey = "";
+			while (event != XmlPullParser.END_DOCUMENT) {
+				switch (event) {
+				case XmlPullParser.START_TAG:
+					itemName = xmlPullParser.getName();
+					if (itemElement.equals(itemName)) {
+						primaryKey = xmlPullParser.getAttributeValue(null, "id");
+						obj = clazz.newInstance();
+					}
+					if (obj != null && elements.contains(itemName)) {
+
+						// 设置字段值，注意：类型转换。目前只支持String类型，若其他类型，要进行类型转换
+
+						String propertyName = fields.get(elements.indexOf(itemName));
+
+						if (propertyName.equals("id")) {
+							setFieldValue(obj, propertyName, primaryKey);
+						} else {
+							setFieldValue(obj, propertyName,xmlPullParser.nextText());
+						}
+					}
+					break;
+				case XmlPullParser.END_TAG:
+					if (itemElement.equals(xmlPullParser.getName())) {
+						list.add(obj);
+						obj = null;
+					}
+					break;
+				}
+				event = xmlPullParser.next();
+			}
+		} catch (Exception e) {
+			Log.e("rss", "解析XML异常：" + e.getMessage());
+			throw new RuntimeException("解析XML异常：" + e.getMessage());
+		}
+		return list;
+	}
+
+	/**
+	 * 设置字段值
+	 * 
+	 * @param propertyName
+	 *            字段名
+	 * @param obj
+	 *            实例对象
+	 * @param value
+	 *            新的字段值
+	 * @return
+	 */
+	public static void setFieldValue(Object obj, String propertyName,
+			Object value) {
+		try {
+
+			Field field = obj.getClass().getDeclaredField(propertyName);
+			field.setAccessible(true);
+			field.set(obj, value);
+
+		} catch (Exception ex) {
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * 添加到 xml文件
+	 * 
+	 * @param filePath
+	 * @param fileName
+	 * @param videofilePath
+	 * @param imagePath
+	 * @throws Exception
+	 */
+	public static void addXml(String filePath, String fileName,
+			String videofilePath, String imagePath, String duration,
+			String specialEffect) throws Exception {
+
+		DocumentBuilderFactory documentBuilderFactory
+
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		Element elementP = document.createElement("VideoFile");
+
+		String PrimaryKey = UUID.randomUUID().toString();
+
+		elementP.setAttribute("id", PrimaryKey);
+
+		Element element_id = document.createElement("id");
+
+		// element_id.setTextContent(PrimaryKey);
+
+		element_id.setTextContent(String.valueOf(+document
+				.getElementsByTagName("VideoFile").getLength() + 1));
+
+		Element element_fileName = document.createElement("fileName");
+
+		element_fileName.setTextContent(fileName);
+
+		Element element_filePath = document.createElement("filePath");
+
+		element_filePath.setTextContent(videofilePath);
+
+		Element element_imagePath = document.createElement("imagePath");
+
+		element_imagePath.setTextContent(imagePath);
+
+		Element element_duration = document.createElement("duration");
+
+		element_duration.setTextContent(duration);
+		// element_duration.setTextContent(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION);
+
+		Element element_specialEffect = document.createElement("specialEffect");
+
+		element_specialEffect.setTextContent(specialEffect);
+
+		elementP.appendChild(element_id);
+		elementP.appendChild(element_fileName);
+		elementP.appendChild(element_filePath);
+		elementP.appendChild(element_imagePath);
+		elementP.appendChild(element_duration);
+		elementP.appendChild(element_specialEffect);
+
+		// 获取根节点
+		Element eltRoot = document.getDocumentElement();
+		// 把叶节点加入到根节点下
+		eltRoot.appendChild(elementP);
+		// 更新修改后的源文件
+		saveXML(document, filePath);
+
+	}
+
+	/**
+	 * 添加到 xml文件
+	 * 
+	 * @param filePath
+	 * @param fileName
+	 * @param videofilePath
+	 * @param imagePath
+	 * @throws Exception
+	 */
+	public static void addXmlByVideoFileList(String filePath,
+			List<VideoFile> videoFileList) throws Exception {
+
+		DocumentBuilderFactory documentBuilderFactory
+
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		Element elementP;
+		Element element_id;
+		Element element_fileName;
+		Element element_filePath;
+		Element element_imagePath;
+		Element element_duration;
+		Element element_specialEffect;
+
+		String PrimaryKey; // 设置主键
+
+		int nodeCount = document.getElementsByTagName("VideoFile").getLength();
+
+		// 获取根节点
+		Element eltRoot = document.getDocumentElement();
+
+		for (VideoFile videoFile : videoFileList) {
+
+			elementP = document.createElement("VideoFile");
+
+			PrimaryKey = UUID.randomUUID().toString();
+
+			elementP.setAttribute("id", PrimaryKey);
+
+			element_id = document.createElement("id");
+
+			// element_id.setTextContent(PrimaryKey);
+
+			nodeCount++;
+
+			element_id.setTextContent(String.valueOf(nodeCount));
+
+			element_fileName = document.createElement("fileName");
+
+			element_fileName.setTextContent(videoFile.getFileName());
+
+			element_filePath = document.createElement("filePath");
+
+			element_filePath.setTextContent(videoFile.getFilePath());
+
+			element_imagePath = document.createElement("imagePath");
+
+			element_imagePath.setTextContent(videoFile.getImagePath());
+
+			element_duration = document.createElement("duration");
+
+			element_duration.setTextContent(videoFile.getDuration());
+			// element_duration.setTextContent(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION);
+
+			element_specialEffect = document.createElement("specialEffect");
+
+			element_specialEffect.setTextContent(videoFile.getSpecialEffect());
+
+			elementP.appendChild(element_id);
+			elementP.appendChild(element_fileName);
+			elementP.appendChild(element_filePath);
+			elementP.appendChild(element_imagePath);
+			elementP.appendChild(element_duration);
+			elementP.appendChild(element_specialEffect);
+
+			// 把叶节点加入到根节点下
+			eltRoot.appendChild(elementP);
+			// 更新修改后的源文件
+		}
+
+		saveXML(document, filePath);
+
+	}
+
+	/**
+	 * 修改 xml 文件
+	 * 
+	 * @param filePath
+	 * @param pointion
+	 * @throws Exception
+	 */
+	public static void updateXml(String filePath, VideoFile videoFile)
+			throws Exception {
+
+		DocumentBuilderFactory documentBuilderFactory
+
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		// Element elementTest = document.getElementById("hengli14");
+		// String textString = elementTest.getTextContent();
+
+		Element element = document.getElementById(videoFile.getId());
+
+		if (element.hasChildNodes()) {
+
+			NodeList nodeList = element.getChildNodes();
+
+			//Node node2 = null;
+
+			int nNodeCount = nodeList.getLength();
+
+			String nodename = "";
+
+			for (int i = 0; i < nNodeCount; i++) {
+
+				nodename = nodeList.item(i).getNodeName();
+
+				// if (nodename.equals("id")) {
+				// nodeList.item(i).setTextContent(videoFile.getId());
+				// }
+
+				if (nodename.equals("fileName")) {
+					nodeList.item(i).setTextContent(videoFile.getFileName());
+				}
+
+				if (nodename.equals("filePath")) {
+					nodeList.item(i).setTextContent(videoFile.getFilePath());
+				}
+
+				if (nodename.equals("imagePath")) {
+					nodeList.item(i).setTextContent(videoFile.getImagePath());
+				}
+				if (nodename.equals("duration")) {
+					nodeList.item(i).setTextContent(videoFile.getDuration());
+				}
+				if (nodename.equals("specialEffect")) {
+					nodeList.item(i).setTextContent(
+							videoFile.getSpecialEffect());
+				}
+			}
+
+			// 更新修改后的源文件
+			saveXML(document, filePath);
+		}
+
+	}
+
+	/**
+	 * 删除 xml文件的 元素
+	 * 
+	 * @param filePath
+	 * @param pointion
+	 * @throws Exception
+	 */
+	public static void deleteXml(String filePath, String videoFileId)
+			throws Exception {
+
+		DocumentBuilderFactory documentBuilderFactory
+
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		// NodeList nodeList = document.getElementsByTagName("VideoFile");
+
+		Node node = document.getElementById(videoFileId);
+
+		document.getFirstChild().removeChild(node);
+
+		// node.getParentNode().removeChild(node);
+
+		saveXML(document, filePath);
+	}
+
+	/**
+	 * 保存到 xml 文件
+	 * 
+	 * @param document
+	 * @param filePath
+	 */
+	private static void saveXML(Document document, String filePath) {
+
+		try {
+
+			TransformerFactory tFactory = TransformerFactory.newInstance();
+
+			Transformer transformer = tFactory.newTransformer();
+
+			DOMSource source = new DOMSource(document);
+
+			StreamResult result = new StreamResult(new File(filePath));
+
+			transformer.transform(source, result);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+
+		}
+
+	}
+
+	/**
+	 * 将 资产文件夹中的 xml 文件 复制到 sd卡中
+	 * 
+	 * @param context
+	 */
+	public static void CopyXmlFile(Context context) {
+		try {
+			File xmlFile = new File(Environment.getDataDirectory(),
+					"/data/com.szaoto.ak10/files/config/videofilelist.xml");
+			System.out.println("xml文件读取：" + xmlFile);
+
+			if (!xmlFile.exists()) {
+
+				InputStream xmlInputStream = context.getResources().getAssets()
+						.open("videofilelist.xml");
+
+				xmlFile.getParentFile().mkdirs();
+
+				xmlFile.createNewFile();
+
+				FileOutputStream out = new FileOutputStream(xmlFile);
+
+				byte[] buffer = new byte[1024];
+
+				int byteCount = -1;
+
+				while ((byteCount = xmlInputStream.read(buffer)) != -1) {
+					out.write(buffer, 0, byteCount);
+				}
+
+				xmlInputStream.close();
+
+				out.close();
+			}
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	/**
+	 * 根据 当前选中的 索引值 获取 xml文件 中 对应的 VideoFile 对象
+	 * 
+	 * @param currSelectedPosition
+	 * @param filePath
+	 * @return
+	 * @throws Exception
+	 */
+	public static VideoFile getVideoInfoByIndex(int currSelectedPosition,
+			String filePath) throws Exception {
+
+		VideoFile videoFile = new VideoFile();
+
+		DocumentBuilderFactory documentBuilderFactory
+
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		NodeList nodeList = document.getElementsByTagName("VideoFile");
+
+		Node node = nodeList.item(currSelectedPosition);
+
+		Node childNode = null;
+		int nNodeCount = node.getChildNodes().getLength();
+		for (int i = 0; i < nNodeCount; i++) {
+			childNode = node.getChildNodes().item(i);
+
+			// <id>1</id>
+			// <fileName>大话西游.mp4</fileName>
+			// <filePath>sdcard\files\videos\dhxy1.mp4</filePath>
+			// <imagePath>sdcard\files\images\dhxy1.jpg</imagePath>
+
+			if (childNode.getNodeName().trim().equals("id")) {
+				videoFile.setId(childNode.getTextContent().toString());
+			}
+			if (childNode.getNodeName().trim().equals("fileName")) {
+				videoFile.setFileName(childNode.getTextContent().toString());
+			}
+			if (childNode.getNodeName().trim().equals("filePath")) {
+				videoFile.setFilePath(childNode.getTextContent().toString());
+			}
+			if (childNode.getNodeName().trim().equals("imagePath")) {
+				videoFile.setImagePath(childNode.getTextContent().toString());
+			}
+
+			if (childNode.getNodeName().trim().equals("duration")) {
+				videoFile.setDuration(childNode.getTextContent().toString());
+			}
+			if (childNode.getNodeName().trim().equals("specialEffect")) {
+				videoFile.setSpecialEffect(childNode.getTextContent()
+						.toString());
+			}
+
+		}
+
+		return videoFile;
+	}
+
+	/**
+	 * 获取最后一个 文件信息的 id，也是最新添加的一个 文件信息 的id
+	 * 
+	 */
+	public static int getLastVideoId(String filePath) throws Exception {
+		DocumentBuilderFactory documentBuilderFactory
+
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		NodeList nodeList = document.getElementsByTagName("VideoFile");
+
+		String id = nodeList.item(nodeList.getLength() - 1).getFirstChild()
+				.getNodeValue();
+
+		return Integer.parseInt(id);
+	}
+
+	/**
+	 * 清空 xml文件 里面的 所有 item
+	 * 
+	 * @throws Exception
+	 */
+	public static void RemoveAll(String filePath) throws Exception {
+		DocumentBuilderFactory documentBuilderFactory
+
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		// NodeList nodeList = document.getElementsByTagName("VideoFile");
+		//
+		// Node node;
+		//
+		// for (int i = 0; i < nodeList.getLength(); i++) {
+		//
+		// node = nodeList.item(i);
+		//
+		// node.getParentNode().removeChild(node);
+		// }
+		Element rootElement = document.getDocumentElement();
+
+		rootElement.setTextContent("");
+
+		// document.removeChild(document.getFirstChild());
+		//
+		// Node newChild = document.createElement("VideoFileList");
+		//
+		// document.appendChild(newChild);
+
+		saveXML(document, filePath);
+
+	}
+
+	/**
+	 * 根据 新的 列表对象，重新 生成 xml文件
+	 * 
+	 * @param xmlFilePath
+	 * @param videoFileList_New
+	 * @return
+	 */
+	public static boolean createXmlFileByVideoFileList(String xmlFilePath,
+			List<VideoFile> videoFileList_New) {
+
+		File xmlFile = new File(xmlFilePath);
+
+		FileOutputStream fileOPStream = null;
+
+		try {
+
+			fileOPStream = new FileOutputStream(xmlFile);
+
+		} catch (FileNotFoundException e) {
+
+			Log.e("FileNotFoundException", "can't create FileOutputStream");
+
+			return false;
+		}
+
+		XmlSerializer serializer = Xml.newSerializer();
+
+		try {
+			serializer.setOutput(fileOPStream, "UTF-8");
+
+			serializer.startDocument(null, true);
+
+			// 根节点
+			serializer.startTag(null, "VideoFileList");
+
+			int i = 0;
+			// 子节点
+			for (VideoFile videoFile : videoFileList_New) {
+
+				serializer.startTag(null, "VideoFile").attribute(null, "id", videoFile.getId());
+
+				i++;
+
+				serializer.startTag(null, "id");
+				serializer.text(String.valueOf(i));
+				serializer.endTag(null, "id");
+
+				serializer.startTag(null, "fileName");
+				serializer.text(videoFile.getFileName());
+				serializer.endTag(null, "fileName");
+
+				serializer.startTag(null, "filePath");
+				serializer.text(videoFile.getFilePath());
+				serializer.endTag(null, "filePath");
+
+				serializer.startTag(null, "imagePath");
+				serializer.text(videoFile.getImagePath());
+				serializer.endTag(null, "imagePath");
+
+				serializer.startTag(null, "duration");
+				serializer.text(videoFile.getDuration());
+				serializer.endTag(null, "duration");
+
+				serializer.startTag(null, "specialEffect");
+				serializer.text(videoFile.getSpecialEffect());
+				serializer.endTag(null, "specialEffect");
+
+				serializer.endTag(null, "VideoFile");
+			}
+
+			serializer.endTag(null, "VideoFileList");
+			serializer.endDocument();
+
+			serializer.flush();
+			fileOPStream.close();
+
+			return true;
+		} catch (Exception e) {
+
+			Log.e("XmlParserUtil", "error occurred while creating xml file");
+			return false;
+		}
+	}
+	/**
+	 * 获取 xml数据文件 的路径
+	 * 
+	 * @return
+	 */
+	public static String getXmlFilePath() {
+		File xmlFile = new File(Environment.getDataDirectory(),
+				"/data/com.szaoto.ak10/files/config/videofilelist.xml");
+		return xmlFile.getPath();
+	}
+
+	/********************** 箱体部分 ***************************/
+	/**
+	 * 获取USB上的xml文件路径
+	 * 
+	 * @return
+	 */
+	public static String getUsbXmlFilePath() {
+//		File xmlFile = new File(Environment.getExternalStorageDirectory(),
+				File xmlFile = new File("/mnt/usbdisk/",
+				"CabinetSeries.cbs");
+		System.out.println("U盘xml文件路径：" + xmlFile);
+		return xmlFile.getPath();
+	}
+	/*
+	 * 根据索引获取箱体信息
+	 */
+	public static CabinetXml getCabinetInfoByIndex(int currSelectedPosition,
+			String filePath) throws SAXException, IOException,
+			ParserConfigurationException {
+		CabinetXml cabinet = new CabinetXml();
+
+		DocumentBuilderFactory documentBuilderFactory
+
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		NodeList nodeList = document.getElementsByTagName("Cabinet");
+
+		Node node = nodeList.item(currSelectedPosition);
+
+		Node childNode = null;
+		int nNodeCount = node.getChildNodes().getLength();
+		for (int i = 0; i < nNodeCount; i++) {
+			childNode = node.getChildNodes().item(i);
+			/**
+			 * 此处需要解析的箱体文件是：Cabinet.cbt和CabinetSeries.cbs Cabinet.cbt结构：
+			 * <ID>85</ID> <SeriesID>80</SeriesID> <Name>FS10J</Name>
+			 * 
+			 */
+
+			if (childNode.getNodeName().trim().equals("ID")) {
+				cabinet.setnID(Integer.parseInt(childNode.getTextContent()
+						.toString()));
+			}
+			if (childNode.getNodeName().trim().equals("nSeriesID")) {
+				cabinet.setnSeriesID(Integer.parseInt(childNode
+						.getTextContent().toString()));
+			}
+			if (childNode.getNodeName().trim().equals("nSeriesName")) {
+				cabinet.setsSeriesName(childNode.getTextContent().toString());
+			}
+			if (childNode.getNodeName().trim().equals("sName")) {
+				cabinet.setsName(childNode.getTextContent().toString());
+			}
+
+			if (childNode.getNodeName().trim().equals("nAddress")) {
+				cabinet.setnAddress(Integer.parseInt(childNode.getTextContent()
+						.toString()));
+			}
+			
+		}
+
+		return cabinet;
+	}
+	/*
+	 * 将U盘上的箱体文件复制到data/com.szaoto.ak10/files/config目录
+	 */
+	public static void CopyCabinetXmlFile(Context context) {
+		try {
+			File xmlFile = new File(Environment.getDataDirectory(),
+					"/data/com.szaoto.ak10/files/config/Cabinet.cbt");
+		//	Log.d(TAG, "已经存在箱体类文件，不用同步");
+		//	if (!xmlFile.exists()) {
+		//		System.out.println("不存在箱体文件，复制一份cabinet.cbt文件");
+				File cabinetXml = new File("/mnt/usbdisk/","Cabinet.cbt");
+				InputStream  xmlInputStream = new FileInputStream(cabinetXml) ;
+				xmlFile.getParentFile().mkdirs();
+				xmlFile.createNewFile();
+				FileOutputStream out = new FileOutputStream(xmlFile);
+				byte[] buffer = new byte[1024];
+				int byteCount = -1;
+				while ((byteCount = xmlInputStream.read(buffer)) != -1) {
+					out.write(buffer, 0, byteCount);
+				}
+				xmlInputStream.close();
+				out.close();
+			//}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	/*
+	 * 通过索引获得箱体系列
+	 */
+	public static CabinetSeries getCabinetSeriesInfoByIndex(
+			int currSelectedPosition, String filePath) throws Exception {
+		CabinetSeries cabinetSeries = new CabinetSeries();
+		DocumentBuilderFactory documentBuilderFactory
+		= DocumentBuilderFactory.newInstance();
+
+		DocumentBuilder documentBuilder = documentBuilderFactory
+				.newDocumentBuilder();
+
+		Document document = documentBuilder.parse(new File(filePath));
+
+		NodeList nodeList = document.getElementsByTagName("CabinetSeries");
+
+		Node node = nodeList.item(currSelectedPosition);
+
+		Node childNode = null;
+       //循环遍历节点
+       int nNodeCount = node.getChildNodes().getLength();
+		for (int i = 0; i < nNodeCount; i++) {
+			childNode = node.getChildNodes().item(i);
+			/**
+			 * 此处需要解析的箱体文件是：Cabinet.cbt和CabinetSeries.cbs return null;
+			 */
+			if (childNode.getNodeName().trim().equals("ID")) {
+				cabinetSeries.setID(Integer.parseInt(childNode.getTextContent()
+						.toString()));
+				System.out.println("子节点ID解析");
+			}
+			if (childNode.getNodeName().trim().equals("parentID")) {
+				cabinetSeries.setParentID(Integer.parseInt(childNode
+						.getTextContent().toString()));
+				System.out.println("父节点开始解析");
+			}
+			if (childNode.getNodeName().trim().equals("name")) {
+				cabinetSeries.setName(childNode.getTextContent().toString());
+				System.out.println("箱体系列名称解析");
+			}
+		}
+		return cabinetSeries;
+	}
+	// 复制需要解析的箱体系列文件到data目录
+	public static void CopyCabinetSeriesXmlFile(Context context) {
+		try {
+			File xmlFile = new File(Environment.getDataDirectory(),
+					"/data/com.szaoto.ak10/files/config/CabinetSeries.cbs");
+	//		System.out.println("已经存在箱体系列类文件，不用同步" + xmlFile);
+	//		if (!xmlFile.exists()) {
+				 File CabinetXml = new File(getUsbXmlFilePath());
+				InputStream xmlInputStream = new FileInputStream(CabinetXml);
+   //			InputStream xmlInputStream = context.getResources().getAssets()
+//						.open("CabinetSeries.cbs");
+				System.out.println("没有箱体系列文件，重新复制一份"+CabinetXml);
+				xmlFile.getParentFile().mkdirs();
+				xmlFile.createNewFile();
+				FileOutputStream out = new FileOutputStream(xmlFile);
+				byte[] buffer = new byte[1024];
+				int byteCount = -1;
+				while ((byteCount = xmlInputStream.read(buffer)) != -1) {
+					out.write(buffer, 0, byteCount);
+				}
+				xmlInputStream.close();
+				out.close();
+	//		}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+
+}

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:ignore="HardcodedText,Deprecated,InefficientWeight,ContentDescription" >
+
+    <include
+        android:id="@+id/include1"
+        android:layout_width="wrap_content"
+        android:layout_height="229dp"
+        android:layout_below="@+id/Layout_testConfigTitle"
+        layout="@layout/windowsizese" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/include1" >
+
+        <TabHost
+            android:id="@android:id/tabhost"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <LinearLayout
+                android:id="@+id/layout_tab"
+                android:layout_width="fill_parent"
+                android:layout_height="420dp"
+                android:orientation="vertical" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="59dp" >
+                </TabWidget>
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="328dp" >
+
+                </FrameLayout>
+            </LinearLayout>
+            
+        </TabHost>
+
+        <Button
+            android:id="@+id/testcancel"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="300dp"
+            android:text="@string/Cancel"
+            android:textSize="@dimen/size25" />
+
+        <Button
+            android:id="@+id/testconfigsave"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="119dp"
+            android:layout_toLeftOf="@+id/testcancel"
+            android:text="@string/leddisplay_save"
+            android:textSize="@dimen/size25" />
+
+    </RelativeLayout>
+    
+
+    <AbsoluteLayout
+        android:id="@+id/absoluteLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/include1"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/Layout_testConfigTitle"
+        android:layout_toRightOf="@+id/include1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/intervel"
+            android:layout_width="121dp"
+            android:layout_height="40dp"
+            android:layout_x="0dp"
+            android:layout_y="190dp"
+            android:text="@string/TestConif_Intervel"
+            android:textSize="@dimen/size25" />
+
+        <EditText
+            android:id="@+id/Editintervel"
+            android:layout_width="93dp"
+            android:layout_height="wrap_content"
+            android:layout_x="114dp"
+            android:layout_y="178dp"
+            android:ems="10"
+            android:imeOptions="actionGo"
+            android:inputType="number"
+            android:numeric="integer" 
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/textViewUpdateItemSel"
+            android:layout_width="wrap_content"
+            android:layout_height="39dp"
+            android:layout_x="208dp"
+            android:layout_y="190dp"
+            android:text="ms"
+            android:textSize="@dimen/size25" />
+
+        <Button
+            android:id="@+id/btnautotest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_x="144dp"
+            android:layout_y="97dp"
+            android:text="Button"
+            android:visibility="invisible"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/autotest"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:visibility="invisible"
+            android:layout_x="6dp"
+            android:layout_y="108dp"
+            android:text="@string/TestConif_AutoTest"
+            android:textSize="@dimen/size25" />
+
+        <TextView
+            android:id="@+id/modeset"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:layout_x="5dp"
+            android:layout_y="27dp"
+            android:text="@string/TestConif_ModeSet"
+            android:textSize="@dimen/size25" />
+
+        <Button
+            android:id="@+id/btnmodeset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_x="143dp"
+            android:layout_y="21dp"
+            android:text="Button"
+            android:textSize="@dimen/size25" />
+    </AbsoluteLayout>
+
+    <CheckBox
+        android:id="@+id/checktestconfigfullscreen"
+        android:layout_width="234dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="300dp"
+        android:text="@string/TestConif_fullscreen"
+        android:textSize="@dimen/size25" />
+
+    <RelativeLayout
+    android:id="@+id/Layout_testConfigTitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:background="@drawable/common_bg" >
+
+    <TextView
+        android:id="@+id/textViewPathTitile"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:gravity="center_vertical"
+        android:text="@string/Test_config"
+        android:textSize="25sp" />
+
+        <LinearLayout
+            android:id="@+id/main_tconfigrback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/main_tconfigrback"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

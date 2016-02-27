@@ -1,0 +1,648 @@
+
+#include "CLPackCommunicationData.h"
+#include "../../../util/util.h"
+#include "math.h"
+#include <android/log.h>
+CCLPackCommunicationData::CCLPackCommunicationData(void)
+{
+	memset(this, 0, sizeof(CCLPackCommunicationData));
+}
+
+CCLPackCommunicationData::~CCLPackCommunicationData(void)
+{
+}
+//閫氫俊鏁版嵁鎵撳寘鐨勫熀鏈牸寮忋�ucData == null鏃舵暟鎹煙涓�锛岃繑鍥�int - 鍖呴暱搴�
+int CCLPackCommunicationData::PackDataBase(unsigned int ucDestAddress,//鐩爣鍦板潃
+										   unsigned char ucPackType,//鍖呯被鍨�
+										   unsigned int unSequenceNumber,//椤哄簭鍙�
+										   int nAnsweredFlag,//搴旂瓟鏍囩ず
+										   unsigned char *ucData,//鏁版嵁鍩熷瓧鑺�
+										   unsigned char * ucSendData)//鎵撳寘鍙戦�鏁版嵁
+{
+	const unsigned char sPackagehead[2] = {0X55,0x55};//鏁版嵁甯ц捣濮嬫爣蹇�
+	const unsigned char sPackageHeadFree[2] = {0X12,0x34};//鏁版嵁甯т繚鐣欏瓧鑺�
+	int nLen = 0;
+
+	//1 鍖呭ご1  2  鍥哄畾涓猴細0x55 0x55
+	memcpy(ucSendData, sPackagehead, 2);
+	//2 鍖呭ご2 2 鏆傚畾涓�0x12 0x34
+	memcpy(ucSendData + 2,sPackageHeadFree, 2);
+	//3 鐩殑鍦板潃   1
+	ucSendData[4] = ucDestAddress;
+	//4 鍖呯被鍨� 1
+	ucSendData[5] = ucPackType;
+	//5 婧愬湴鍧�  1
+	ucSendData[6] = 0;
+	//6 椤哄簭鍙�   2
+	CTool::ExchangeInteger(unSequenceNumber, ucSendData + 7, 2);
+	//7 搴旂瓟鏍囪瘑 0X00-鏃犲簲绛旓紝0x01-鏈夊簲绛旓紝0x02-琛ㄧず鏈夋暟鎹棤77鐨勫簲绛旓紱鑻ュ嚭閿欙紝鍒欏簲绛旀爣蹇椾綅涓�锛屾暟鎹负AA銆�
+	ucSendData[9] = nAnsweredFlag;
+	//8 淇濈暀瀛楄妭  1   濉厖0x00锛屾棤鎰忎箟
+	ucSendData[10] = 0x00;
+	nLen = 11;
+	//9 鏁版嵁鍩熷瓧鑺�  16 浠庝綆鍒伴珮鎺掑垪锛屼粠浣庡埌楂樺彂閫� 浣庝綅鍦ㄥ墠锛岄珮浣嶅湪鍚�
+	if(ucData)
+		memcpy(ucSendData + nLen, ucData, CL_SEND_EFFECT_DATA_SIZE);
+	else
+		memset(ucSendData + nLen, 0, CL_SEND_EFFECT_DATA_SIZE);
+	nLen += 16;
+	//10	鏍￠獙鐮侊紙CHECKSUM锛�2	Checksum = 闄ゅ寘澶村拰鏍￠獙鐮佸鎵�湁瀛楄妭(23)寮傛垨銆�	//楂樹綅鍦ㄥ墠锛屼綆浣嶅湪鍚庛�
+	CreateChecksum(ucSendData + 4, nLen - 4, ucSendData + nLen);
+	nLen ++;
+	return (nLen);
+}
+
+//鐢熸垚鏁版嵁鍖呮牎楠岀爜锛岄珮浣嶅湪鍓嶏紝浣庝綅鍦ㄥ悗銆�
+void CCLPackCommunicationData::CreateChecksum(unsigned char* ucSendData,//鍙戦�鏁版嵁
+										 int nLen, //鏈夋晥鏁版嵁闀垮害
+										 unsigned char ucChecksum[1])//鏍￠獙鐮�
+{
+	unsigned short nData = ucSendData[0];
+	for(int n = 1; n < nLen; n++)
+		nData ^= ucSendData[n];
+	CTool::ExchangeInteger((unsigned char) nData, ucChecksum, 1);
+}
+
+//瑙ｅ寘
+int CCLPackCommunicationData::UnPackData(unsigned char *pRcvData, int nLen)
+{
+	const unsigned char sPackagehead[2] = {0X55,0x55};//鏁版嵁甯ц捣濮嬫爣蹇�
+	const unsigned char sPackageHeadFree[2] = {0X12,0x34};//鏁版嵁甯т繚鐣欏瓧鑺�
+	//鍖呭ご1
+	if (memcmp(pRcvData,sPackagehead, 2) != 0)
+		return CL_ANSWER_ERROE_PACK_HEAD_1;
+	//鍖呭ご2
+	if (memcmp(pRcvData + 2, sPackageHeadFree, 2) != 0)
+		return CL_ANSWER_ERROE_PACK_HEAD_2;
+	//鐩殑鍦板潃(PC)
+	if (pRcvData[4] != 0x00)
+		return CL_ANSWER_ERROE_DEST_ADDRESS;
+	//婧愬湴鍧�
+	if(pRcvData[6] == 0x00)
+		return CL_ANSWER_ERROE_SOUR_ADDRESS;
+
+	//鏍￠獙鏁版嵁鍖呮槸鍚﹀悎娉�
+	unsigned char ucChecksum[1];
+	memset(ucChecksum, 0, sizeof(ucChecksum));
+	CreateChecksum(pRcvData + 4, nLen - 5, ucChecksum);
+
+	if (pRcvData[nLen-1] != ucChecksum[0])
+		return CL_ANSWER_ERROE_CHECKSUM;
+
+	m_ucSourAddress = pRcvData[6];//婧愬湴鍧�
+	m_unDestAddress = pRcvData[4];//鐩殑鍦板潃(PC)
+	m_ucPackType = pRcvData[5];//鍖呯被鍨�
+	m_nSequenceNumber = CTool::doGetIntegerData(pRcvData+ 7 , 2);//搴忓垪鍙�
+	memset(m_ucRcvData, 0, sizeof(m_ucRcvData));
+
+	m_nLen = nLen - 11;
+	memcpy(m_ucRcvData, pRcvData + 11, nLen - 12);//鏁版嵁鍩熷唴瀹�
+
+	bool bAnsOK = UnPackErrorType();
+	if(bAnsOK)
+		return true;
+	else
+		return CL_ANSWER_ERROE_CONNECT;
+}
+
+//瑙ｅ簲绛斿寘閿欒绫诲瀷
+bool CCLPackCommunicationData::UnPackErrorType()
+{
+	//搴旂瓟淇℃伅浣�1瀛楄妭	0X77浠ｈ〃鎴愬姛锛�XAA浠ｈ〃澶辫触)
+	switch(m_ucPackType)
+	{
+		//閲囬泦鍗DID璁剧疆鍖�0x01
+	case 0x01:
+		//閲囬泦鍗＄姸鎬佹彁鍙栧寘	0x03
+	case 0x03:
+		//閲囬泦鍗＄増鏈彿鏌ヨ鍖�	0x04
+	case 0x04:
+		//閲囬泦鍗″浣嶅懡浠ゅ寘 0x05
+	case 0x05:
+		//閲囬泦鍗″浠戒娇鑳藉寘 	0x06
+	case 0x06:		
+		//閲囬泦鍗¤捣鐐硅缃寘	0x07
+	case 0x07:
+		//閲囬泦鍗¤捣濮嬬紪鍧�彿璁剧疆鍖�0x08
+	case 0x08:	
+		//閲囬泦鍗″懡浠よ浆鍙戣缃寘	0x0B
+	case 0x0B:
+		//閲囬泦鍗℃埅鍙栬缃寘	0x0D
+	case 0x0E://鏅鸿兘缂栧潃鍖�
+	case 0x0F:
+	case 0x10:
+	case 0x11:
+	case 0x12:
+	case 0x13:
+	case 0x14:
+	case 0x15:
+	case 0x16:
+	case 0x17:
+	case 0x18:
+	case 0x19:
+	case 0x1A:
+	case 0x0D:
+		//涓庢壂鎻忓崱鐩稿叧鐨勬墍鏈夊寘绫诲瀷锛�		//鎵弿鍗″瓨鍌ㄥ懡浠や笌鍙傛暟 鍒濆鍖�0x49
+	case 0x49:
+		//鎵弿鍗″弬鏁板寘	0x60
+	case 0x50:
+	case 0x51:
+	case 0x54:
+	case 0x60:
+		//鍗曠偣鏍℃鏁版嵁鍖�0x61
+	case 0x61:
+		//浼介┈鏍℃Red鏁版嵁鍖�0x62
+	case 0x62:
+		//浼介┈鏍℃Green鏁版嵁鍖�0x63
+	case 0x63:
+		//浼介┈鏍℃Blue鏁版嵁鍖�0x64
+	case 0x64:
+		//鎵弿鍗¤蛋绾挎煡鎵捐〃鍖�0x65
+	case 0x65:
+		//閿佸睆瑙ｅ睆鍛戒护鍖�0x66
+	case 0x66:
+		//浜害璋冭妭鍛戒护鍖�0x45
+	case 0x45:
+		//鏅鸿兘缂栧潃鐐瑰悕鍖�0x6A
+	case 0x6a:
+		//鎶ヨ闂ㄩ檺鍊艰缃寘	0xd2
+	case 0x73:
+		//鎵弿鍗＄増鏈煡璇㈠寘	0x42
+	case 0x42:
+		//鍗曠偣鏍℃浣胯兘鍖� 0x47
+	case 0x47:
+		//鑹叉俯璋冭妭鍛戒护鍖�      0x40
+	case 0x40:
+		//鏄剧ず灞忚嚜娴嬫帶鍒跺懡浠ゅ寘	0x6B
+	case 0x6b:
+		//椹卞姩鑺墖寮�矾妫�祴鍖�0x6C
+	case 0x6c:
+		//椹卞姩鑺墖杩囩儹妫�祴鍖�0x6D
+	case 0x6d:
+		//鎵弿鍗″湪绾垮崌绾у懡浠ゅ寘	0x6E
+	case 0x6e:
+		//鎵弿鍗″湪绾垮崌绾ф暟鎹寘	0x6F
+	case 0x6f:
+		//鍚姩缁撴潫璁剧疆鍖�鍚姩璇诲彇鎵弿鍗′笂SPI_FLASH涓殑鏍℃鏁版嵁鍒癝DRAM	0x91
+	case 0x91:
+		//璇诲彇妯＄粍ID鍙�
+	case 0xA0:
+		m_bACKOK = m_ucRcvData[0] == 0x77 ? true : false;
+		break;
+		//鐩戞祴鍛戒护鍖�0xd0
+	case 0xd0:
+		{
+			if (m_ucRcvData[0] == 0x77)
+				m_bACKOK = true;
+			else if (m_ucRcvData[0] == 0xA1)
+			{
+				//0xA1	杩斿洖鏍￠獙閿欒锛涙暟鎹暱搴︽甯革紝鏍￠獙鍜岄敊璇�搴旂瓟澶辫触锛屽悗缁瓧鑺傚～鍏�x00锛屽�鏃犳剰涔夛紱
+				m_bACKOK = true;
+				m_ucErrCode = 1;
+			}
+			else if (m_ucRcvData[0] == 0xA2)
+			{
+				//0xA2	杩斿洖娓╁害瓒呭嚭鑼冨洿,鏁版嵁鑼冨洿锛�40.0--123搴�
+
+				m_bACKOK = true;
+				m_ucErrCode = 2;
+			}
+			else if (m_ucRcvData[0] == 0xA3)
+			{
+				//0xA3	杩斿洖婀垮害瓒呭嚭鑼冨洿,鏁版嵁鑼冨洿锛�.0%---100.0%
+
+				m_bACKOK = true;
+				m_ucErrCode = 3;
+			}
+			else if (m_ucRcvData[0] == 0xA4)
+			{
+				//杩斿洖娓╂箍搴︿紶鎰熷櫒娌℃湁鎺�褰撴俯婀垮害鏍囧織浣�1锛岄噰闆嗙殑娓╂箍搴﹂兘涓�鎴栬�杩斿洖鏃犳暟鎹彲鍒ゆ柇
+
+				m_bACKOK = true;
+				m_ucErrCode = 4;
+			}
+			else
+			{
+				if ( 1 == m_nSequenceNumber)
+				{
+					m_bACKOK = true;
+				}
+				else
+				{
+					m_bACKOK = false;
+				}
+			}
+			break;
+		}
+		//缁х數鍣ㄥ睘鎬ц缃寘锛�xD1锛�
+	case 0xd1:
+		//缁х數鍣ㄦ墜鍔ㄦā寮忚緭鍑烘帶鍒跺寘锛�xD2锛�
+	case 0xd2:
+		//缁х數鍣ㄨ嚜鍔ㄦā寮忛棬闄愬�璁剧疆鍖咃紙0xD3锛�
+	case 0xD3:
+		//鐢垫簮鐢靛帇銆佸０闊矨/D閲囨牱鍛戒护(0xDB)
+	case 0xDB:
+		//鍔熺巼閲囨牱鍛戒护(0xDC)
+	case 0xDC:
+		{
+			if (m_ucRcvData[0] == 0x77)
+				m_bACKOK = true;
+			else if (m_ucRcvData[0] == 0xA0)
+			{
+				//0xA0	杩斿洖鐩戞帶鍗℃牎楠屽拰澶辫触
+				m_bACKOK = true;
+				m_ucErrCode = 1;
+			}
+			else if (m_ucRcvData[0] == 0xA1)
+			{
+				//0xA1	褰撳墠鐩戞帶鏉跨‖浠朵笉鏀寔璇ュ崗璁紱渚嬪娌℃湁瀹夎缁х數鍣ㄦā鍧楀嵈鏀跺埌璇ュ崗璁�
+				m_bACKOK = true;
+				m_ucErrCode = 2;
+			}
+			else if (m_ucRcvData[0] == 0xA2)
+			{
+				//0xA2	褰撳墠缁х數鍣ㄧ殑閰嶇疆妯″紡涓嶆敮鎸佽鍗忚锛涗緥濡傜户鐢靛櫒D1鍛戒护閰嶇疆涓烘俯鎺фā寮忓嵈鏀跺埌浜嗚鎸囦护
+
+
+				m_bACKOK = true;
+				m_ucErrCode = 3;
+			}
+			else if (m_ucRcvData[0] == 0xA3)
+			{
+				//0xA3	杩斿洖婀垮害瓒呭嚭鑼冨洿,鏁版嵁鑼冨洿锛�.0%---100.0%
+
+				m_bACKOK = true;
+				m_ucErrCode = 4;
+			}
+			else if (m_ucRcvData[0] == 0xA4)
+			{
+				//0xA4	缁х數鍣ㄧ紪鍙疯秴鍑鸿寖鍥�
+				m_bACKOK = true;
+				m_ucErrCode = 5;
+			}
+			else
+				m_bACKOK = false;
+			break;
+		}
+	case 0xDD:
+		m_bACKOK = m_ucRcvData[0] == 0x77 ? true : false;
+		break;
+		//LED鐏紑璺娴嬪寘	0xE0
+	case 0XDF:
+		m_bACKOK = m_ucRcvData[0] == 0x77 ? true : false;
+		break;
+	case 0xE0:
+		{
+			if (m_ucRcvData[0] == 0x77)
+				m_bACKOK = true;
+			else if (m_ucRcvData[0] == 0xAA)
+			{
+				m_bACKOK = true;
+				m_ucErrCode = m_ucRcvData[0];
+			}
+			else
+				m_bACKOK = false;
+		}
+		break;
+		//HUB鍦ㄧ嚎鍗囩骇鏁版嵁鍖咃紙0XE2锛�
+	case 0xE2:
+		//HUB鐗堟湰鏌ヨ鍖咃紙0XE3锛�
+	case 0xE3:
+		//鎵揌UB涓婚厤缃暟鎹寘锛�XE4锛�
+	case 0xE4:
+		m_bACKOK = m_ucRcvData[0] == 0x77 ? true : false;
+		break;
+	case 0x9D://鍥炶鎵弿鍗″弬鏁板寘
+	case 0x9E:
+		//鍥炶鏍℃鏁版嵁鍖�
+		{
+			if(m_ucRcvData[0] == 0xAA && m_nAnswered == 1)
+			{
+				m_bACKOK = false;
+			}
+			else if(m_nAnswered == 0)
+			{
+				m_bACKOK = true;
+			}
+		}
+		break;
+	}
+	return m_bACKOK;
+}
+
+void CCLPackCommunicationData::GetCustomMonitorData(LPMONITORDATA pMonitorData)
+{
+	MonitorItem sMonitorFlag;
+	//MONITOR_FLAG	1	bit7-bit4	棰勭暀鎵╁睍
+
+	//Bit7 椋庢墖妫�祴浣胯兘
+	unsigned char c = m_ucRcvData[1] >> 7;
+	sMonitorFlag.bFanStateFlag[0] = c & 0x01;
+	sMonitorFlag.bFanStateFlag[1] = c & 0x01;
+
+	//Bit3	1	鎸囩ず鐑熼浘鐩戞祴鍊兼湁鏁�
+	//	0	鎸囩ず鐑熼浘鐩戞祴鍊兼棤鏁�
+	c = m_ucRcvData[1] >> 3;
+	sMonitorFlag.bSmogFlag = c & 0x01;
+
+	//Bit2	1	鎸囩ず浜害鐩戞祴鍊兼湁鏁�
+	//	0	鎸囩ず浜害鐩戞祴鍊兼棤鏁�
+	c = m_ucRcvData[1]>> 2;
+	sMonitorFlag.bBrightFlag = c & 0x01;
+
+	//Bit1	1	鎸囩ず婀垮害鐩戞祴鍊兼湁鏁�
+	//	0	鎸囩ず婀垮害鐩戞祴鍊兼棤鏁�
+	c = m_ucRcvData[1]>>1;
+	sMonitorFlag.bHumidityFlag = c & 0x01;
+
+	//Bit0	1	鎸囩ず娓╁害鐩戞祴鍊兼湁鏁�
+	//	0	鎸囩ず娓╁害鐩戞祴鍊兼棤鏁�
+	c = m_ucRcvData[1];
+	sMonitorFlag.bTemperatureFlag = c & 0x01;
+
+
+	//TEMPERATURE_VALUE	2	-40.0--123.0搴�
+	//娓╁害鍊硷紝楂樹綅鍦ㄥ墠锛屼綆浣嶅湪鍚庛�绮剧‘鍒�.1搴︺�HUB鏉垮簲绛旀椂锛岀洿鎺ュ皢娓╂箍搴︿紶鎰熷櫒璇讳笂鏉ョ殑鏃犱慨姝ｇ殑鏁版嵁涓婁紶銆�
+	//涓婁綅鏈烘敹搴旂瓟鍚庨�杩囦慨姝ｅ叕寮忚绠楁俯搴﹀�骞舵樉绀恒�
+	//T=0.01*D-40
+
+	/*	2013-03-12
+	灏哠HT11娓╂箍搴︿紶鎰熷櫒璁＄畻鍏紡淇敼涓篠HT21鐨勮浆鎹㈠叕寮忥細
+	娓╁害  T = -46.85 + 175.72*S/2^(16)    14bit
+	婀垮害 RH= -6 + 125*Q/2^(16)        12bit
+	娉ㄦ剰锛�
+	S瑕佸湪鏀跺埌鐨勬暟鎹紙浜岃繘鍒讹級鏈�綆涓や綅琛�0銆�
+	Q瑕佸湪鏀跺埌鐨勬暟鎹紙浜岃繘鍒讹級鏈�綆鍥涗綅琛�010*/
+
+	if (sMonitorFlag.bTemperatureFlag)
+	{
+		unsigned short l = CTool::doGetIntegerData(m_ucRcvData + 2, 2);
+		//pMonitorData->fTemperature = (float)(0.01 * l - 40);
+		l = l * 4;
+		pMonitorData->fTemperature = (float) (-46.85 + 175.72 * l /pow((float)2,16));
+
+		if (pMonitorData->fTemperature > 123)
+			pMonitorData->fTemperature = 123.0;
+		else if ( pMonitorData->fTemperature < -40)
+			pMonitorData->fTemperature = -40.0;
+	}
+
+	//HUMILITY_VALUE	2	0.0---100.0%
+	//婀垮害鍊硷紝绮剧‘鍒�.1搴︺�HUB鏉垮簲绛旀椂锛岀洿鎺ュ皢娓╂箍搴︿紶鎰熷櫒璇讳笂鏉ョ殑鏃犱慨姝ｇ殑鏁版嵁涓婁紶銆�
+	//涓婁綅鏈烘敹搴旂瓟鍚庨�杩囦慨姝ｅ叕寮忚绠楁箍搴﹀�骞舵樉绀恒�
+	//H=-4+0.0405*D-(2.8*10^-6) *D*D
+
+	if (sMonitorFlag.bHumidityFlag)
+	{
+		unsigned short l = CTool::doGetIntegerData(m_ucRcvData + 4, 2);
+		//pMonitorData->fHumidity = (float) (-4 + 0.0405 * l - 2.8 * pow(10.0,-6) * l * l);
+		l = l * 16 + 2;
+		pMonitorData->fHumidity = (float)(-6 + 125 * l / (pow((float)2,16)));
+
+		if (pMonitorData->fHumidity >100 )
+			pMonitorData->fHumidity = 100.0;
+		else if (pMonitorData->fHumidity < 0)
+			pMonitorData->fHumidity = 0.0;
+	}
+
+
+	//FOG_VALUE	1	0x00	鏃犵儫闆惧憡璀�0x01	鏈夌儫闆惧憡璀�
+	if (sMonitorFlag.bSmogFlag)
+		pMonitorData->bSmog = m_ucRcvData[6] == 0x00 ? false : true;
+
+	//LUMINANCE_VALUE	1	0-255	浜害浼犳劅鍣ㄩ噰闆嗙殑浜害鍊�
+	if (sMonitorFlag.bBrightFlag)
+	{
+		pMonitorData->nBrightness = m_ucRcvData[7];
+		pMonitorData->nBrightness = m_ucRcvData[7];
+		pMonitorData->nBrightness2=m_ucRcvData[11];
+		pMonitorData->nBrightness = (int)(pMonitorData->nBrightness / 2.55);
+		pMonitorData->nBrightness2=(int)(pMonitorData->nBrightness2 / 2.55);;
+		if (pMonitorData->nBrightness > 100 )
+		{pMonitorData->nBrightness = 100;
+
+		}
+		if (pMonitorData->nBrightness2 > 100 )
+		{
+			pMonitorData->nBrightness2 = 100;
+		}
+		if (pMonitorData->nBrightness < 0)
+		{
+			pMonitorData->nBrightness = 0;
+		}
+		if (pMonitorData->nBrightness2 <0  )
+		{
+			pMonitorData->nBrightness2 = 0;
+		}
+	}
+	//缁х數鍣ㄧ姸鎬�1	浜岃繘鍒朵綅1琛ㄧず缁х數鍣ㄥ惛鍚堬紝0琛ㄧず鏂紑銆�
+	//濡�0001001锛氳〃绀虹涓�矾鍜岀鍥涜矾缁х數鍣ㄥ惛鍚堬紝鍏朵粬鏂紑
+
+	//2012-10-22 鐢垫簮鐘舵� modify by sunj 鑾峰彇鐢垫簮鐘舵�
+	c = m_ucRcvData[8];
+
+	pMonitorData->nPowerState[0]= c & 0x01;
+	pMonitorData->bWorkState[0] = c & 0x01;
+
+	c = c >> 1;
+
+	pMonitorData->nPowerState[1]  = c & 0x01;
+	pMonitorData->bWorkState[1] = c & 0x01;
+
+	c = c >> 1;
+	pMonitorData->bWorkState[2] = c & 0x01;
+
+	c = c >> 1;
+	pMonitorData->bWorkState[3] = c & 0x01;
+
+
+	//椋庢墖FAN_L鐘舵�	1	0x00	鏈娴� 0x01銆�x02	姝ｅ父寮�惎  0x03	寮傚父鍏抽棴
+	//0x04	姝ｅ父鍏抽棴	0x05	寮傚父寮�惎
+	//椋庢墖FAN_R鐘舵�	1	0x00	鏈娴� 0x01銆�x02	姝ｅ父寮�惎  0x03	寮傚父鍏抽棴
+	//0x04	姝ｅ父鍏抽棴	0x05	寮傚父寮�惎
+	if (sMonitorFlag.bFanStateFlag[0])
+		pMonitorData->nFanState[0] = m_ucRcvData[9];
+
+	if(sMonitorFlag.bFanStateFlag[1])
+		pMonitorData->nFanState[1] = m_ucRcvData[10];
+
+	//VER_DATA	2	0x00	绗竴瀛楄妭浣庝竷浣嶈〃绀虹増鏈彿楂樹綅锛屾渶楂樹綅鈥�鈥欒〃绀篵oot锛屼负鈥�鈥欒〃绀篴pp绋嬪簭,绗簩瀛楄妭琛ㄧず鐗堟湰鍙蜂綆鍏綅
+	//鐗堟湰瀹氫箟锛氫緥濡傜増鏈彿涓�107琛ㄧずV1.07boot鐗堟湰锛�20F琛ㄧずV2.15app鐗堟湰
+	pMonitorData->version.ucTper = m_ucRcvData[13] >> 7;//1-boot锛�-app
+	pMonitorData->version.dVersion =(double) ((m_ucRcvData[13] & 0x7F) + (double) m_ucRcvData[14] / 100.0);
+
+}
+//鑾峰彇绠变綋锛堟壂鎻忓崱锛夌數婧愮數鍘嬬洃娴嬫暟鎹�
+void CCLPackCommunicationData::GetVoltageMonitorData(LPMONITORDATA pMonitorData)
+{
+	//0~255銆�绗�-5璺數婧愮數鍘�
+	//瑕佹樉绀虹殑鐢靛帇鍊�=  (绾㈢伅鐢靛帇*3.295/256)*2锛屾樉绀虹簿纭埌0.01锛涘崟浣嶏細V
+	for (int i = 0; i < POWER_VOL_NUM; ++i)
+	{
+		pMonitorData->fPowerVol[i] = (float)(2 * m_ucRcvData[1 + i] * 3.295 / 256.0);
+	}
+}
+//鑾峰彇绠变綋锛堟壂鎻忓崱锛夊姛鐜囩洃娴嬫暟鎹�
+void CCLPackCommunicationData::GetPowerMonitorData(LPMONITORDATA pMonitorData)
+{
+	//鍔熺巼
+	//灏嗘鏁版嵁闄や互10000锛屽緱鍒颁竴涓櫨鍒嗘瘮鏁帮紝鐒跺悗鍐嶄箻浠�250锛屽嵆涓哄綋鍓嶅崟涓浣撳姛鐜囥�
+	double dCapacity =(double) CTool::doGetIntegerData(m_ucRcvData + 1, 2);
+	pMonitorData->nCapacityFactor = (int) ((dCapacity / 10000.0) * 1250);
+}
+//鑾峰彇绠变綋锛堟壂鎻忓崱锛夐�鐐规娴嬫暟鎹�
+void CCLPackCommunicationData::GetPointDetectMonitorData(LPMONITORDATA pMonitorData,ScanCardAttachment & sScanCardAtt)
+{
+	CStructSingleScanCard  & scancard = sScanCardAtt.scancard;
+
+
+	RECT rt = sScanCardAtt.rtRect;
+
+	LinkTable & ZoneLink = sScanCardAtt.sSectionlinktable;
+
+	//ACK_DATA1	1	0x00-0x54	鍑洪敊鐏釜鏁帮紝姣忎釜杩斿洖鏁版嵁鍖呮渶澶氫笂浼�x04涓伅鐨勫嚭閿欑姸鎬�
+	pMonitorData->nErrorPointNum = (int) m_ucRcvData[1];
+
+	//ACK_DATA2	1	0x00-0xFF	DCLK鍑洪敊鐘舵�锛岀浉搴攂it浣嶄负1鏍囩ず瀵瑰簲DCLK鍑洪敊
+	//ACK_DATA3	1	0x00	淇濈暀
+	for (int m = 0; m < SCAN_LINE_STATE_NUM; ++ m)
+	{
+		if (m < 8)
+		{
+			pMonitorData->nDClkState[m] = (m_ucRcvData[2] >> m) & 0x01;			//DCLK鐘舵�
+		}
+		else
+		{
+			pMonitorData->nDClkState[m] = (m_ucRcvData[3] >> (m - 8)) & 0x01;			//DCLK鐘舵�
+		}
+		pMonitorData->nScanLineState[m] = pMonitorData->nDClkState[m];		//鎵弿绾跨姸鎬�
+	}
+
+	for (int n = 0; n < pMonitorData->nErrorPointNum; n ++)
+	{
+		//鍑洪敊LED鐏湪绠变綋鍐匵鍧愭爣
+		pMonitorData->sErrorPoint[n].nX = m_ucRcvData[4 + n * 3];
+		//鍑洪敊LED鐏湪绠变綋鍐匶鍧愭爣
+		pMonitorData->sErrorPoint[n].nY = m_ucRcvData[5 + n * 3] + ((m_ucRcvData[6 + n * 3] >> 4) << 8);
+
+
+		//2013-10-18 caixl 閫愮偣妫�祴 鏍规嵁鍖烘煡鎵捐〃杞崲杩斿洖鐐圭殑浣嶇疆锛�
+		//old:HUB鎵�甫鐨勬娊璞＄伅鏉跨殑瀹藉害涓哄尯瀹斤紝楂樺害涓烘壂鎻忓崱鎵�甫鐨勫尯涓暟X姣忓尯琛屾暟锛屽尯绾靛悜鎺掑垪锛岀紪鍧�负0,1,2,3,...,n锛�
+		//new:HUB鎵�甫鐨勬娊璞＄伅鏉跨殑瀹藉害涓哄崱鍖哄锛岄珮搴︿负鎵弿鍗℃墍甯︾殑鍖轰釜鏁癤姣忓尯琛屾暟锛屽尯绾靛悜鎺掑垪锛岀紪鍧�负,1,2,3,...,n锛�
+		//鍖哄湴鍧�嵆涓哄尯鏌ユ壘琛ㄧ殑鐗╃悊鍦板潃銆傚尯澶у皬涓猴細鍖哄X姣忓尯琛屾暟銆�
+		//灏嗚繑鍥炲儚绱犵偣杞寲涓哄尯鐨勭浉瀵逛綅缃紝鍐嶆牴鎹尯鐨勭浉瀵瑰崱鐨勪綅缃浆鍖栦负鍗＄殑鐩稿浣嶇疆
+
+		//鍖虹墿鐞嗗湴鍧�紝鍗虫煡鎵捐〃鐨勫唴瀹�
+		int nZoneAddr = pMonitorData->sErrorPoint[n].nY / scancard.nScanCardSectionRowNumber;
+
+		//閫氳繃鐗╃悊鍦板潃杞崲涓簊dram鍦板潃锛屾壘鏌ユ壘琛ㄧ殑ID
+		int nZoneID = 0;
+		for(int i = 0; i < ZoneLink.nLen; ++i)
+		{
+			if(ZoneLink.ucLinkTable[i] == nZoneAddr)
+			{
+				nZoneID = i;
+				break;
+			}
+		}
+
+		//鐐圭浉瀵逛簬鍖虹殑浣嶇疆锛孹涓嶅彉鍖栵紝Y瀵规瘡鍖鸿鏁版眰浣�
+		pMonitorData->sErrorPoint[n].nY = pMonitorData->sErrorPoint[n].nY % scancard.nScanCardSectionRowNumber;
+
+		/* old:
+		//鍖虹浉瀵逛簬鍗＄殑鍒椾綅缃�
+		int nColID = nZoneID % scancard.nSectionHorNum;
+
+		//鍖虹浉瀵逛簬鍗＄殑琛屼綅缃�
+		int nRowID = nZoneID / scancard.nSectionHorNum;
+
+		//鍍忕礌鐩稿浜庡崱鐨勪綅缃�
+		pMonitorData->sErrorPoint[n].nX += nColID * scancard.nSectionWidth;
+		pMonitorData->sErrorPoint[n].nY += nRowID * scancard.nScanCardSectionRowNumber;
+		*/
+
+		// new:---------------begin----------------------
+		//鍗″尯鐩稿浜庡崱鐨勫垪浣嶇疆
+		int nColID = nZoneID % (scancard.nSectionHorNum * scancard.nCard_zone_Num);
+
+		//鍗″尯鐩稿浜庡崱鐨勮浣嶇疆
+		int nRowID = nZoneID / (scancard.nSectionHorNum * scancard.nCard_zone_Num);
+
+ 		//鐐瑰湪绗嚑涓ā缁勫尯瀹戒笂
+ 		int nModSectionID = pMonitorData->sErrorPoint[n].nX /scancard.nSectionWidth;
+
+		//鐐瑰湪绗嚑涓ā缁勫尯瀹界殑X鍋忕Щ浣嶇疆
+		int nModeSectionOffset = pMonitorData->sErrorPoint[n].nX %scancard.nSectionWidth;
+
+		//鐐瑰湪妯悜绗嚑涓崱鍖哄涓�
+		int nHorCardSectId = nColID / scancard.nSectionHorNum;
+
+		//鐐瑰湪妯＄粍涓婄殑绗竴涓ā鍖哄涓�
+		int nModSectID = nColID % scancard.nSectionHorNum;
+
+		//鍍忕礌鐩稿浜庡崱鐨勪綅缃�
+		//褰撳墠妯″尯涔嬪墠鐨勫崱鍖哄甫鐨勭偣鏁�  褰撳墠妯″尯涔嬪墠鐨勬ā鍖虹偣鏁� 鐐瑰湪绗嚑涓ā缁勫尯瀹界殑X鍋忕Щ浣嶇疆
+// 		pMonitorData->sErrorPoint[n].nX = nHorCardSectId * scancard.nCard_zone_width * scancard.nSectionHorNum
+// 			+ nHorCardSectId * scancard.nSectionWidth + nModeSectionOffset;
+
+		//鍍忕礌鐩稿浜庡崱鐨勪綅缃�
+		//褰撳墠妯″尯涔嬪墠鐨勫崱鍖哄甫鐨勭偣鏁�+  褰撳墠妯″尯涔嬪墠鐨勬ā鍖虹偣鏁�+ 鐐瑰湪绗嚑涓ā缁勫尯瀹界殑X鍋忕Щ浣嶇疆
+		pMonitorData->sErrorPoint[n].nX = nHorCardSectId * nHorCardSectId * scancard.nCard_zone_width * scancard.nSectionHorNum
+			+ nModSectionID * scancard.nModuleWidth
+			+ nModSectID * scancard.nSectionWidth + nModeSectionOffset;
+
+// 		pMonitorData->sErrorPoint[n].nX += nColID * scancard.nSectionWidth;
+// 		pMonitorData->sErrorPoint[n].nY += nRowID * scancard.nScanCardSectionRowNumber;
+		//---------------end----------------------
+
+
+		//2013.7.4 caixl 灏嗗儚绱犵浉瀵逛簬鎵弿鍗＄殑浣嶇疆杞崲鎴愮浣撻棶棰�
+		pMonitorData->sErrorPoint[n].nX += (short)rt.left;
+		pMonitorData->sErrorPoint[n].nY += (short)rt.top;
+
+		//鍑洪敊LED鐏鑹叉寚绀�
+		//浣庝笁浣峛it2銆乥it1銆乥it0鍒嗗埆鐢ㄤ簬鎸囩ず绾�缁裤�钃濅笁绉嶉鑹茬伅鐨勭姸鎬侊紝
+		//鐩稿簲浣嶄负'0'琛ㄧず鐩稿簲LED鐏紑璺紝'1'琛ㄧず宸ヤ綔姝ｅ父銆�
+		//绾㈢伅鏍囪瘑
+		pMonitorData->sErrorPoint[n].bRedFlag = (m_ucRcvData[6 + n * 3] >> 2) & 0x01 ? false : true;
+		//缁跨伅鏍囪瘑
+		pMonitorData->sErrorPoint[n].bGreenFlag = (m_ucRcvData[6 + n * 3] >> 1) & 0x01 ? false : true;
+		//钃濈伅鏍囪瘑
+		pMonitorData->sErrorPoint[n].bBlueFlag = (m_ucRcvData[6 + n * 3]) & 0x01 ? false : true;
+	}
+	if (m_ucErrCode == 0xAA)
+	{
+		pMonitorData->bDotDetectErrorFlag = 2;
+	}
+	else
+	{
+		pMonitorData->bDotDetectErrorFlag = -1;
+	}
+}
+void CCLPackCommunicationData::GetNetWebErrorPackage(LPMONITORDATA pMonitorData)
+{
+	//ACK_DATA10-ACK_DATA11缃戠粶鐩戞帶鏁呴殰璁＄畻鍣�
+	unsigned short nError = CTool::doGetIntegerData(m_ucRcvData + 10, 2);
+
+	if (nError < 0 || nError > 65535)
+	{
+		nError = 0;
+	}
+	pMonitorData->nNetWebErrorNum = nError;
+	if (m_ucErrCode == 0xAA)
+	{
+		pMonitorData->nNetWebErrorPackageFlag = 2;
+	}
+	else
+	{
+		pMonitorData->nNetWebErrorPackageFlag = -1;
+	}
+}
+void CCLPackCommunicationData::GetMonitorDataFunRate(LPMONITORDATA pMonitorData)
+{
+
+	for (int i = 0 ; i < FAN_ROTATION_NUM_MAX ; i++)
+	{
+		pMonitorData->nFanRotation[i] = CTool::doGetIntegerData(m_ucRcvData+i *2 , 2);
+	}
+}

@@ -1,0 +1,715 @@
+/*
+   * 文件名 CabinetLibraryActivity.java
+   * 包含类名列表com.szaoto.ak10.leddisplay
+   * 版本信息，版本号
+   * 创建日期2013年11月8日上午11:53:22
+   * 版权声明 liangdb-szaoto
+*/
+package com.szaoto.ak10.leddisplay;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.xmlpull.v1.XmlPullParser;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Xml;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
+import android.widget.ExpandableListView;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.szaoto.ak10.ExternalStorageService;
+import com.szaoto.ak10.IInfoChangeObserver;
+import com.szaoto.ak10.R;
+import com.szaoto.ak10.common.CabinetData.CabinetInformation;
+import com.szaoto.ak10.custom.CustomProgressDialog;
+import com.szaoto.ak10.dataaccess.DataAccessCabinetLibrary;
+import com.szaoto.ak10.entity.CabinetSeries;
+import com.szaoto.ak10.entity.CabinetXml;
+import com.szaoto.ak10.treeview.TreeElement;
+import com.szaoto.ak10.treeview.TreeElementParser;
+import com.szaoto.ak10.treeview.TreeView;
+import com.szaoto.ak10.treeview.TreeView.LastLevelItemClickListener;
+import com.szaoto.ak10.treeview.TreeViewAdapter;
+import com.szaoto.ak10.util.LibcbtUsbStatesReceiver;
+/**
+ * 类名CabinetLibraryActivity
+ * 作者 liangdb
+ * 主要功能:箱体库管理,同步U盘中的配置文件到本机
+ * 创建日期2013年11月8日
+ * 修改日期，修改内容
+ * 修改者:zhangsj
+ */
+public class CabinetLibraryActivity extends Activity implements
+	OnClickListener, IInfoChangeObserver {
+	public MyHandler mhandler;
+	public LibcbtUsbStatesReceiver usbstates;
+	TextView CabinetLibUsb;
+	Context context;
+	TextView btn_cabinetback;
+	TextView btn_synchro;
+	List<CabinetSeries> CabinetSeriesList;
+	List<CabinetXml> CabinetList;
+	String strDeleteCabinet;
+	TreeView treeView;
+	String cabinetserisename;
+	CabinetSeries cabinetSeries;
+    int Filetype=0;
+	CabinetInformation cabinet;
+	boolean tempData;
+	FileInputStream inCabinetSeries;
+	FileInputStream inCabinets;
+	String cabinetname;
+	CabinetSeries sCabinetseries;
+	TreeViewAdapter mTreeadapter;
+	CustomProgressDialog MergeCabinetDiag;
+	String sUSBFileCabinet=".cbt";
+	String cBtFileName;
+	static String CONFIG_PATH;
+
+//	private static String Usb_PATH ="/mnt/usbdisk/";  //核心板新版调试该路径
+//	private static String Usb_PATH ="/mnt/usb/";  //核心板旧版本调试路径
+	public  String Usb_PATH ;  //核心板旧版本调试路径
+	private ImageView CbtLibUsbmount;
+	private TextView btn_CablinetLib;
+	private TextView btn_Cablinet;
+	static String sFileCabinet = "Cabinet.cbt";
+	static String sFileCabinets= "CabinetSeries.cbs";
+	static boolean cabinets;
+	public void MsgShow(String msg) {
+		// TODO Auto-generated method stub
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.leddisplay_cabinetlibrary);
+		ExternalStorageService.observers.add(this);
+		mhandler = new MyHandler();
+		usbstates = new LibcbtUsbStatesReceiver(this);
+		CabinetLibUsb = (TextView)findViewById(R.id.cbtlibusbstates);
+		CbtLibUsbmount = (ImageView)findViewById(R.id.cbtlibusbmounted);
+		btn_cabinetback = (TextView) findViewById(R.id.btn_cabinetback);
+		btn_synchro = (TextView) findViewById(R.id.btn_synchro);
+		btn_CablinetLib = (TextView) findViewById(R.id.btn_cabinetserieslib);
+		btn_Cablinet = (TextView) findViewById(R.id.btn_cabinetlib);
+		btn_cabinetback.setOnClickListener(this);
+		btn_CablinetLib.setOnClickListener(this);
+		btn_Cablinet.setOnClickListener(this);
+		btn_synchro.setOnClickListener(this);
+	
+	}
+
+	@Override
+	protected void onResume() {
+		try {
+			TreeViewLoadData(); // 初始化树视图数据
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		super.onResume();
+	}
+
+	// 加载树视图数据
+	private void TreeViewLoadData() throws Exception {
+		 ReadXmlFileData();
+		 UpdateTreeViewData();
+		}
+
+	public void UpdateTreeViewData() {
+		treeView = (TreeView) findViewById(R.id.tree_view);
+		// 填充的数据源,分别是箱体系列所对应的箱体文件
+		List<String> treeElementsString = IntegerateList(CabinetList,CabinetSeriesList);
+		
+		// 解析读出的文件内容
+		List<TreeElement> treeElements = TreeElementParser.getTreeElements(treeElementsString);
+		LastLevelItemClickListener itemClickCallBack = new LastLevelItemClickListener() {
+
+			@Override
+			public void onLastLevelItemClick(int position,  //点击解析出的条目，显示详细信息
+					TreeViewAdapter adapter) {
+				// TODO Auto-generated method stub
+				TreeElement element = (TreeElement) adapter.getItem(position);
+				Intent intent = new Intent(CabinetLibraryActivity.this,
+						CabinetInfomationActivity.class);
+				intent.putExtra("CabinetName", element.getTitle());	startActivity(intent);
+				//Toast.makeText(getApplicationContext(), element.getTitle(), 300)
+				//		.show();
+			}
+			@Override
+			public void onLastLevelItemLongClick(int position,
+					TreeViewAdapter adapter) {
+						 			  	
+				  TreeElement element = (TreeElement) adapter.getItem(position);
+				   strDeleteCabinet=element.getTitle();
+				   dialogDeleteShow(strDeleteCabinet);  //长按删除节点箱体
+//			       ContextMenuShow(strDeleteCabinet);
+		       		
+			}
+		};
+		treeView.initData(this, treeElements);// 初始化数据
+		treeView.setLastLevelItemClickCallBack(itemClickCallBack); // 设置节点点击事件监听
+	}
+
+  @Override
+   public void onCreateContextMenu(ContextMenu menu, View v,
+		ContextMenuInfo menuInfo) {
+	// TODO Auto-generated method stub
+	  menu.setHeaderTitle("修改箱体或删除");
+	  menu.add(0, 1, Menu.NONE, "修改名称");
+	  menu.add(0, 2, Menu.NONE, "删除");
+//	super.onCreateContextMenu(menu, v, menuInfo);
+	 
+   }
+  @Override
+public boolean onContextItemSelected(MenuItem item) {
+	// TODO Auto-generated method stub
+	  AdapterContextMenuInfo menuInfo= (AdapterContextMenuInfo) item.getMenuInfo();
+	  switch (item.getItemId()) {
+	case 1:
+		
+		break;
+	case 2:
+//	  dialogDeleteShow(item.getItemId());	
+		
+		break;
+
+	default:
+		break;
+	}
+	return super.onContextItemSelected(item);
+	
+}
+
+	public void ReadXmlFileData() throws FileNotFoundException, Exception {
+		InputStream inSeries;   //箱体系列
+		InputStream inCabinet; //箱体文件
+		CONFIG_PATH = this.getFilesDir() + "//config//";
+		// File xmlSeries= new File("/mnt/usb/","CabinetSeries.cbs");
+		// inSeries = new FileInputStream(xmlSeries);
+		// File xmlCabinet= new File("/mnt/usb/","Cabinet.cbt");
+		File xmlSeries = new File(CONFIG_PATH, "CabinetSeries.cbs");
+		inSeries = new FileInputStream(xmlSeries); //箱体系列文件
+		File xmlCabinet = new File(CONFIG_PATH, "Cabinet.cbt");
+		inCabinet = new FileInputStream(xmlCabinet); //箱体文件
+		if (!xmlSeries.exists()||!xmlCabinet.exists()) {
+			Toast.makeText(getApplication(), "没有箱体系列和箱体文件，请同步", 200).show();
+		}
+		CabinetList = pullXmlToCabinetList(inCabinet);  //解析箱体箱体文件
+		CabinetSeriesList = pullXmlToCabinetSeriesList(inSeries); //解析箱体系列
+	}
+	//长按删除节点对话框
+	protected void dialogDeleteShow( final String strEleTitle) {
+		// 加载输入框的布局文件
+	
+//		LayoutInflater inflater = (LayoutInflater) CabinetLibraryActivity.this
+//				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			// 弹出的对话框
+		new AlertDialog.Builder(CabinetLibraryActivity.this)
+				/* 弹出窗口的最上头文字 */
+				.setTitle(R.string.text_delcabinet)
+				/* 设置弹出窗口的图式 */
+				.setIcon(android.R.drawable.ic_dialog_info)
+				/* 设置弹出窗口的信息 */
+				.setPositiveButton(R.string.btn_sure, new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialoginterface, int i) {
+                       //添加要删除的数据方法
+							CabinetDeleteTask cabinetDeleteTask = new CabinetDeleteTask();
+							cabinetDeleteTask.execute();	
+					}
+				})
+				.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() { /* 设置跳出窗口的返回事件 */
+					public void onClick(DialogInterface dialoginterface, int i) {
+						Toast.makeText(CabinetLibraryActivity.this, R.string.text_cabinetdel_canceltitle,Toast.LENGTH_SHORT).show();
+					}
+				}).show();
+	}
+	// 整合列表数据，得到树视图需要的字符列表集合
+	private List<String> IntegerateList(List<CabinetXml> cabinetList,List<CabinetSeries> cabinetSeriesList) {
+		List<String> list = new ArrayList<String>();
+		// PID-1-PName-false-true-false-null
+		// SID-2-SName-false-false-true-PID
+		String PStr = " ";   //父节点
+		String SStr = " ";   
+		int PID, SID;
+		for (int i = 0; i < cabinetSeriesList.size(); i++) {
+			PID = cabinetSeriesList.get(i).getID();     // 获取箱体系列ID
+			PStr = PID + "=1=" + cabinetSeriesList.get(i).getName()
+					+ "=false=true=false=null";
+			list.add(PStr);
+			for (int j = 0; j < cabinetList.size(); j++) {  //循环箱体文件
+				SID = 0;
+				SID = cabinetList.get(j).getnSeriesID(); // 获取箱体系列ID
+				if (PID == SID) { // 如果父节点ID与系列ID相等
+					                     //合并2个文件为树形结构
+					SStr = cabinetList.get(j).getnID() + "=2="
+							+ cabinetList.get(j).getsName()
+							+ "=false=false=true=" + PID;
+					list.add(SStr);
+				}
+			}
+		}
+		return list;
+	}
+
+	// 解析箱体系列xml文件
+	private List<CabinetSeries> pullXmlToCabinetSeriesList(InputStream in)
+			throws Exception {
+		List<CabinetSeries> list = null; // 定义要显示的箱体系列集合
+		CabinetSeries cabinetSeries = null; // 初始化箱体系列
+		// 穿件解析实例
+		XmlPullParser parser = Xml.newPullParser();
+		// 设置输入流并指明编码
+		parser.setInput(in, "UTF-8");
+		int eventType = parser.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			switch (eventType) {
+			case XmlPullParser.START_DOCUMENT:
+				System.out.println("开始从头文件解析");
+				list = new ArrayList<CabinetSeries>();
+				break;
+			// 判断是否为标签开始元素
+			case XmlPullParser.START_TAG:
+				if (parser.getName().equals("CabinetSeries")) {
+					cabinetSeries = new CabinetSeries();
+				} else if (parser.getName().equals("ID")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					// cabinetSeries.setcID(Integer.parseInt(parser.getText()));
+					cabinetSeries.setID(Integer.parseInt(parser.getText()));
+				} else if (parser.getName().equals("ParentID")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					// cabinet.setSeriesID(Integer.parseInt(parser.getText()));
+					cabinetSeries.setParentID(Integer.parseInt(parser.getText()));
+				} else if (parser.getName().equals("name")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					// cabinet.setcName(parser.getText());
+					cabinetSeries.setName(parser.getText());
+				}
+				break;
+			case XmlPullParser.END_TAG:
+				if (parser.getName().equals("CabinetSeries")) { // 判断结束标签元素是否是CabinetSeries
+					list.add(cabinetSeries); // 将cabinetSeries添加到CabinetSeries集合
+					cabinetSeries = null;
+				}
+				break;
+			}
+			// 进入下一个元素并触发相应事件
+			eventType = parser.next();
+		}
+		return list;
+	}
+	// 解析箱体文件
+	private List<CabinetXml> pullXmlToCabinetList(InputStream in) throws Exception {
+		List<CabinetXml> list = null; // 定义要显示的箱体集合
+		CabinetXml cabinet = null; // 初始化箱体
+		// 创建解析实例
+		XmlPullParser parser = Xml.newPullParser();
+		// 设置输入流并指明编码
+		parser.setInput(in, "UTF-8");
+		int eventType = parser.getEventType();
+		while (eventType != XmlPullParser.END_DOCUMENT) {
+			switch (eventType) {
+			// 判断是否为文档开始
+			case XmlPullParser.START_DOCUMENT:
+				System.out.println("开始从头文件解析");
+				list = new ArrayList<CabinetXml>();
+				break;
+			// 判断是否为标签开始元素
+			case XmlPullParser.START_TAG:
+				if (parser.getName().equals("Cabinet")) {
+					cabinet = new CabinetXml();
+				} else if (parser.getName().equals("ID")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					cabinet.setnID(Integer.parseInt(parser.getText()));
+				} else if (parser.getName().equals("SeriesID")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					cabinet.setnSeriesID(Integer.parseInt(parser.getText()));
+				} else if (parser.getName().equals("Name")) {
+					eventType = parser.next(); // 得到箱体的属性值
+					cabinet.setsName(parser.getText());
+				}
+				break;
+			case XmlPullParser.END_TAG:
+				if (parser.getName().equals("Cabinet")) { // 判断结束标签元素是否是Cabinet
+					list.add(cabinet); // 将cabinet添加到Cabinet集合
+					cabinet = null;
+				}
+				break;
+			}
+			// 进入下一个元素并触发相应事件
+			eventType = parser.next();
+		}
+		return list;
+	}
+	// 初始化控件
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_synchro:
+			startActivity(new Intent(CabinetLibraryActivity.this, CabinetSelectActivity.class));
+			finish();
+			break;
+		// 返回
+		case R.id.btn_cabinetback:
+			startActivity(new Intent(CabinetLibraryActivity.this,LedSelActivity.class));
+			finish();
+			break;
+		case R.id.btn_cabinetserieslib:
+			startActivity(new Intent(CabinetLibraryActivity.this,CabinetLibraryManage.class));
+			finish();
+			break;
+		case R.id.btn_cabinetlib:
+			startActivity(new Intent(CabinetLibraryActivity.this,CabinetManageActivity.class));
+			finish();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	  //合并箱体异步任务，刷新界面
+//	  class CabinetMergeTask extends AsyncTask<Integer, Integer, String>{
+//				 public CabinetMergeTask() {
+//		     }
+//				 @Override
+//			protected void onPreExecute() {
+//				// TODO Auto-generated method stub
+//				super.onPreExecute();
+//				MergeCabinetDiag.show();
+//			}
+//			@Override
+//			protected void onProgressUpdate(Integer... values) {
+//			// TODO Auto-generated method stub
+//			super.onProgressUpdate(values);
+//			}	 
+//			@Override
+//			protected String doInBackground(Integer... params) {
+//				//存在就进行对比，然后合并,写入到本地文件里面去
+//				//获取到本地箱体系列信息
+//				List<String> LocalCabinetSeries=DataAccessCabinetLibrary.getCabinetSeriseNames(0);
+//             //获取到本地文件里面的箱体名称
+//				List<String> LocalCabinet=DataAccessCabinetLibrary.getCabinetNames(0);
+//				//获取到U盘里面的
+//				List<String> UsbCabinet=DataAccessCabinetLibrary.getCabinetNames(1);
+//				//对比2个文件，将U盘里面不同 的箱体名称合并到本地文件中
+//				 //数据处理
+//					try {
+//						isMergingCabinet(LocalCabinet, UsbCabinet);
+//						 ReadXmlFileData();
+//						//Toast.makeText(getApplication(), "数据合并完成", Toast.LENGTH_SHORT).show();
+//					} catch (Exception e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				return null;
+//			}
+			
+//			@Override
+//			protected void onPostExecute(String result) {
+//			//界面更新
+//				try {
+//					//TreeViewLoadData();
+//					UpdateTreeViewData();
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				MergeCabinetDiag.dismiss();
+//			    super.onPostExecute(result);
+//			}
+//		}		
+	  //删除节点异步任务，刷新界面
+	  class CabinetDeleteTask extends AsyncTask<Integer, Integer, String>{
+		  public CabinetDeleteTask() {
+		  }
+		  @Override
+		  protected String doInBackground(Integer... params) {
+			  //数据处理
+			  try {
+				  DataAccessCabinetLibrary.RemoveCabinet( strDeleteCabinet); //删除箱体
+				  ReadXmlFileData();
+				  //Toast.makeText(getApplication(), "数据合并完成", Toast.LENGTH_SHORT).show();
+			  } catch (Exception e) {
+				  // TODO Auto-generated catch block
+				  e.printStackTrace();
+			  }
+			  return null;
+		  }
+		  @Override
+		  protected void onPostExecute(String result) {
+			  //界面更新
+			  try {
+				  //TreeViewLoadData();
+				  UpdateTreeViewData();
+			  } catch (Exception e) {
+				  // TODO Auto-generated catch block
+				  e.printStackTrace();
+			  }
+			  super.onPostExecute(result);
+		  }
+	  }		
+//	// 比较本地和U盘里面的Cabinet.cbt文件,将不同内容合并
+//	public void isMergingCabinet(List<String> localCabinet,List<String> usbCabinet) throws Exception {
+//		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//		DocumentBuilder db = null;
+//		try {
+//			db = dbf.newDocumentBuilder();
+//		} catch (ParserConfigurationException pce) {
+//			System.err.println(pce); // 出现异常时，输出异常信息
+//		}
+//		org.w3c.dom.Document doc_loaclCabinet = null; // 本地箱体
+//		org.w3c.dom.Document doc_loaclSeries = null; // 本地箱体系列
+//		org.w3c.dom.Document doc_usbdisk = null; // U盘箱体
+//		
+//		TraverseDictionary TD = new TraverseDictionary();
+//		
+//		Usb_PATH = TD.GetUDiskDir();
+//		if (Usb_PATH == null) {
+//			return;
+//		}
+//		//此处获取U盘中以.cbt结尾的箱体文件
+//		TD.GetFiles(Usb_PATH, sUSBFileCabinet, true);
+//		List<String> listNamecbt = TD.getLstFile();
+//		for (String string : listNamecbt) {
+//			cBtFileName =string;
+//		}
+//		// 获取两个XML文件的Document
+//		try {
+//			// doc_main = db.parse(mainFileName);
+//			doc_loaclCabinet = db.parse(new File(HomePageActivity.CONFIG_PATH,	sFileCabinet));
+//			doc_loaclSeries = db.parse(new File(HomePageActivity.CONFIG_PATH,	sFileCabinets));
+//			doc_usbdisk = db.parse(new File(Usb_PATH, cBtFileName));
+//		} catch (DOMException dom) {
+//			System.err.println(dom.getMessage());
+//		} catch (Exception ioe) {
+//			System.err.println(ioe);
+//		}
+//		// 获取本地文件Cabinet.cbt的SeriesID和Name
+//		// int SeriesID=cabinet.getnSeriesID();
+//		// List<String> listSeries
+//		// =DataAccessCabinetLibrary.getCabinetNamesbyseriseID(SeriesID, 0);
+//		// 获取两个文件的根节点
+//		Element root_localCbt = doc_loaclCabinet.getDocumentElement(); // 本地文件的根节点
+//		Element root_localCbtSeries = doc_loaclSeries.getDocumentElement(); // 本地箱体系列文件的根节点
+//		Element root_uDisk = (Element) doc_usbdisk.getDocumentElement(); // U盘文件的根节点
+//
+//		// 箱体系列文件
+//		NodeList localSeriesNodes = root_localCbtSeries.getElementsByTagName("CabinetSeries");
+//		int local_cbtSeriesNum = localSeriesNodes.getLength();
+//		String strlocCabinetSeriesID = null;
+//		List<CabinetSeries> listSeries = new ArrayList<CabinetSeries>(); // 存放本地箱体系列的ID和name
+//		for (int i = 0; i < local_cbtSeriesNum; i++) {
+//			Element localCbtSeries = (Element) localSeriesNodes.item(i);
+//			Element itemCbtSeriesID = (Element) localCbtSeries
+//					.getElementsByTagName("ID").item(0);
+//			strlocCabinetSeriesID = itemCbtSeriesID.getFirstChild().getNodeValue();
+//			int CbtSeriesID = Integer.parseInt(strlocCabinetSeriesID);
+//			listSeries.add(new CabinetSeries(CbtSeriesID));
+//		}
+//
+//		// 本地箱体节点
+//		NodeList LocalpersonNodes = root_localCbt
+//				.getElementsByTagName("Cabinet");
+//		// 得到本地文件Cabinet.cbt里面的节点ID和SeriesID
+//		int local_cabinetNum = LocalpersonNodes.getLength();
+//		// 得到本地文件中的箱体节点数量
+//		String strLSeriesName = null;
+//		String strLocalSeriesID = null;
+//		List<CabinetInformation> listCbt = new ArrayList<CabinetInformation>(); // 存放本地箱体的SeriesID和箱体Name
+//		for (int i = 0; i < local_cabinetNum; i++) {
+//			Element localeleCbt = (Element) LocalpersonNodes.item(i);
+//			Element itemSeriesID = (Element) localeleCbt.getElementsByTagName(
+//					"SeriesID").item(0);
+//			strLocalSeriesID = itemSeriesID.getFirstChild().getNodeValue();
+//			int SeriesID = Integer.parseInt(strLocalSeriesID);
+//			Element itemSeriesName = (Element) localeleCbt
+//					.getElementsByTagName("Name").item(0);
+//			strLSeriesName = itemSeriesName.getFirstChild().getNodeValue();
+//			listCbt.add(new CabinetInformation(SeriesID, strLSeriesName));
+//		}
+//		// 得到U盘中箱体节点
+//		NodeList usbNodeList = root_uDisk.getElementsByTagName("Cabinet");
+//		int item_number = usbNodeList.getLength();
+//		String strUSBSeriesID = null;
+//		String strUSBcbtName = null;
+//		// 得到U盘Cabinet.cbt中的节点ID和SeriesID
+//		List<CabinetInformation> listUsb = new ArrayList<CabinetInformation>(); // 存放本地箱体的SeriesID和箱体Name
+//		for (int j = 0; j < item_number; j++) {
+//			Element eleUSBCbt = (Element) usbNodeList.item(j);
+//			Element itemUSeriesID = (Element) eleUSBCbt.getElementsByTagName(
+//					"SeriesID").item(0);
+//			strUSBSeriesID = itemUSeriesID.getFirstChild().getNodeValue();
+//			int USeriesID = Integer.parseInt(strUSBSeriesID);
+//			Element itemUSBSeriesName = (Element) eleUSBCbt
+//					.getElementsByTagName("Name").item(0);
+//			strUSBcbtName = itemUSBSeriesName.getFirstChild().getNodeValue();
+//			listUsb.add(new CabinetInformation(USeriesID, strUSBcbtName));
+//		}
+//		// 比较U盘里面 的 Cabinet的SeriesName和本地文件中的SeriesName
+//		// 如果一样，那就不添加，不一样，那就添加
+//		// 比较cbt.SeriesID==cbs.ID 相等
+//		// 再比较Lcbt.name==Ucbt.name,如果相等，那就不用添加，
+//		// 不相等，就根据Ucbt.name，读出U盘箱体结构，调用AddXml(cabinet)
+//		//同步时有重复的就不添加
+//		//首先遍历所有节点，查找是否有完全相同的节点，防止同一节点已定义多次   
+//			    CompareXML(listSeries, listCbt, listUsb);
+//	}
+//     
+	//判定是否有重复的存在
+	public boolean IsNodeExist(	List<CabinetInformation> listCbt,String strName)
+	{
+		for (int i = 0; i < listCbt.size(); i++) {
+			if(listCbt.get(i).getsName().equals(strName))
+				{
+                  return true;
+				}
+		}
+
+		return false;
+	}	
+//	private void   CompareXML(List<CabinetSeries> listSeries,	List<CabinetInformation> listCbt, List<CabinetInformation> listUsb) {
+//			/****************************************/
+//			for (int i = 0; i < listUsb.size(); i++) {
+//				CabinetInformation cbtUsb = listUsb.get(i);
+//				int SerID = cbtUsb.getnSeriesID();
+//				String strUname = cbtUsb.getsName();
+//				for (int j = 0; j < listCbt.size(); j++) {
+//					if(IsNodeExist(listCbt,strUname))  //判定是否有相同箱体存在
+//					{
+//						continue;
+//					} else {
+//						// 不存在
+//						int k = 0;
+//						for (; k < listSeries.size(); k++) {
+//							CabinetSeries lcbs = listSeries.get(k);
+//							if (SerID == lcbs.getID()) { // 系列相同
+//							//仍然需要一个判断系列ID存在的方法，防止重复	
+//								break;
+//							}
+//						}
+//						if (k < listSeries.size()) {
+//							
+//							cabinets = DataAccessCabinetLibrary.getCabinetByname(
+//									strUname, cbtUsb, 1);
+//							DataAccessCabinetLibrary.AddXMLCabinet(cbtUsb);
+//							System.out.println("添加的箱体名称" + strUname);
+//							System.out.println("当前外部存储路径" + Usb_PATH);
+//							break;
+//						}
+//						if (k == listSeries.size()) {
+//							String stUname = cbtUsb.getsName();
+//							int SeresID = cbtUsb.getnSeriesID();
+//							String seriesName = "SERIES-" + SeresID;
+//							DataAccessCabinetLibrary	.WriteXMLCabinetSeries(new CabinetSeries(SeresID, 0, seriesName));
+//							System.out.println("添加的箱体系列名称" + seriesName);
+//							System.out.println("当前外部存储路径" + Usb_PATH);
+//							cabinets = DataAccessCabinetLibrary.getCabinetByname(	stUname, cbtUsb, 1);
+//							DataAccessCabinetLibrary.AddXMLCabinet(cbtUsb);
+//							/*
+//							 * 当前写入箱体文件时，存在，数据写入不成功，原因在DataAccessCabinetLibrary里面SetHUBLinkup数据读取写入时
+//							 * UtilFun.bytes2HexString(Hublinktable.getUcLinkTable()转换时
+//							 * 进入死循环，因此ScanCardAttachment下面所有条目的数据data都为0暂时代替，
+//							 */
+//							System.out.println("添加的箱体名称" + strUname);
+//							break;
+//						}
+//					}
+//				}
+//			}
+//			/**************************************************/
+//	}
+	
+  /**********获取U盘路径*************/	
+	/*public  String GetUDiskDir()
+	{
+		  String tPath ="/mnt/usbdisk/";  //核心板新版调试该路径
+		  String tPathOldString ="/mnt/usb/" ;
+		  File file = new File(tPath);
+		  if (file.exists()) {
+			return tPath;
+		  }else {
+			  File file1 = new File(tPathOldString);
+			  if (file1.exists()) {
+				 return tPathOldString;
+			  }else {
+				 Toast.makeText(getApplication(), getString(R.string.text_checkusb),Toast.LENGTH_SHORT).show();
+				 return null;
+			 }
+		  }	
+	}*/
+	/*********************************/
+	@Override
+	// U盘状态改变监听
+	public int onChangedNotify(int xMsg, String xParam1, String xParam2) {
+	    String string = xParam1;	
+		Usb_PATH=xParam2;
+		return 0;
+	}
+
+	@Override
+	public int onChangedNotifyKey(String xMsg, String xParam1, String xParam2) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		usbstates.registerReceiver();
+	}
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		usbstates.unregisterReceiver();
+	}
+	public class MyHandler extends Handler{
+		public MyHandler(){
+			
+		};
+		
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			System.out.println("=============mainactivity handler");
+//			Usb.setText("usb states");
+			if(msg.arg1 == 0x00021)	{
+				CabinetLibUsb.setText(R.string.text_usbmount);
+				CbtLibUsbmount.setVisibility(View.VISIBLE);
+				CbtLibUsbmount.setBackgroundResource(R.drawable.usb_mounted);}
+			else if(msg.arg1 == 0x00022){ 
+				CabinetLibUsb.setText(R.string.text_usbunmount);
+				CbtLibUsbmount.setVisibility(View.VISIBLE);
+				CbtLibUsbmount.setBackgroundResource(R.drawable.usb_unmounted);}
+				}
+		}
+}

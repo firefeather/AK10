@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="270dp"
+    android:layout_height="550dp"
+    android:background="@drawable/card"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="105dp"
+        android:textSize="30sp"  />
+        <!-- android:text="1" -->   
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"  
+     >
+
+        <TextView
+            android:id="@+id/SND01"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send1"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:background="@drawable/send_portnew" />
+
+        <TextView
+            android:id="@+id/SND06"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send6"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" 
+         />
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="2dp">
+
+         <TextView
+            android:id="@+id/SND02"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send2"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" />
+
+        <TextView
+            android:id="@+id/SND07"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send7"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" />
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="2dp">
+
+         <TextView
+            android:id="@+id/SND03"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send3"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" />
+
+        <TextView
+            android:id="@+id/SND08"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send8"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" />
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+         android:layout_marginTop="2dp">
+
+         <TextView
+            android:id="@+id/SND04"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send4"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" />
+
+        <TextView
+            android:id="@+id/SND09"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send9"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="2dp">
+
+         <TextView
+            android:id="@+id/SND05"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send5"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" />
+
+        <TextView
+            android:id="@+id/SND10"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="30dp"
+            android:text="@string/text_send10"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:background="@drawable/send_portnew" />
+        
+        
+    </LinearLayout>
+
+</LinearLayout>

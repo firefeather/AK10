@@ -1,0 +1,61 @@
+#pragma once
+
+#include "../../DataStructDef.h"
+
+class CCLPackCommunicationData
+{
+public:
+	CCLPackCommunicationData(void);
+	~CCLPackCommunicationData(void);
+
+
+	//閫氫俊鏁版嵁鎵撳寘鐨勫熀鏈牸寮忋�ucData == null鏃舵暟鎹煙涓�锛岃繑鍥�int - 鍖呴暱搴�
+	static int PackDataBase(unsigned int ucDestAddress,//鐩爣鍦板潃
+							unsigned char ucPackType,//鍖呯被鍨�
+							unsigned int unSequenceNumber,//椤哄簭鍙�
+							int nAnsweredFlag,//搴旂瓟鏍囩ず
+							unsigned char *ucData,//鏁版嵁鍩熷瓧鑺�
+							unsigned char * ucSendData);//鎵撳寘鍙戦�鏁版嵁
+
+	//鐢熸垚鏁版嵁鍖呮牎楠岀爜锛岄珮浣嶅湪鍓嶏紝浣庝綅鍦ㄥ悗銆�
+	static void CreateChecksum(unsigned char* ucSenddata,//鍙戦�鏁版嵁 
+									int nLen, //鏈夋晥鏁版嵁闀垮害
+									unsigned char ucChecksum[1]);//鏍￠獙鐮�
+
+	
+//瑙ｅ簲绛斿寘
+	int UnPackData(unsigned char *pRcvData, int nLen);
+	//瑙ｅ簲绛斿寘閿欒绫诲瀷
+	void GetCustomMonitorData(LPMONITORDATA pMonitorData);
+		//鑾峰彇绠变綋锛堟壂鎻忓崱锛夌數婧愮數鍘嬬洃娴嬫暟鎹�
+	void GetVoltageMonitorData(LPMONITORDATA pMonitorData);
+		//鑾峰彇绠变綋锛堟壂鎻忓崱锛夊姛鐜囩洃娴嬫暟鎹�
+	void GetPowerMonitorData(LPMONITORDATA pMonitorData);
+		//鑾峰彇绠变綋锛堟壂鎻忓崱锛夐�鐐规娴嬫暟鎹�
+	void GetPointDetectMonitorData(LPMONITORDATA pMonitorData,ScanCardAttachment & sScanCardAtt);
+	void GetMonitorDataFunRate(LPMONITORDATA pMonitorData);
+	void GetNetWebErrorPackage(LPMONITORDATA pMonitorData);
+	bool UnPackErrorType();
+
+public:
+	//婧愬湴鍧�
+	unsigned char m_ucSourAddress;
+	//鐩殑鍦板潃
+	unsigned char m_unDestAddress;
+	//鍖呯被鍨�1瀛楄妭	鍏蜂綋瑙�鍖呯被鍨嬬粨鏋勫畾涔�
+	unsigned char m_ucPackType;
+	//鏁版嵁鍖呴暱搴�1瀛楄妭/0瀛楄妭	搴旂瓟杩斿洖鍊肩殑闀垮害锛�瀛楄妭琛ㄧず鏃犲簲绛旇繑鍥炲�锛�瀛楄妭琛ㄧず鐩戞帶鎸囦护绛夋湁搴旂瓟杩斿洖鍊硷級
+	short	m_nLen;
+	//鏁版嵁鍩熷唴瀹�	
+	unsigned char m_ucRcvData[CL_SEND_EFFECT_DATA_SIZE];
+	//鏄惁姝ｇ‘搴旂瓟
+	bool m_bACKOK;
+	//搴旂瓟閿欒鎻忚堪
+	unsigned char m_ucErrCode;
+	//椤哄簭鍙�
+	int m_nSequenceNumber;
+	//搴旂瓟鏍囩ず
+	int m_nAnswered;
+
+};
+

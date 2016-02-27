@@ -1,0 +1,31 @@
+package com.szaoto.ak10.sqlitedata;
+
+import com.szaoto.ak10.sqlitedata.SqliteDB;
+import android.database.Cursor;
+
+
+public class Sys_ParaDB {
+	public static Sys_Para GetSys_Para() {		
+		Sys_Para sysPara = new Sys_Para();
+		String strSQLString = "SELECT * FROM tb_syspara";
+		try {
+			Cursor c = SqliteDB.m_DbDatabase.rawQuery(strSQLString, null);
+			if (c != null) {
+				while (c.moveToNext()) {					
+					sysPara.cfg3d = c.getInt(c.getColumnIndex("cfg3d"));
+				}
+				c.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sysPara;
+	}
+
+	public static void UpdateDb(Sys_Para sysPara) {
+		String strIpSQL = "UPDATE tb_syspara SET cfg3d = '"	+ sysPara.cfg3d + "'";	
+		SqliteDB.m_DbDatabase.execSQL(strIpSQL);
+	}	
+ }
+	
+  

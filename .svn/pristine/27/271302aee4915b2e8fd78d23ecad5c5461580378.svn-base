@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/Layout_gray"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" 
+    >
+
+    <RelativeLayout
+        android:layout_width="500dp"
+        android:layout_height="255dp"
+        android:layout_x="13dp"
+        android:layout_y="9dp" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="25dp" >
+
+            <TextView
+                android:id="@+id/textViewUpdateItemSel"
+                android:layout_width="240dp"
+                android:layout_height="48dp"
+                android:text="@string/test_gray_configcaption"
+                android:textSize="@dimen/size25" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true" >
+
+            <TextView
+                android:id="@+id/textViewPathTitile"
+                android:layout_width="143dp"
+                android:layout_height="60dp"
+                android:text="@string/test_gray_level"
+                android:textSize="@dimen/size25" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <EditText
+                    android:id="@+id/testgraylevel"
+                    android:layout_width="207dp"
+                    android:layout_height="match_parent"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:maxLength="4"
+                    android:textSize="@dimen/size25" />
+
+               
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/linearLayout1"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_marginTop="17dp" />
+
+    </RelativeLayout>
+
+</AbsoluteLayout>

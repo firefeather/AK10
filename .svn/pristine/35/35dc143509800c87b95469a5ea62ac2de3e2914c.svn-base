@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 一定要使用相对布局 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_item_cbs"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#0000"
+    tools:ignore="ContentDescription" >
+
+    <Button
+        android:id="@+id/btnDelCbtFile"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/delete"
+        android:textColor="#ffff"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/cbt_list_item_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="24dp"
+        android:layout_toRightOf="@id/btnDelCbtFile"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dip"
+        android:textSize="@dimen/size25" />
+    />
+
+</RelativeLayout>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/connection_layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="fill"
+    tools:ignore="ButtonStyle,NotSibling,ContentDescription,UnknownIdInLayout,UselessParent" >
+
+    <LinearLayout 
+       android:id="@+id/conntop"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentTop="true"
+       >
+       
+         <TextView
+        android:id="@+id/text_connect_setup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:textSize="@dimen/size25" >
+        </TextView>
+        
+       <TextView
+        android:id="@+id/textView_ch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:text="@string/leddisplay_connection_config"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size25" />
+
+       
+   </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/connmenu"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_below="@+id/conntop"
+        android:background="@drawable/title_tool_bg" >
+ 
+            <TextView
+                android:id="@+id/tv_connection"
+                android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:text="@string/tv_leddisplay1_connection"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size20" />
+
+            <TextView
+                android:id="@+id/txtPort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:text="@string/leddisplay_connection_Port"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size20" />
+
+            <TextView
+                android:id="@+id/spin_connect_Port"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="8dp"
+                android:background="@color/white"
+                android:textSize="@dimen/size20" />
+            
+            
+
+		   <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        >
+
+                <TextView
+                    android:id="@+id/text_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="@string/ledconfig_more"
+                    android:layout_toLeftOf="@+id/text_connectback"
+                    android:drawableTop="@drawable/selector_tool_more"
+                    android:textSize="@dimen/size15" />
+
+                <TextView
+                    android:id="@+id/text_connectback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_gravity="center"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/cabinet_back_text"
+                    android:drawableTop="@drawable/selector_tool_back"
+                    android:textSize="@dimen/size15" />
+           </RelativeLayout>
+        
+    </LinearLayout>
+
+    <com.szaoto.ak10.ownerdraw.ConnectChartCustomView
+        android:id="@+id/connectchartcustomview"
+        android:layout_width="match_parent"
+        android:layout_height="440dp"
+        android:layout_above="@+id/conntool"
+        android:layout_below="@+id/connmenu" >
+
+    </com.szaoto.ak10.ownerdraw.ConnectChartCustomView>
+
+    <LinearLayout
+        android:id="@+id/conntool"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/title_tool_bg"
+        android:orientation="horizontal" >
+       
+                <TextView
+                    android:id="@+id/text_HS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/selector_horzitals"
+                    android:text="@string/text_horziontals"
+                    android:textSize="@dimen/size15" />
+
+                <TextView
+                    android:id="@+id/text_VS"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/selector_verticals"
+                    android:text="@string/text_verticals"
+                    android:textSize="@dimen/size15" />
+    
+
+                <TextView
+                    android:id="@+id/text_Hz"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/text_horziontalz"
+                    android:drawableTop="@drawable/selector_horzitalz"
+                    android:textSize="@dimen/size15" />
+
+
+                <TextView
+                    android:id="@+id/text_vz"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/text_verticalz"
+                    android:drawableTop="@drawable/selector_verticalz"
+                    android:textSize="@dimen/size15" />
+
+
+   
+
+                <TextView
+                    android:id="@+id/textZoomin"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="14dp"
+                      android:gravity="center"
+                    android:layout_gravity="center"
+                    android:drawableTop="@drawable/selector_zoomin"
+                    android:layout_weight="1"
+                    android:text="@string/text_zoomin"
+                    android:textSize="@dimen/size15" />
+
+
+                <TextView
+                    android:id="@+id/textZoomnormal"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                     android:layout_marginLeft="18dp"
+                    android:text="@string/text_zoomnormal"
+                    android:drawableTop="@drawable/selector_zoom1"
+                    android:textSize="@dimen/size15" />
+         
+
+
+                <TextView
+                    android:id="@+id/textZoomout"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                    android:layout_gravity="center"
+                    android:drawableTop="@drawable/selector_zoomout"
+                    android:layout_weight="1"
+                     android:layout_marginLeft="20dp"
+                    android:text="@string/text_zoomout"
+                    android:textSize="@dimen/size15" />
+
+
+
+
+
+                <TextView
+                    android:id="@+id/text_sendconnect"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                     android:layout_marginLeft="15dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/leddisplay_connection_semdConection"
+                    android:drawableTop="@drawable/selector_turn_into"
+                    android:textSize="@dimen/size15" />
+                
+
+
+                <TextView
+                    android:id="@+id/text_save_connection"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="13dp"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/selector_tool_save"
+                    android:text="@string/leddisplay_connection_SaveConection"
+                    android:textSize="@dimen/size15" />
+
+        
+
+
+
+                <TextView
+                    android:id="@+id/texttool_showall"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                     android:layout_marginRight="8dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/text_showall"
+                    android:drawableTop="@drawable/selector_fit_screen"
+                    android:textSize="@dimen/size15" />
+      
+
+ 
+
+                <TextView
+                    android:id="@+id/texttool_full"
+                    android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                      android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="@string/text_fullscreen"
+                    android:drawableTop="@drawable/selector_fullscreen"
+                    android:textSize="@dimen/size15" />
+    
+    </LinearLayout>
+
+
+
+  </RelativeLayout>

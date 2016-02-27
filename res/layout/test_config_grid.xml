@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android1="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/Layout_grid"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android1:layout_width="844dp"
+        android1:layout_height="255dp"
+        android1:layout_x="9dp"
+        android1:layout_y="7dp" >
+
+        <LinearLayout
+            android1:layout_width="wrap_content"
+            android1:layout_height="wrap_content"
+            android1:layout_alignParentBottom="true"
+            android1:layout_alignParentLeft="true"
+            android1:layout_alignParentRight="true"
+            android1:layout_alignParentTop="true" >
+
+            <LinearLayout
+                android1:layout_width="wrap_content"
+                android1:layout_height="match_parent"
+                android1:layout_weight="0.22"
+                android1:orientation="vertical" >
+
+                <LinearLayout
+                    android1:layout_width="410dp"
+                    android1:layout_height="wrap_content" >
+
+                    <TextView
+                        android1:id="@+id/textViewPathTitile"
+                        android1:layout_width="391dp"
+                        android1:layout_height="67dp"
+                        android1:layout_weight="3.33"
+                        android1:text="@string/test_grid_configcaption"
+                        android1:textSize="@dimen/size25" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android1:layout_width="match_parent"
+                    android1:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/test_grid_linetype"
+                        android:textSize="@dimen/size25" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android1:layout_width="match_parent"
+                    android1:layout_height="wrap_content" >
+
+                    <CheckBox
+                        android:id="@+id/testconfig_linetype1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:text="@string/test_grid_linetype1"
+                        android:textSize="@dimen/size25" />
+
+                    <CheckBox
+                        android:id="@+id/testconfig_linetype2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.66"
+                        android:text="@string/test_grid_linetype2"
+                        android:textSize="@dimen/size25" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <CheckBox
+                        android:id="@+id/testconfig_linetype3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.14"
+                        android:text="@string/test_grid_linetype3"
+                        android:textSize="@dimen/size25" />
+
+                    <CheckBox
+                        android:id="@+id/testconfig_linetype4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.36"
+                        android:text="@string/test_grid_linetype4"
+                        android:textSize="@dimen/size25" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android1:layout_width="wrap_content"
+                android1:layout_height="match_parent"
+                android1:layout_weight="1.44"
+                android1:orientation="vertical" >
+
+                <LinearLayout
+                    android1:layout_width="match_parent"
+                    android1:layout_height="wrap_content" >
+
+                    <TextView
+                        android1:id="@+id/textView3"
+                        android1:layout_width="wrap_content"
+                        android1:layout_height="51dp"
+                        android1:layout_weight="0.05"
+                        android1:gravity = "right"
+                        android1:text="@string/test_grid_spacing"
+                        android1:textSize="@dimen/size25" />
+
+                    <LinearLayout
+                        android1:layout_width="wrap_content"
+                        android1:layout_height="match_parent"
+                        android1:layout_weight="0.05"
+                        android1:orientation="horizontal" >
+
+                        <EditText
+                            android1:id="@+id/testgridintervel"
+                            android1:layout_width="196dp"
+                            android1:layout_height="wrap_content"
+                            android1:ems="10"
+                            android1:inputType="numberSigned"
+                            android:imeOptions="actionDone"
+                            android1:textSize="@dimen/size25" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/textView5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="pix"
+                                android:textSize="@dimen/size25" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android1:layout_width="match_parent"
+                    android1:layout_height="match_parent"
+                    android1:orientation="vertical" >
+
+                    <TextView
+                        android1:id="@+id/textViewUpdateItemSel"
+                        android1:layout_width="362dp"
+                        android1:layout_height="40dp"
+                        android1:text="@string/test_grid_colorchange"
+                        android1:textSize="@dimen/size25" />
+
+                    <LinearLayout
+                        android1:layout_width="match_parent"
+                        android1:layout_height="match_parent"
+                        android1:orientation="vertical" >
+
+                        <RadioGroup
+                            android:id="@+id/radioGroupcolchange"
+                            android:layout_width="218dp"
+                            android:layout_height="match_parent" >
+
+                            <RadioButton
+                                android:id="@+id/testconfigradio0"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="@string/test_grid_colorchangetype1"
+                                android:textSize="@dimen/size25" />
+
+                            <RadioButton
+                                android:id="@+id/testconfigradio1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/test_grid_colorchangetype2"
+                                android:textSize="@dimen/size25" />
+
+                            <RadioButton
+                                android:id="@+id/testconfigradio2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/test_grid_colorchangetype3"
+                                android:textSize="@dimen/size25" />
+                        </RadioGroup>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</AbsoluteLayout>

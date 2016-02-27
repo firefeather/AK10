@@ -1,0 +1,37 @@
+#pragma once
+
+#include "../../DataStructDef.h"
+
+class CPackEthernetFrame
+{
+public:
+	CPackEthernetFrame(void);
+	~CPackEthernetFrame(void);
+
+public:
+
+	//閫氶敓鏂ゆ嫹閿熸枻鎷疯嵔閿熸枻鎷峰箷閿熸枻鎷峰紡閿熸枻鎷穎ramedatafield == null鏃堕敓鏂ゆ嫹閿熸枻鎷烽敓杞匡拷閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷�int - 閿熸枻鎷烽敓锟�
+	static int PackDataBase(unsigned char * ucDestAddress,	//鐩敓渚ョ鎷峰潃
+							FrameDataField * sFrameDataField,//閿熸枻鎷烽敓锟�
+							unsigned char * ucSendData);//閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹
+
+	//閿熸枻鎷烽敓鏂ゆ嫹閿熸嵎甯嫹鏍￠敓鏂ゆ嫹閿熻锛岄敓鏂ゆ嫹浣嶉敓鏂ゆ嫹鍓嶉敓鏂ゆ嫹閿熸枻鎷蜂綅閿熻妭鐚存嫹
+	static int CreateChecksum(unsigned char* ucSenddata,//閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓锟�
+								int nLen); //閿熸枻鎷锋晥閿熸枻鎷疯帺閿熸枻鎷烽敓锟�//鏍￠敓鏂ゆ嫹閿熸枻鎷�
+
+	//閿熸枻鎷峰簲閿熸枻鎷烽敓锟�
+	int UnPackData(unsigned char *pRcvData, int nLen, FrameDataField &m_sFrameDataField);
+	//閿熸枻鎷峰簲閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷�
+	bool UnPackErrorType();
+
+public:
+	//鐩敓渚ョ鎷峰潃
+	unsigned char m_ucDestAddress[6] ;
+	//婧愰敓鏂ゆ嫹鍧�
+	unsigned char m_ucSourceAddress[6] ;
+	//閿熸枻鎷烽敓锟�//
+	FrameDataField m_sFrameDataField;
+
+	//搴旈敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓锟�
+	unsigned char m_ucErrCode;
+};

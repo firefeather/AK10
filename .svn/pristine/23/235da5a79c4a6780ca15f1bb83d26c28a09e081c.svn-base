@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="gb2312" standalone="yes" ?>
+<CabinetSerieses>
+    <CabinetSeries>
+        <ID>80</ID>
+        <ParentID>0</ParentID>
+        <name>F series</name>
+    </CabinetSeries>
+    <CabinetSeries>
+        <ID>1</ID>
+        <ParentID>0</ParentID>
+        <name>M series</name>
+    </CabinetSeries>
+    <CabinetSeries>
+        <ID>55</ID>
+        <ParentID>0</ParentID>
+        <name>M3.5 series</name>
+    </CabinetSeries>
+   </CabinetSerieses> 
+    

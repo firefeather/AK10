@@ -1,0 +1,23 @@
+
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := friendlyarm-hardware
+LOCAL_SRC_FILES := libfriendlyarm-hardware.so
+
+include $(PREBUILT_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := spi
+LOCAL_SRC_FILES := libspi.so
+
+include $(PREBUILT_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := netdetect
+LOCAL_SRC_FILES := libnetdetect.so
+
+include $(PREBUILT_SHARED_LIBRARY)

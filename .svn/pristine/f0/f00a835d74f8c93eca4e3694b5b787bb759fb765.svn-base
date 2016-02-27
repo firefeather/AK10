@@ -1,0 +1,405 @@
+package com.szaoto.ak10.datacomm;
+
+import java.io.IOException;
+
+import com.szaoto.ak10.commsdk.FrameDataField;
+import com.szaoto.ak10.commsdk.Packager;
+import com.szaoto.ak10.commsdk.SpiControl;
+import com.szaoto.ak10.util.LogUtil;
+import com.szaoto.ak10.util.UtilFun;
+
+public class InterfaceComm {
+
+	public InterfaceComm() {
+		
+	}
+	
+	
+	/**
+	 * 
+	 * @param macaddress
+	 * @return 版本号
+	 */
+	public static String  GetSndCardSoftwareVersion(byte[] macaddress){
+		String strVersion=null;	
+		
+		//地址
+		byte[] ucAddress =new byte[2];
+		
+		ucAddress[0] =  0x00;
+		ucAddress[1] =  0x06;
+        //mac地址，从数据库中找到       
+     
+        byte[] ucSendData = new byte[FrameDataField.ETH_DATA_MAX_SIZE + 18];
+        ucSendData = Packager.EthernetPackDataRead(macaddress, ucAddress, 2);	
+        
+	
+		try 
+		{
+			SpiControl.WriteSpi(ucSendData, 64);
+			try
+			{
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
+			
+		    byte[] RcvDataFrame = SpiControl.ReadSpi(64);
+		    
+		    
+		    byte[] byte2Convert = new byte[1];
+		    byte2Convert[0]=RcvDataFrame[19];
+		   
+		 
+		    strVersion = RcvDataFrame[18] + "."+ UtilFun.bytesToHexString(byte2Convert);
+
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+
+
+		return strVersion;
+		
+	}
+	
+	public static void GetSndCardByteSoftwareVersion(byte[] macaddress,byte[] versionRet){		
+		//地址
+		byte[] ucAddress =new byte[2];
+		
+		ucAddress[0] =  0x00;
+		ucAddress[1] =  0x06;
+        //mac地址，从数据库中找到       
+     
+        byte[] ucSendData = new byte[FrameDataField.ETH_DATA_MAX_SIZE + 18];
+        ucSendData = Packager.EthernetPackDataRead(macaddress, ucAddress, 2);	
+        
+
+		try 
+		{
+			SpiControl.WriteSpi(ucSendData, 64);
+			try
+			{
+				Thread.sleep(500);
+			}
+			catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
+			
+		    byte[] RcvDataFrame = SpiControl.ReadSpi(64);
+		    versionRet[0] = RcvDataFrame[18] ;
+		    versionRet[1] = RcvDataFrame[19] ;
+
+		    
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+
+		
+	}
+	
+	
+	/**
+	 * 
+	 * @param ucDestAddress
+	 * @param ucAddress
+	 * @param ucSendData
+	 * @return
+	 */
+	static public int SendtoScanCard(byte[] ucDestAddress, int tInterfPortId,byte[] ucSendData)
+	{
+		byte[] EthPackData ;
+		byte[] subdata ;
+		
+  		byte[] ucAddress = new byte[2];
+		
+	     //地址
+		ucAddress[0] = 0x11;
+		ucAddress[1] = (byte) (0x00 + (tInterfPortId-1) *0x10);
+		
+		
+		int nResult = -1;
+		int length = ucSendData.length;
+		if (length%28 != 0) {
+			return 0;}
+		int Max28Bytelength = 53*28;//1500个字节中最多可同时发送53(1484字节)个扫描卡28字节命令。1484/28 = 53
+		if (length/28 <= 53) 
+		{
+			EthPackData = Packager.PackMutiple28byteData(ucDestAddress,ucAddress,ucSendData,length);	
+		    try {
+		    	LogUtil.WriteLog(ucSendData,false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		    try {
+				LogUtil.WriteLog(EthPackData,false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try 
+			{
+				nResult = SpiControl.WriteSpi(EthPackData, (length+18)<64? 64:length+18);
+			} 
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
+			if (0 > nResult) 
+			{
+				return 1;
+			}
+
+		}
+		else 
+		{
+			int mlength = length%Max28Bytelength == 0? length/Max28Bytelength : length/Max28Bytelength+1;
+			for(int i = 0;i< mlength;i++)
+			{
+				if (i == mlength-1) 
+				{
+					subdata = UtilFun.subBytes(ucSendData,i*Max28Bytelength, length - i*Max28Bytelength);
+					int sublength = 0;
+					sublength =	subdata.length <= 46 ? 64:subdata.length;
+					EthPackData = Packager.PackMutiple28byteData(ucDestAddress,ucAddress,subdata,sublength);	
+					for (int j = 0; j < subdata.length/28; j++) 
+					{
+					    nResult = SpiControl.WriteSpi(subdata, EthPackData.length);
+					    
+//					    try {
+//							LogUtil.WriteLog(subdata,false);
+//						} catch (IOException e) {
+//							e.printStackTrace();
+//						}
+					    
+					}
+ 
+				}
+				else
+				{
+					subdata = UtilFun.subBytes(ucSendData, i*Max28Bytelength, Max28Bytelength);
+					EthPackData = Packager.PackMutiple28byteData(ucDestAddress,ucAddress,subdata,subdata.length);
+
+					nResult = SpiControl.WriteSpi(subdata, EthPackData.length);
+					
+//				    try {
+//						LogUtil.WriteLog(subdata,false);
+//					} catch (IOException e) {
+//		
+//						e.printStackTrace();
+//					}
+
+				}
+			}
+		}
+		return 1;
+	}
+	
+	
+	/**
+	 * 
+	 * @param macaddress
+	 * @return 硬件卡型号
+	 */
+	public static int  GetSndCardHardwareType(byte[] macaddress){	
+		int nType=2;		
+		
+		nType = macaddress[3];
+		
+		return nType;		
+	}
+
+	/*
+	 * 设置视频通道
+	 * videochport -- 视频通道
+	 * macaddress  -- mac地址
+	 * portnum     -- RJ45序号
+	 */
+	public static int  SetSendCardChPortAndEnable(boolean bEnable,int videochport,byte[] macaddress,int Rj45num)
+	{
+		
+		//地址
+		byte[] ucAddress = new byte[2];
+	
+		ucAddress[0] = (byte) 0x01;
+		ucAddress[1]=  (byte) (0x10+(Rj45num-1)*0x10);
+		
+		//数据
+		byte[] ucData = new byte[1];
+		
+		ucData[0] = (byte) videochport;
+		
+		if(bEnable){
+              ucData[0]|=0x80;		
+		}else {
+			  ucData[0]&=0x7F;
+		}
+		
+		
+		byte[] data = Packager.EthernetPackDataWrite(macaddress, ucAddress, 0x00, 1, ucData);
+		
+
+		try 
+		{
+			SpiControl.WriteSpi(data, 64);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	
+		return 0;
+	}
+	
+	/*
+	 * 设置视频通道
+	 * videochport -- 视频通道
+	 * macaddress  -- mac地址
+	 * portnum     -- RJ45序号
+	 */
+	public static byte[]  ReadBackFiFoRcvData(byte[] macaddress,int Rj45num,boolean bLongWait)
+	{	
+		//地址
+		byte[] ucAddress = new byte[2];
+		
+		byte[] bytesRcv = null;
+	
+		ucAddress[0] = (byte) 0x01;
+		ucAddress[1]=  (byte) (0x1b+(Rj45num-1)*0x10);
+		
+		//数据	
+		byte[] data = Packager.EthernetPackDataRead(macaddress, ucAddress,2);
+		try 
+		{
+			int i = 0;
+			int Length = 28;
+			int nOverTimes=10;
+			
+			if (bLongWait) {
+				nOverTimes=105;
+			}
+			
+			for (;i<nOverTimes;i++) {
+				
+				SpiControl.WriteSpi(data, 64);
+				Thread.sleep(100);
+				byte[] back = SpiControl.ReadSpi(64);
+				int upper =  (back[19]&0xff)*0x100;
+				int lower =  back[18]&0xff;
+				Length = upper+lower;	
+				if (Length<28) {
+					continue;
+				}else {
+					break;
+				}
+			}
+
+			if (i==nOverTimes) {
+				return null;
+			}
+
+			
+			bytesRcv = new byte[Length];
+			
+			
+			byte[] ucAddressfifo = new byte[2];	
+			ucAddressfifo[0] = (byte) 0x11;
+			ucAddressfifo[1]=  (byte) (0x01+(Rj45num-1)*0x10);
+			byte[] datafifo = Packager.EthernetPackDataRead(macaddress, ucAddressfifo, Length);
+			SpiControl.WriteSpi(datafifo, 64);
+			Thread.sleep(500);
+			byte[] bytesRcvTmp =SpiControl.ReadSpi(64);
+
+			bytesRcv  =	UtilFun.CopyOfRange(bytesRcvTmp, 18, 18+Length);
+		
+	
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	
+		return bytesRcv;
+	
+	}
+	
+	/*
+	 * 设置视频通道
+	 * bCapture    -- 是否需要视频剪裁
+	 * macaddress  -- mac地址
+	 * portnum     -- RJ45序号
+	 */
+	public static int  SetSendCardVideoCaptureEnable(boolean bCapture,byte[] macaddress,int Rj45num)
+	{	
+		byte[] ucAddress = new byte[2];
+		ucAddress[0] = (byte) 0x01;
+		ucAddress[1]=  (byte) (0x11+(Rj45num-1)*0x10);
+		
+		//数据
+		byte[] ucData = new byte[1];
+		if (bCapture) {
+			ucData[0] = 0x01;
+		}else {
+			ucData[0] = 0x00;
+		}
+		
+		byte[] data = Packager.EthernetPackDataWrite(macaddress, ucAddress, 0x00, 1, ucData);
+		
+		try 
+		{
+			SpiControl.WriteSpi(data, 64);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+	
+		return 0;
+	}
+	
+	
+	/*
+	 * 设置视频通道
+	 * videochport -- 视频通道
+	 * macaddress  -- mac地址
+	 * portnum     -- RJ45序号
+	 */
+	public static int  SetSendCardPortParam(short x,short y,short w,short h, int ncfg3d, byte[] macaddress,int Rj45num)
+	{		
+		int nPortParam = Rj45num -1 ;
+		//地址
+		byte[] ucAddress =  new byte[2];
+		ucAddress[0] =	(byte) (((0x112+16*nPortParam)&0xff00)>>8);
+		ucAddress[1] =  (byte) (((0x112+16*nPortParam)&0xff));
+	
+		//数据
+		byte[] ucData = new byte[14];
+		
+        ucData[0] = (byte)((x&0xff00)>>8);
+        ucData[1] = (byte)(x&0xff);
+        ucData[2] = (byte)((y&0xff00)>>8);
+        ucData[3] = (byte)(y&0xff);
+        ucData[4] = (byte)((w&0xff00)>>8);
+        ucData[5] = (byte)(w&0xff);
+        ucData[6] = (byte)((h&0xff00)>>8);
+        ucData[7] = (byte)(h&0xff);
+        ucData[13] = (byte)ncfg3d;
+		byte[] data = Packager.EthernetPackDataWrite(macaddress, ucAddress, 0x00, 14, ucData);
+		
+		try 
+		{
+			SpiControl.WriteSpi(data, 64);
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		
+		return 0;
+	}	
+}

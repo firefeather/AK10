@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background"
+    tools:ignore="MergeRootFrame" >
+
+    <TextView
+        android:id="@+id/textViewPathTitile"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/titleFilePath" />
+
+    <ListView
+        android:id="@+id/listViewFilePath"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" >
+    </ListView>
+
+    <TextView
+        android:id="@+id/textViewUpdateItemSel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/titleCardList" />
+
+    <ListView
+        android:id="@+id/listViewUpdateItemSel"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <Button
+	        android:id="@+id/btnClose"
+	        android:layout_width="196dp"
+	        android:layout_height="50dp"
+	        android:layout_marginLeft="420dp"
+	        android:layout_gravity="center"
+	        android:text="@string/Close" />                
+       <Button
+	        android:id="@+id/btnSubmit"
+	        android:layout_width="196dp"
+	        android:layout_height="50dp"
+	        android:layout_marginLeft="50dp"
+	        android:layout_gravity="center"
+	        android:text="@string/OK" />
+    </LinearLayout>
+</LinearLayout>

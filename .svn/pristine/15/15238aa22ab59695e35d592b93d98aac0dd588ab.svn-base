@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/leddisplay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="ObsoleteLayoutParam,TextFields,HardcodedText,ContentDescription,InefficientWeight,UnknownIdInLayout,UselessParent" >
+
+ 
+    <LinearLayout
+           android:id="@+id/layout_left_text"
+           android:layout_width="match_parent"
+           android:layout_height="70dp"
+           android:background="@drawable/title_tool_bg"
+           android:orientation="horizontal"
+            >
+
+        <TextView
+            android:id="@+id/leddisplay_config_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:gravity="center"
+            android:text="@string/leddisplay_config_texts"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+          <LinearLayout
+		         android:layout_width="match_parent"
+		         android:layout_height="match_parent"
+		         android:gravity="right|center_vertical"
+		         android:orientation="vertical" >
+	        <TextView
+	            android:id="@+id/text_leddisplayback"
+	            android:layout_width="wrap_content"
+	            android:layout_height="70dp"
+	            android:layout_marginRight="15dp"
+	            android:drawableLeft="@drawable/selector_tool_back"
+	            android:gravity="center"
+	            android:text="@string/cabinet_back_text"
+	            android:textSize="20sp" />
+         </LinearLayout>
+
+       </LinearLayout>
+       
+
+
+       <LinearLayout
+           android:id="@+id/linear_leddisplay"
+           android:layout_width="match_parent"
+           android:layout_height="465dp"
+           >
+
+           <ImageView
+               android:id="@+id/leddisplay1"
+               android:layout_width="500dp"
+               android:layout_height="400dp"
+               android:layout_alignParentLeft="true"
+               android:layout_gravity="center"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="8dp"
+               android:layout_weight="1"
+               android:background="@color/green"
+               android:src="@drawable/ledtext1"
+                />
+
+           <ImageView
+               android:id="@+id/leddisplay2"
+               android:layout_width="500dp"
+               android:layout_height="400dp"
+               android:layout_alignParentRight="true"
+               android:layout_gravity="center"
+               android:layout_marginLeft="8dp"
+               android:layout_marginRight="8dp"
+               android:layout_weight="1"
+               android:background="@color/blue_sky_bg"
+               android:src="@drawable/ledtext2"
+                />
+
+           <ImageView
+               android:id="@+id/leddisplay3"
+               android:layout_width="500dp"
+               android:layout_height="400dp"
+               android:layout_alignParentLeft="true"
+               android:layout_gravity="center"
+               android:layout_marginLeft="8dp"
+               android:layout_marginRight="8dp"
+               android:layout_weight="1"
+               android:src="@drawable/ledtext3"
+               android:background="@color/zong" />
+
+           <ImageView
+               android:id="@+id/leddisplay4"
+               android:layout_width="500dp"
+               android:layout_height="400dp"
+               android:layout_alignParentRight="true"
+               android:layout_gravity="center"
+               android:layout_marginLeft="8dp"
+               android:layout_marginRight="8dp"
+               android:layout_weight="1"
+                 android:src="@drawable/ledtext4"
+               android:background="@color/blue" />
+       </LinearLayout>
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" 
+           android:background="@drawable/title_tool_bg">
+
+           <TextView
+               android:id="@+id/btn_cabinetlibrary"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="5dp"
+              android:layout_marginTop="15dp"
+               android:text="@string/btn_cabinet"
+               android:drawableLeft="@drawable/musiclib"
+               android:gravity="center"
+               android:textSize="@dimen/size15" />
+
+           <TextView
+               android:id="@+id/btn_colortemper"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="25dp"
+               android:layout_marginTop="15dp"
+               android:gravity="center_horizontal"
+               android:text="@string/loadcolortemperfile"
+               android:drawableLeft="@drawable/fileopen"
+               android:textSize="@dimen/size15" />
+           
+           <TextView
+               android:id="@+id/btn_gamma"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginLeft="25dp"
+               android:layout_marginTop="15dp"
+               android:text="@string/loadgammafile"
+               android:drawableLeft="@drawable/fileopen"
+               android:textSize="@dimen/size15" />
+       </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLFile class="com.szaoto.ak10.common.MonitorConfigState.MonitorSetting">
+    <mCabinetSettingState mTempratureAlarm = "60" mHumityAlarm = "30" mBadLightNum ="89"/>
+    <mEnvironmentSettingState mTempratureAlarm = "60" mHumityAlarm = "30" mBadLightNum ="89"/>
+</XMLFile>

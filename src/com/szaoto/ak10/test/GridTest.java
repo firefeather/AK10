@@ -1,0 +1,49 @@
+/*
+   * 文件名 GridTest.java
+   * 包含类名列表com.szaoto.ak10.test
+   * 版本信息，版本号
+   * 创建日期2013年11月11日上午11:22:11
+   * 版权声明 liangdb-szaoto
+*/
+package com.szaoto.ak10.test;
+
+
+import android.graphics.Color;
+
+/*
+ * 类名GridTest
+ * 作者 liangdb
+ * 主要功能 网格测试
+ * 创建日期2013年11月11日
+ * 修改者，修改日期，修改内容
+ */
+public class GridTest {
+	
+	
+	public int m_nSpace;					//间距
+	
+	public boolean m_bHorizontalLine;		//横线
+	public boolean m_bVerticalLine;			//竖线
+	public boolean m_bLeftDiagonalLine;		//左斜线
+	public boolean m_bRightDiagonalLine;	//右斜线
+	
+	public int m_nColor[];					//当前颜色,三色变换
+	public int m_nSPos;						//相对开始位置
+
+	public GridTest() {
+		// TODO Auto-generated constructor stub
+		m_nSpace = 20;
+		
+		m_bHorizontalLine = true;
+		m_bVerticalLine = true;
+		m_bLeftDiagonalLine = false;
+		m_bRightDiagonalLine = false;
+		
+		//m_nColor = Color.WHITE;
+		m_nColor = new int[3];
+		m_nColor[0] = Color.WHITE;
+		m_nColor[1] = Color.RED;
+		m_nColor[2] = Color.BLUE;
+		m_nSPos = 0;
+	}
+}

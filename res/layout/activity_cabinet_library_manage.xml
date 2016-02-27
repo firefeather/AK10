@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cabinetlibmanage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+     android:background="@drawable/common_bg"
+    tools:context=".player.EditActivity" >
+
+    <TextView
+        android:id="@+id/tv_SeptalLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F0FFF0"
+        android:layout_below="@+id/top_cabinetlib"
+         />
+
+    <RelativeLayout
+        android:id="@+id/top_cabinetlib"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/title_tool_bg"
+        android:layout_marginTop="4dp" >
+
+        <TextView
+            android:id="@+id/tvMessageAuto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/leddisplay_cabinetseries_manage"
+            android:textColor="@color/white"
+            
+            android:textSize="@dimen/text_size" />
+
+        <TextView
+            android:id="@+id/btncabinetlibOK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:drawableLeft="@drawable/selector_tool_back"
+             android:text="@string/cabinet_back_text"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listview_cabinetserieslib"
+        android:layout_width="match_parent"
+        android:layout_height="650dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/top_cabinetlib"
+        android:layout_marginTop="10dp"
+        android:cacheColorHint="#00000000"
+        android:listSelector="#00000000"
+        android:textColor="@color/white" 
+        >
+
+    </ListView>
+
+  
+
+</RelativeLayout>
